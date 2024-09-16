@@ -1,0 +1,19 @@
+{% extends 'Du_An/layout.html' %}
+{% load static %}
+
+
+{% block style %} <link rel="stylesheet" href="{% static 'Du_An/css/login.css' %}"> {% endblock %}
+
+{% block body %}
+    <!--Add JS so teacher or parent can choose their children or classes -->
+    <div class="register">
+        <form action="{% url 'register' %}">
+            <label for="username">Họ và tên </label>
+            <input type="text" name="username" id="username">
+            <label for="password">Mật Khẩu</label>
+            <input type="password" name="password" id="password">
+            
+            <button type="submit">Đăng kí</button>
+        </form>
+    </div>
+{% endblock %}
