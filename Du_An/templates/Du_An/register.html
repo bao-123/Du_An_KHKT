@@ -3,16 +3,35 @@
 
 
 {% block style %} <link rel="stylesheet" href="{% static 'Du_An/css/login.css' %}"> {% endblock %}
+{% block script %} <script src="{% static 'Du_An/js/register.js' %}"></script>{% endblock %}
 
 {% block body %}
     <!--Add JS so teacher or parent can choose their children or classes -->
     <div class="register">
+        <div class="error_message">
+            <h3 class="error">{{ error }}</h3>
+            <p class="error_message"> {{ error_message }} </p>
+        </div>
         <form action="{% url 'register' %}">
-            <label for="username">Họ và tên </label>
-            <input type="text" name="username" id="username">
+            <label for="username">Họ và tên</label>
+            <input type="text" name="username" autocomplete="off" name="username">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email">
             <label for="password">Mật Khẩu</label>
             <input type="password" name="password" id="password">
-            
+
+            <h3 id="type_label">Bạn là?</h3>
+            <input type="radio" name="user_type" value="teacher" id="teacher">
+            <label for="teacher">Giáo viên</label>
+            <input type="radio" name="user_type" value="parent" id="parent">
+            <label for="parent">Phụ huynh</label>
+
+            <div id="for_teacher">
+                <!--TODO-->
+            </div>
+            <div id="for_parent">
+                <!--TODO-->
+            </div>
             <button type="submit">Đăng kí</button>
         </form>
     </div>

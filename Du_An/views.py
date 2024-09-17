@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, HttpResponseNotAllowed
+from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import login, authenticate, logout
 from django.urls import reverse
 from .models import *
@@ -7,44 +8,124 @@ from .models import *
 # Create your views here.
 
 def index(request):
-    pass
+    if request.method == "GET":
+        return render(request, "Du_An/welcome.html")
+    else:
+        return HttpResponseNotAllowed("method not allowed.")
+
+def dashboard(request):
+    if request.method == "GET":
+        return render(request, "Du_An/dashboard.html")
+    else:
+        return HttpResponseNotAllowed("method not allowed")
 
 def login_view(request):
     if request.method == "GET":
         return render(request, "Du_An/login.html")
     elif request.method == "POST":
-        username: str = request.POST["username"]
+        email: str = request.POST["email"]
         password = request.POST["password"]
 
         if "role" not in list(request.POST.keys()):
             #replace this
             return HttpResponseBadRequest("please choose either teacher or parent")
         
+
         user_type = request.POST["role"]
+        user_auth = authenticate(email=email, password=password)
 
-        try:
-            if user_type == "teacher":
-                user = Teacher.objects.get(username=username, password=password)
-            elif user_type == "parent":
-                user = Parent.objects.get(username=username, password=password)
-            user = authenticate(request, username=username, password=password)
-
-        except:
-            user = None
-        if user:
-            login(request, user)
-            return HttpResponseRedirect(reverse("index"))
+        if not user_auth:
+            return render(request, "Du_An/login.html", {
+                "error": "Invalid password or email",
+                "error_message": "Please re-check your email and password"
+            })
+        
+        if user_type == "teacher":
+            try:
+                user = Teacher.objects.get(pk=user_auth.pk)
+            except Teacher.DoesNotExist:
+                return render(request, "Du_An/login.html", {
+                    "error": "Failed to login",
+                    "error_message": "Doesn't found any account with this email and password, please ensure that your account is registered as teacher"
+                })
+        elif user_type == "parent":
+            try:
+                user = Parent.objects.get(pk=user_auth.pk)
+            except Parent.DoesNotExist:
+                return render(request, "Du_An/login.html", {
+                    "error": "Failed to login",
+                    "error_message": "Doesn't found any account with this email and password, please ensure that your account is registered as parent"
+                })
         else:
-            #replace this
-            return HttpResponseBadRequest("Invalid password or username")
+            return HttpResponseBadRequest("Unknow user type")
+        
+        #log user in
+        login(request, user)
+
+        return HttpResponseRedirect(reverse("dashboard"))
+    
     else:
         return HttpResponseNotAllowed("method not allowed.")
             
+
+def logout_view(request):
+
+    logout(request)
+
+    return HttpResponseRedirect(reverse("index"))
 
 def register(request):
     if request.method == "GET":
         return render(request, "Du_An/register.html")
     elif request.method == "POST":
-        pass
+        username: str = request.POST["username"]
+        email: str = request.POST["email"]
+        raw_password = request.POST["password"]
+        #is_boy = request.POST["is_boy"]
+
+
+        if "user_type" not in list(request.POST.keys()):
+            return render(request, "Du_An/register.html", {
+                "error": "",
+                "error_message": "" #TODO
+            })
+        user_type = request.POST["user_type"]
+
+        if user_type == "teacher":
+            if Teacher.objects.filter(email=email).exists():
+                return render(request, "Du_An/login.html", {
+                    "error": "Email already registered",
+                    "error_message": "your email already registered as a teacher, please enter another email."
+                })
+            
+            teacher = Teacher.objects.create(
+                username=username,
+                email=email,
+                password = make_password(raw_password),
+                #is_boy=is_boy
+                  #TODO: add some needed information.       
+            )
+
+            teacher.save()
+            login(request, teacher)
+
+        elif user_type == "parent":
+            if Parent.objects.filter(email=email).exists():
+                return render(request, "Du_An/login.html", {
+                    "error": "Email already registered",
+                    "error_message": "your email already registered as a parent, please enter another email."
+                })
+            
+            parent = Parent.objects.create(
+                username=username,
+                email=email,
+                password = make_password(raw_password)
+            )
+            parent.save()
+
+            login(request, parent)
+        else:
+            return HttpResponseBadRequest("Unnknow user type")
+        return HttpResponseRedirect(reverse("dashboard"))
     else:
         return HttpResponseNotAllowed("method not allowed.")
