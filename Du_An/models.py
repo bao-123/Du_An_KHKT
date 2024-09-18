@@ -4,7 +4,13 @@ from django.contrib.auth.models import User
 
 
 class Subject(models.Model):
-    name = models.CharField(max_length=150)
+    name = models.CharField(max_length=150, unique=True)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name
+        }
 
     def __str__(self):
         return self.name
@@ -17,26 +23,28 @@ class Subject(models.Model):
     
 
 class Teacher(User):
+    #** use full_name instead because username is unique
     full_name = models.CharField(max_length=200, unique=False)
     subject = models.ManyToManyField(Subject, related_name="teachers")
 
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.username,
+            "name": self.full_name,
             "email": self.email,
-            "is_boy": self.is_boy
+            #"is_boy": self.is_boy
         }
 
 
 class Parent(User):
+    #** use full_name instead because username is unique
     full_name = models.CharField(max_length=200, unique=False)
     children = models.ManyToManyField("Student", related_name="parent")
 
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.username,
+            "name": self.full_name,
             "email": self.email,
         }
 
@@ -53,36 +61,50 @@ class Student(models.Model):
             "name": self.full_name,
             "birthday": self.birthday.strftime("%d/%m/%Y"),
             "is_boy": self.is_boy,
-            "math": self.math.serialize()
+            "math": [ subject.serialize() for subject in self.main_subjects.all() ]
         }
-
 
 
 class Class(models.Model):
     form_teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, related_name="form_class")
-    name = models.CharField(max_length=3)
+    name = models.CharField(max_length=3, unique=True)
     students = models.ManyToManyField(Student, blank=True, related_name="classroom")
-    math_teacher = models.ForeignKey(Teacher, blank=True, on_delete=models.DO_NOTHING, related_name="math_classes")
+    subject_teachers = models.ManyToManyField("ClassSubjectTeacher", related_name="classroom")
 
     def student_count(self) -> int:
         return self.students.count()
     
+
+
+
+class ClassSubjectTeacher(models.Model):
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name="classes")
+    teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT, related_name="teaching_classes")
+
+    @staticmethod
+    def get_subject_teacher(subject: Subject, classroom: Class) -> Teacher | None:
+        class_subject = ClassSubjectTeacher.objects.filter(classroom=classroom, subject=subject)
+
+        return class_subject.teacher if class_subject else None
     
-    def remove_teacher(self, subject, teacher: Teacher) -> None:
-        match(subject):
-            case "math":
-                self.math_teacher = None
-                self.save()
-            #TODO
+    @staticmethod
+    def is_teaching(subject: Subject, teacher: Teacher, classroom: Class) -> bool:
+        class_subject = ClassSubjectTeacher.objects.filter(subject=subject, classroom=classroom)
+        if not class_subject:
+            raise Exception("Unknow class (or subject) ")
+        
+        return class_subject.teacher == teacher
+        
 
 class MainSubject(models.Model):
     name = models.CharField(max_length=20)
-    diem_thuong_xuyen1 = models.FloatField(null=True)
-    diem_thuong_xuyen2 = models.FloatField(null=True)
-    diem_thuong_xuyen3 = models.FloatField(null=True)
-    diem_thuong_xuyen4 = models.FloatField(null=True)
-    diem_giua_ki = models.FloatField(null=True)
-    diem_cuoi_ki = models.FloatField(null=True)
+    # -1.0 mean teacher doesn't submit the mark of that student yet.
+    diem_thuong_xuyen1 = models.FloatField(null=True, default=None)
+    diem_thuong_xuyen2 = models.FloatField(null=True, default=None)
+    diem_thuong_xuyen3 = models.FloatField(null=True, default=None)
+    diem_thuong_xuyen4 = models.FloatField(null=True, default=None)
+    diem_giua_ki = models.FloatField(null=True, default=None)
+    diem_cuoi_ki = models.FloatField(null=True, default=None)
     comment = models.TextField()
 
     def serialize(self):
@@ -104,8 +126,10 @@ def create_main_subject(name: str):
     return subject
 
 #function to get a student
-def get_student(student_name: str, class_name) -> Student | None: #Shouldn't let two students have the same name into a class.
-    student = Student.objects.filter().first()
-    return student
+def get_student(id: int) -> Student | None:
+    try:
+        return Student.objects.get(pk=id)
+    except Student.DoesNotExist:
+        return None
 
 

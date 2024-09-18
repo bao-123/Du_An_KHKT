@@ -76,12 +76,14 @@ def logout_view(request):
 
 def register(request):
     if request.method == "GET":
-        return render(request, "Du_An/register.html")
+        return render(request, "Du_An/register.html", {
+            "subjects": [ subject.serialize() for subject in Subject.objects.all() ]
+        })
     elif request.method == "POST":
-        username: str = request.POST["username"]
+        full_name: str = request.POST["full_name"]
         email: str = request.POST["email"]
         raw_password = request.POST["password"]
-        #is_boy = request.POST["is_boy"]
+        #? is_boy = request.POST["is_boy"]
 
 
         if "user_type" not in list(request.POST.keys()):
@@ -92,6 +94,17 @@ def register(request):
         user_type = request.POST["user_type"]
 
         if user_type == "teacher":
+            subjects_id = request.POST.getlist("subjects[]")
+
+            if not subjects_id:
+                return render(request, "Du_An/login.html", {
+                    "error": "require at lease 1 subject",
+                    "error": "Please choose at lease 1 subject"
+                })
+            
+            subjects = Subject.objects.filter(pk__in=subjects_id)
+
+
             if Teacher.objects.filter(email=email).exists():
                 return render(request, "Du_An/login.html", {
                     "error": "Email already registered",
@@ -99,13 +112,13 @@ def register(request):
                 })
             
             teacher = Teacher.objects.create(
-                username=username,
+                full_name=full_name, #** Use full_name instead of username
                 email=email,
                 password = make_password(raw_password),
                 #is_boy=is_boy
                   #TODO: add some needed information.       
             )
-
+            teacher.subject.set(subjects)
             teacher.save()
             login(request, teacher)
 
@@ -117,7 +130,7 @@ def register(request):
                 })
             
             parent = Parent.objects.create(
-                username=username,
+                username=full_name,
                 email=email,
                 password = make_password(raw_password)
             )
@@ -129,3 +142,6 @@ def register(request):
         return HttpResponseRedirect(reverse("dashboard"))
     else:
         return HttpResponseNotAllowed("method not allowed.")
+    
+
+
