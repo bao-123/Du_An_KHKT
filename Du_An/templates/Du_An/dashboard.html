@@ -6,4 +6,15 @@
 {% endblock %}
 {% block title %}VnAdu{% endblock %}
 
+{% block body %}
+    {% if user.is_authenticated %}
+        {% if user.teacher %}
+            <h1> Hello {{ user.teacher.full_name }}</h1>
+        {% elif user.parent %}
+            <h1> Hello {{ user.parent.full_name }} </h1>
+        {% endif %}
+        <a href="{% url 'logout' %}">Logout</a>
+    {% endif %}
+{% endblock %}
+
 

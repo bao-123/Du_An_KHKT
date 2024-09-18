@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import date
 # Create your models here.
 
 
@@ -58,9 +59,11 @@ class Student(models.Model):
 
     def serialize(self):
         return {
+            "id": self.id,
             "name": self.full_name,
             "birthday": self.birthday.strftime("%d/%m/%Y"),
             "is_boy": self.is_boy,
+            "classroom": self.classroom.first().serialize(),
             "math": [ subject.serialize() for subject in self.main_subjects.all() ]
         }
 
@@ -73,6 +76,16 @@ class Class(models.Model):
 
     def student_count(self) -> int:
         return self.students.count()
+    
+    def serialize(self):
+        return {
+            "name": self.name,
+            "form_teacher": self.form_teacher.serialize(),
+            "subject_teachers": [ teacher.serialize() for teacher in self.subject_teachers.all() ]
+        }
+    
+    def get_students(self):
+        return [ student.serialize() for student in self.students.all() ]
     
 
 

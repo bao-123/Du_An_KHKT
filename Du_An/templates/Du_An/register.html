@@ -38,6 +38,11 @@
             </div>
             <div id="for_parent">
                 <!--TODO-->
+                <select name="children[]" multiple>
+                    {% for child in children %}
+                    <option value="{{ child.id }}"> {{ child.name }} | {{ child.classroom.name }} </option>
+                    {% endfor %}
+                </select>
             </div>
             <button type="submit">Đăng kí</button>
         </form>

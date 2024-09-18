@@ -77,8 +77,10 @@ def logout_view(request):
 def register(request):
     if request.method == "GET":
         return render(request, "Du_An/register.html", {
-            "subjects": [ subject.serialize() for subject in Subject.objects.all() ]
+            "subjects": [ subject.serialize() for subject in Subject.objects.all() ],
+            "children": [ student.serialize() for student in Student.objects.all() ]
         })
+    
     elif request.method == "POST":
         full_name: str = request.POST["full_name"]
         email: str = request.POST["email"]
@@ -123,6 +125,9 @@ def register(request):
             login(request, teacher)
 
         elif user_type == "parent":
+            children_id = request.POST.getlist("children[]")
+            children = Student.objects.filter(pk__in=children_id)
+
             if Parent.objects.filter(email=email).exists():
                 return render(request, "Du_An/login.html", {
                     "error": "Email already registered",
@@ -134,6 +139,8 @@ def register(request):
                 email=email,
                 password = make_password(raw_password)
             )
+            parent.children.set(children)
+
             parent.save()
 
             login(request, parent)
