@@ -11,6 +11,22 @@
     {% block script %}{% endblock %}
 </head>
 <body>
+    <!--** navigation bar -->
+    <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand mb-4" href="{% url 'dashboard' %}">Vnadu</a>
+
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-3">
+                    <li class="nav-item">
+                        <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+
     {% block body %}{% endblock %}
 
     <!--Include bootstrap JS -->
