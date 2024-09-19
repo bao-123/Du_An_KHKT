@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, HttpResponseNotAllowed
-from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth import login, authenticate, logout
 from django.urls import reverse
 from .models import *
@@ -32,7 +32,8 @@ def login_view(request):
         
 
         user_type = request.POST["role"]
-        user_auth = authenticate(email=email, password=password)
+        #** store user's email in username field
+        user_auth = authenticate(request, username=email, password=password)
 
         if not user_auth:
             return render(request, "Du_An/login.html", {
@@ -106,16 +107,12 @@ def register(request):
             
             subjects = Subject.objects.filter(pk__in=subjects_id)
 
+            #* we have stored user's email in 'username' and it is unique so we don't need to check if a email is exists
 
-            if Teacher.objects.filter(email=email).exists():
-                return render(request, "Du_An/login.html", {
-                    "error": "Email already registered",
-                    "error_message": "your email already registered as a teacher, please enter another email."
-                })
             
             teacher = Teacher.objects.create(
                 full_name=full_name, #** Use full_name instead of username
-                email=email,
+                username=email,
                 password = make_password(raw_password),
                 #is_boy=is_boy
                   #TODO: add some needed information.       
@@ -135,8 +132,8 @@ def register(request):
                 })
             
             parent = Parent.objects.create(
-                username=full_name,
-                email=email,
+                full_name=full_name,
+                username=email,
                 password = make_password(raw_password)
             )
             parent.children.set(children)
@@ -150,5 +147,7 @@ def register(request):
     else:
         return HttpResponseNotAllowed("method not allowed.")
     
+
+
 
 

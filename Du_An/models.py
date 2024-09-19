@@ -25,6 +25,7 @@ class Subject(models.Model):
 
 class Teacher(User):
     #** use full_name instead because username is unique
+    #** username field stored user's email (unique)
     full_name = models.CharField(max_length=200, unique=False)
     subject = models.ManyToManyField(Subject, related_name="teachers")
 
@@ -39,6 +40,7 @@ class Teacher(User):
 
 class Parent(User):
     #** use full_name instead because username is unique
+    #** username field stored user's email (unique)
     full_name = models.CharField(max_length=200, unique=False)
     children = models.ManyToManyField("Student", related_name="parent")
 
@@ -69,7 +71,7 @@ class Student(models.Model):
 
 
 class Class(models.Model):
-    form_teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, related_name="form_class")
+    form_teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, blank=True, related_name="form_class")
     name = models.CharField(max_length=3, unique=True)
     students = models.ManyToManyField(Student, blank=True, related_name="classroom")
     subject_teachers = models.ManyToManyField("ClassSubjectTeacher", related_name="classroom")

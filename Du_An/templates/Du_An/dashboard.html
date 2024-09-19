@@ -13,9 +13,19 @@
             <h1> Hello {{ user.teacher.full_name }}</h1>
         {% elif user.parent %}
             <h1> Hello {{ user.parent.full_name }} </h1>
+            <h2>children</h2>
+            <hr>
+            <div class="children-view"></div>
+                {% for child in user.parent.children.all %}
+                    <div class="child-div">
+                        <h2>Name: {{ child.full_name }}</h2>
+                        <h3>Class: {{ child.classroom.name }}</h3>
+                    </div>
+                {% endfor %}
+            </div>
         {% endif %}
-        <a href="{% url 'logout' %}">Logout</a>
     {% endif %}
+
 {% endblock %}
 
 

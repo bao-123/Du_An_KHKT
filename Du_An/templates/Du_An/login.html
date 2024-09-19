@@ -13,8 +13,8 @@
         
         <form action="{% url 'login' %}" method="post">
             {% csrf_token %}
-            <label for="username">Email:</label>
-            <input name="username" type="text" id="username" required>
+            <label for="email">Email:</label>
+            <input name="email" type="email" id="email" required>
             <input type="password" name="password" placeholder="Mật khẩu" required>
 
             <p class="roleSelectLabel">Bạn Là?</p>
