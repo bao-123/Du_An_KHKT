@@ -11,17 +11,20 @@
     {% block script %}{% endblock %}
 </head>
 <body>
-    <!--** navigation bar -->
+    <!--* navigation bar -->
     <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand mb-4" href="{% url 'dashboard' %}">Vnadu</a>
 
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto mb-3">
+                    {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
                     </li>
-                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a href="{% url 'classes' %}" class="nav-link">Danh sách lớp</a>
+                    </li>
                     <li class="nav-item">
                         <a href="{% url 'logout' %}" class="nav-link">Logout</a>
                     </li>

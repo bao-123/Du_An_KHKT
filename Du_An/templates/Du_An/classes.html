@@ -1,0 +1,15 @@
+{% extends 'Du_An/layout.html' %}
+
+{% block title %}Vnadu: Classes {% endblock %}
+
+{% block body %}
+    <div class="classes">
+        {% for class in classes %}
+            <div class="class">
+                <p class="class_name"> {{ class.name }} </p>
+                <p class="class_student_count">Si so: {{ class.student_count }} </p>
+                <a class="nav-link" href="#"> Form teacher: {{ class.form_teacher.full_name }}</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

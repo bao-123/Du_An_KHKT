@@ -81,6 +81,7 @@ class Class(models.Model):
     
     def serialize(self):
         return {
+            "id": self.id,
             "name": self.name,
             "form_teacher": self.form_teacher.serialize(),
             "subject_teachers": [ teacher.serialize() for teacher in self.subject_teachers.all() ]

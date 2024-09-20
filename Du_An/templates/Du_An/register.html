@@ -35,6 +35,12 @@
                         <option value="{{ subject.id }}">{{ subject.name }}</option>
                     {% endfor %}
                 </select>
+                <select name="form_class">
+                    <option selected disabled >Lớp chủ nhiệm</option>
+                    {% for class in classes %}
+                        <option value="{{ class.id }}"> {{ class.name }} </option>
+                    {% endfor %}
+                </select>
             </div>
             <div id="for_parent">
                 <!--TODO-->

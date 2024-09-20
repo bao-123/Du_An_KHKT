@@ -19,7 +19,7 @@
                 {% for child in user.parent.children.all %}
                     <div class="child-div">
                         <h2>Name: {{ child.full_name }}</h2>
-                        <h3>Class: {{ child.classroom.name }}</h3>
+                        <h3>Class: {{ child.classroom.first.name }}</h3>
                     </div>
                 {% endfor %}
             </div>
