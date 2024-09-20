@@ -71,19 +71,23 @@ class Student(models.Model):
 
 
 class Class(models.Model):
-    form_teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, blank=True, related_name="form_class")
+    form_teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, null=True, default=None, related_name="form_class")
     name = models.CharField(max_length=3, unique=True)
     students = models.ManyToManyField(Student, blank=True, related_name="classroom")
     subject_teachers = models.ManyToManyField("ClassSubjectTeacher", related_name="classroom")
 
     def student_count(self) -> int:
         return self.students.count()
+
+    
+    def __str__(self):
+        return self.name
     
     def serialize(self):
         return {
             "id": self.id,
             "name": self.name,
-            "form_teacher": self.form_teacher.serialize(),
+            "form_teacher": self.form_teacher.serialize() if self.form_teacher else None,
             "subject_teachers": [ teacher.serialize() for teacher in self.subject_teachers.all() ]
         }
     
