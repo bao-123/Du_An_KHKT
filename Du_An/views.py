@@ -193,6 +193,20 @@ def view_teacher(request, teacher_id):
                             error_message="Doesn't found any teacher with this id") #* Add error_image (a path to a image in static) if wish.
     
     
+def view_student(request, id):
+    pass
+
+
+def view_class(request, id):
+    try:
+        request_class = Class.objects.get(pk=id)
+
+        return render(request, "Du_An/class_profile.html", {
+            "classroom": request_class
+        })
+    except Class.DoesNotExist:
+        return render_error(error="Not found", error_message="Doesn't found any teacher with this id")
+
 
 
 
@@ -212,3 +226,4 @@ def render_error(request: HttpRequest, error: str | None = None, error_message: 
         "error_message": error_message,
         "error_image": error_image
     })
+

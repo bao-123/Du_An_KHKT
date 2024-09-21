@@ -1,0 +1,37 @@
+{% extends 'Du_An/layout.html' %}
+{% load static %}
+
+{% block title %}Class: {{ classroom.name }} {% endblock %}
+{% block style %} <link href="{% static 'Du_An/css/profile.css' %}" rel="stylesheet"> {% endblock %}
+
+{% block body %}
+    <div class="classDisplay">
+        <!--* Display class's basic info-->
+        <div class="basicInfo">
+            <h1 class="className">{{ classroom.name }}</h1>
+            <p class="classSiSo">Si so: {{ classroom.student_count }}</p>       <!--TODO: Replace the href -->
+            <p class="classMonitor">Lop truong: {% if classroom.get_monitor %} <a href="#">{{ classroom.get_monitor.name }}</a> 
+                                                {% else %} Chua co lop truong 
+                                                {% endif %}
+            </p>
+            <!--TODO: Display other role (lop pho hoc tap, van the my,...)-->
+            <p class="classFormTeacher">Giao vien chu nhiem: 
+                {% if classroom.form_teacher %}
+                    <a href="{% url 'view_teacher' classroom.form_teacher.id %}"> {{ classroom.form_teacher.full_name }} </a>
+                {% else %}
+                    Chua co GVCN
+                {% endif %}
+            </p>
+            <!--* hien thi cac giao vien bo mon -->
+            <div class="classTeachers">
+                {% for teacher in classroom.subject_teachers.all %}
+                <p>{{ teacher.subject.name }}: <a href="{% url 'view_teacher' teacher.teacher.id %}" class="nav-link">{{ teacher.teacher.full_name }}</a></p>
+                {% empty %}
+                Chua co giao vien bo mon
+                {% endfor %}
+            </div>
+        </div>
+        <!--TODO: hien thi danh sach hoc sinh cua lop -->
+        <div class="classStudents"></div>
+    </div>
+{% endblock %}
