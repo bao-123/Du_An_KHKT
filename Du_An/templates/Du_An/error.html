@@ -1,0 +1,21 @@
+{% extends 'Du_An/layout.html' %}
+{% load static %}
+
+{% block title %}Error {% endblock %}
+
+{% block style %} <link href="{% static 'Du_An/css/index.css' %}" rel="stylesheet"> {% endblock %}
+
+<!--** A simple html page to display error -->
+{% block body %}
+    <div class="errorDisplay">
+        <div class="Error">
+            {{ error }}
+            {% if error_image %}
+            <img class="error_image" href="{% static error_image %}">
+            {% endif %}
+        </div>
+        <div class="error_message">
+            {{ error_message }}
+        </div>
+    </div>
+{% endblock %}

@@ -18,6 +18,7 @@
             <div class="basicInfo">
                 <p class="teacherName"> {{ teacher.full_name }}</p>
                 <div class="teacherSubject">
+                    Dạy các môn:
                     {% for subject in teacher.subject.all %}
                         <p> {{ subject.name }} </p>
                     {% endfor %}
@@ -29,14 +30,21 @@
                 <a class="nav-link" href="#"><p class="teacherFormClass">Lớp chủ nhiệm: {{ teacher.form_class.name }} </p></a>
                 <!--* hien thi danh sách các lớp đang dạy (bộ môn) -->
                 <div class="teacherTeachingClass">
-                    {% for classroom in teacher.teaching_classes %}
+                    {% for classroom in teacher.teaching_classes.all %}
                         <!--TODO: replace the href (to the class's profile )-->
                         <a class="nav-link" href="#">
                             <p class="teacherFormClass"> {{classroom.classroom.name }} </p>
                         </a>
+                    {% empty %}
+                    This teacher doesn't teach any class.
                     {% endfor %}
                 </div>
             </div>
+            <!--** them cac thong tin khac -->
+            <div class="otherInfo">
+                <!--TODO-->
+            </div>
+            
         </div>
     </div>
 {% endblock %}

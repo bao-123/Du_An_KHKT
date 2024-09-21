@@ -37,7 +37,7 @@ class Teacher(User):
             "email": self.email,
             #"is_boy": self.is_boy
         }
-
+    
 
 class Parent(User):
     #** use full_name instead because username is unique
@@ -52,7 +52,56 @@ class Parent(User):
             "email": self.email,
         }
 
+
+class MainSubject(models.Model):
+    name = models.CharField(max_length=20)
+    # -1.0 mean teacher doesn't submit the mark of that student yet.
+    diem_thuong_xuyen1 = models.FloatField(null=True, default=None)
+    diem_thuong_xuyen2 = models.FloatField(null=True, default=None)
+    diem_thuong_xuyen3 = models.FloatField(null=True, default=None)
+    diem_thuong_xuyen4 = models.FloatField(null=True, default=None)
+    diem_giua_ki = models.FloatField(null=True, default=None)
+    diem_cuoi_ki = models.FloatField(null=True, default=None)
+    comment = models.TextField()
+
+    def serialize(self):
+        return {
+            "thuong_xuyen1": self.diem_thuong_xuyen1,
+            "thuong_xuyen2": self.diem_thuong_xuyen2,
+            "thuong_xuyen3": self.diem_thuong_xuyen3,
+            "thuong_xuyen4": self.diem_thuong_xuyen4,
+            "giua_ki": self.diem_giua_ki,
+            "cuoi_ki": self.diem_cuoi_ki,
+            "teacher_comment": self.comment
+        }
     
+    #TODO: Add more main subjects (if needed)
+    @staticmethod
+    def generate_main_subjects():
+        return [
+            MainSubject.objects.create(name="Toán"),
+            MainSubject.objects.create(name="Ngữ Văn"),
+            MainSubject.objects.create(name="Tiếng Anh")
+        ]
+    
+
+class SecondSubject(models.Model):
+    diem_thuong_xuyen1 = models.FloatField(null=True, default=None)
+    diem_thuong_xuyen2 = models.FloatField(null=True, default=None)
+    diem_giua_ki = models.FloatField(null=True, default=None)
+    diem_cuoi_ki = models.FloatField(null=True, default=None)
+    comment = models.TextField()
+
+    def serialize(self):
+        return {
+            "thuong_xuyen1": self.diem_thuong_xuyen1,
+            "thuong_xuyen2": self.diem_thuong_xuyen2,
+            "giua_ki": self.diem_giua_ki,
+            "cuoi_ki": self.diem_cuoi_ki,
+            "teacher_comment": self.comment
+        }
+
+
 class Student(models.Model):
     role_choices = [
         ("monitor", "Lớp trưởng"),
@@ -65,8 +114,8 @@ class Student(models.Model):
     full_name = models.CharField(max_length=200)
     birthday = models.DateField(blank=False)
     is_boy = models.BooleanField()
-    main_subjects = models.ManyToManyField("MainSubject", related_name="student")
-    second_subjects = models.ManyToManyField("SecondSubject", related_name="student")
+    main_subjects = models.ManyToManyField(MainSubject, default=MainSubject.generate_main_subjects, related_name="student")
+    second_subjects = models.ManyToManyField(SecondSubject, related_name="student")
     role = models.CharField(max_length=30, choices=role_choices)
 
 
@@ -107,8 +156,6 @@ class Class(models.Model):
     
     def get_students(self):
         return [ student.serialize() for student in self.students.all() ]
-    
-
 
 
 class ClassSubjectTeacher(models.Model):
@@ -128,47 +175,6 @@ class ClassSubjectTeacher(models.Model):
             raise Exception("Unknow class (or subject) ")
         
         return class_subject.teacher == teacher
-        
-
-class MainSubject(models.Model):
-    name = models.CharField(max_length=20)
-    # -1.0 mean teacher doesn't submit the mark of that student yet.
-    diem_thuong_xuyen1 = models.FloatField(null=True, default=None)
-    diem_thuong_xuyen2 = models.FloatField(null=True, default=None)
-    diem_thuong_xuyen3 = models.FloatField(null=True, default=None)
-    diem_thuong_xuyen4 = models.FloatField(null=True, default=None)
-    diem_giua_ki = models.FloatField(null=True, default=None)
-    diem_cuoi_ki = models.FloatField(null=True, default=None)
-    comment = models.TextField()
-
-    def serialize(self):
-        return {
-            "thuong_xuyen1": self.diem_thuong_xuyen1,
-            "thuong_xuyen2": self.diem_thuong_xuyen2,
-            "thuong_xuyen3": self.diem_thuong_xuyen3,
-            "thuong_xuyen4": self.diem_thuong_xuyen4,
-            "giua_ki": self.diem_giua_ki,
-            "cuoi_ki": self.diem_cuoi_ki,
-            "teacher_comment": self.comment
-        }
-    
-
-class SecondSubject(models.Model):
-    diem_thuong_xuyen1 = models.FloatField(null=True, default=None)
-    diem_thuong_xuyen2 = models.FloatField(null=True, default=None)
-    diem_giua_ki = models.FloatField(null=True, default=None)
-    diem_cuoi_ki = models.FloatField(null=True, default=None)
-    comment = models.TextField()
-
-    def serialize(self):
-        return {
-            "thuong_xuyen1": self.diem_thuong_xuyen1,
-            "thuong_xuyen2": self.diem_thuong_xuyen2,
-            "giua_ki": self.diem_giua_ki,
-            "cuoi_ki": self.diem_cuoi_ki,
-            "teacher_comment": self.comment
-        }
-    
 
 
 #function to create a Subject
@@ -176,6 +182,7 @@ def create_main_subject(name: str):
     subject = MainSubject.objects.create(name=name)
 
     return subject
+
 
 #function to get a student
 def get_student(id: int) -> Student | None:

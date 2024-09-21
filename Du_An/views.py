@@ -177,6 +177,25 @@ def view_classes(request):
     })
 
 
+
+def view_teacher(request, teacher_id):
+    if request.method != "GET":
+        return HttpResponseNotAllowed("method not allowed")
+    try:
+        teacher = Teacher.objects.get(pk=teacher_id)
+
+        return render(request, "Du_An/teacher.html", {
+            "teacher": teacher
+        })
+    
+    except Teacher.DoesNotExist:
+        return render_error(request, error="Not found", 
+                            error_message="Doesn't found any teacher with this id") #* Add error_image (a path to a image in static) if wish.
+    
+    
+
+
+
 def render_register(request: HttpRequest, error: dict | None = None):
     DEFAULT_DICT: dict = {
         "subjects": [ subject.serialize() for subject in Subject.objects.all() ],
@@ -185,3 +204,11 @@ def render_register(request: HttpRequest, error: dict | None = None):
     }
 
     return render(request, "Du_An/register.html", DEFAULT_DICT | error if error else DEFAULT_DICT)
+
+
+def render_error(request: HttpRequest, error: str | None = None, error_message: str | None = None, error_image: str | None = None):
+    return render(request, "Du_An/error.html", {
+        "error": error,
+        "error_message": error_message,
+        "error_image": error_image
+    })
