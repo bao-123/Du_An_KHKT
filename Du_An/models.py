@@ -28,6 +28,7 @@ class Teacher(User):
     #** username field stored user's email (unique)
     full_name = models.CharField(max_length=200, unique=False)
     subject = models.ManyToManyField(Subject, related_name="teachers")
+    contact_information = models.TextField(default="")
 
     def serialize(self):
         return {
@@ -53,10 +54,20 @@ class Parent(User):
 
     
 class Student(models.Model):
+    role_choices = [
+        ("monitor", "Lớp trưởng"),
+        ("academic", "lớp phó học tập"),
+        ("art", "lớp phó văn thể mỹ"),
+        ("labor", "lớp phó lao động"),
+        ("student", "Học sinh")
+    ]
+
     full_name = models.CharField(max_length=200)
     birthday = models.DateField(blank=False)
     is_boy = models.BooleanField()
     main_subjects = models.ManyToManyField("MainSubject", related_name="student")
+    second_subjects = models.ManyToManyField("SecondSubject", related_name="student")
+    role = models.CharField(max_length=30, choices=role_choices)
 
 
     def serialize(self):
@@ -138,6 +149,24 @@ class MainSubject(models.Model):
             "teacher_comment": self.comment
         }
     
+
+class SecondSubject(models.Model):
+    diem_thuong_xuyen1 = models.FloatField(null=True, default=None)
+    diem_thuong_xuyen2 = models.FloatField(null=True, default=None)
+    diem_giua_ki = models.FloatField(null=True, default=None)
+    diem_cuoi_ki = models.FloatField(null=True, default=None)
+    comment = models.TextField()
+
+    def serialize(self):
+        return {
+            "thuong_xuyen1": self.diem_thuong_xuyen1,
+            "thuong_xuyen2": self.diem_thuong_xuyen2,
+            "giua_ki": self.diem_giua_ki,
+            "cuoi_ki": self.diem_cuoi_ki,
+            "teacher_comment": self.comment
+        }
+    
+
 
 #function to create a Subject
 def create_main_subject(name: str):
