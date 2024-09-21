@@ -1,0 +1,42 @@
+{% extends 'Du_An/layout.html' %}
+{% load static %}
+
+{% block style %}
+    <link href="{% static 'Du_An/css/profile.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'Du_An/js/profile.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    <!--TODO: Create a html tempate to show user's profile -->
+    <div class="teacher">
+        <!--* Cai div nay se hien thi thong tin cua giao vien-->
+        <div class="teacherInfo">
+            <!--* basic info la ten , day mon gi, thong tin lien lac(std, zalo, fb,...) -->
+            <div class="basicInfo">
+                <p class="teacherName"> {{ teacher.full_name }}</p>
+                <div class="teacherSubject">
+                    {% for subject in teacher.subject.all %}
+                        <p> {{ subject.name }} </p>
+                    {% endfor %}
+                </div>
+                <!--* hien thi thong tin lien lac -->
+                <p class="teacherContactInfo"> {{ teacher.contact_information }}</p>
+                <!--* hien thi lop chu nhiem -->
+                <!--TODO: replace the href (to the class's profile page)-->
+                <a class="nav-link" href="#"><p class="teacherFormClass">Lớp chủ nhiệm: {{ teacher.form_class.name }} </p></a>
+                <!--* hien thi danh sách các lớp đang dạy (bộ môn) -->
+                <div class="teacherTeachingClass">
+                    {% for classroom in teacher.teaching_classes %}
+                        <!--TODO: replace the href (to the class's profile )-->
+                        <a class="nav-link" href="#">
+                            <p class="teacherFormClass"> {{classroom.classroom.name }} </p>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

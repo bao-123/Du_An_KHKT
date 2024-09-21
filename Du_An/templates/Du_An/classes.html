@@ -8,7 +8,10 @@
             <div class="class">
                 <p class="class_name"> {{ class.name }} </p>
                 <p class="class_student_count">Si so: {{ class.student_count }} </p>
+                <!--TODO: Replace the href (to the teacher's profile page)-->
                 <a class="nav-link" href="#"> Form teacher: {{ class.form_teacher.full_name }}</a>
+                <!--TODO: Replace the href (to the monitor's profile page)-->
+                <a class="nav-link" href="#">Monitor: {% if class.monitor %} {{ class.monitor.full_name }} {% else %} Chưa có lớp trưởng {% endif %}</a>
             </div>
         {% endfor %}
     </div>

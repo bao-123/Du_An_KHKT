@@ -89,7 +89,9 @@ class Class(models.Model):
 
     def student_count(self) -> int:
         return self.students.count()
-
+    
+    def get_student_by_role(self, role: str) -> Student | None:
+        return self.students.filter(role=role).first()
     
     def __str__(self):
         return self.name
@@ -99,7 +101,8 @@ class Class(models.Model):
             "id": self.id,
             "name": self.name,
             "form_teacher": self.form_teacher.serialize() if self.form_teacher else None,
-            "subject_teachers": [ teacher.serialize() for teacher in self.subject_teachers.all() ]
+            "subject_teachers": [ teacher.serialize() for teacher in self.subject_teachers.all() ],
+            "monitor": self.get_student_by_role("monitor")
         }
     
     def get_students(self):
