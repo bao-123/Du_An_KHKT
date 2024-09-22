@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, HttpResponseNotAllowed, HttpRequest
 from django.db import IntegrityError
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import login, authenticate, logout
 from django.urls import reverse
@@ -177,7 +178,7 @@ def view_classes(request):
     })
 
 
-
+@login_required(login_url="login")
 def view_teacher(request, teacher_id):
     if request.method != "GET":
         return HttpResponseNotAllowed("method not allowed")

@@ -3,6 +3,7 @@
 
 {% block title %}Class: {{ classroom.name }} {% endblock %}
 {% block style %} <link href="{% static 'Du_An/css/profile.css' %}" rel="stylesheet"> {% endblock %}
+{% block script %} <script src="{% static 'Du_An/js/class_profile.js' %}"></script> {% endblock %}
 
 {% block body %}
     <div class="classDisplay">
@@ -22,16 +23,46 @@
                     Chua co GVCN
                 {% endif %}
             </p>
-            <!--* hien thi cac giao vien bo mon -->
-            <div class="classTeachers">
-                {% for teacher in classroom.subject_teachers.all %}
-                <p>{{ teacher.subject.name }}: <a href="{% url 'view_teacher' teacher.teacher.id %}" class="nav-link">{{ teacher.teacher.full_name }}</a></p>
-                {% empty %}
-                Chua co giao vien bo mon
-                {% endfor %}
+        </div>
+        <!--TODO: hien thi danh sach hoc sinh cua lop, giao vien bo mon, thong tin thi dua(neu co) -->
+        <div class="otherInfo">
+            <!--TODO: hien thi cac giao vien bo mon -->
+            <ul class="nav nav-tabs navbar-expand-lg bg-dark pt-3 mt-2">
+                <li class="nav-item">
+                    <button class="nav-link active" id="studentTab">Students</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="teacherTab">Teachers</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="details">Details</button>
+                </li>
+            </ul>
+            <div id="infoDisplay">
+                <div id="students">
+                    {% for student in classroom.students.all %}
+                    <div class="studentDisplay">
+                        <p>{{ student.full_name }}</p>
+                        <p>Birthday: {{ student.birthday }} </p>
+                        <p>Role: {{ student.role }}</p>
+                    </div>
+                    {% empty %}
+                    Chua co hoc sinh
+                    {% endfor %}
+                </div>
+                <div id="subjectTeachersDisplay" style="display: none;">
+                    {% for teacher in classroom.subject_teachers.all %}
+                    <div class="teacher">
+                        <p class="teacherName">Ten: <a href="{% url 'view_teacher' teacher.teacher.id %}" class="nav-link"> {{ teacher.teacher.full_name}} </a></p>
+                        <p class="teacherSubject">Day mon: {{ teacher.subject.name }} </p>
+                    </div>
+                    {% empty %}
+                    Chua co giao vien
+                    {% endfor %}
+                </div>
+                <!--TODO: Them thong tin thi dua(neu co)-->
+                <div id="classDetails" style="display: none;"></div>
             </div>
         </div>
-        <!--TODO: hien thi danh sach hoc sinh cua lop -->
-        <div class="classStudents"></div>
     </div>
 {% endblock %}
