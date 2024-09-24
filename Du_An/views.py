@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import login, authenticate, logout
 from django.urls import reverse
+from datetime import date
+from django.core.exceptions import ValidationError
 from .models import *
 
 # Create your views here.
@@ -228,3 +230,60 @@ def render_error(request: HttpRequest, error: str | None = None, error_message: 
         "error_image": error_image
     })
 
+
+def create_student(request: HttpRequest):
+    if request.method == "GET":
+        return render(request, "Du_An/create_student.html", {
+            "classes": Class.objects.all()
+        })
+    elif request.method == "POST":
+        full_name = request.POST.get("full_name", None)
+        classroom = request.POST.get("class", None)
+        birthday = request.POST.get("birthday", None)
+        gender = request.POST.get("gender", None)
+        role = request.POST.get("role", None)
+
+        if not full_name or not classroom or not birthday \
+        or not gender or not role:
+            return render(request, "Du_An/create_student.html", {
+                "error": "MISSING INFORMATION",
+                "error_message": "Please fill all the input fields"
+            })
+        
+        try:
+            #** if the format of the date in html form changed, remember to change this also.
+            birthday = birthday.split("/") # the first element is month, second is day and the last is year
+            if len(birthday) != 3:
+                return render(request, "Du_An/create_student.html", {
+                "error": "INVALID DATE FORMAT",
+                "error_message": "Please use a valid date format"
+            })
+        
+
+            new_student = Student(
+                full_name=full_name,
+                birthday=date(birthday[-1], birthday[0], birthday[1]),
+                is_boy= (gender == "boy"),
+                role=role
+            )
+            new_student.full_clean()
+            student_classroom = Class.objects.filter(name=classroom).first()
+            if not student_classroom:
+                return render(request, "Du_An/create_student.html", {
+                "error": "INVALID CLASS",
+                "error_message": "Please choose a valid class"
+            })
+
+            student_classroom.students.add(new_student)
+
+            new_student.save()
+            student_classroom.save(force_update=True)
+        
+        except ValidationError:
+            return render(request, "Du_An/create_student.html", {
+                "error": "INVALID INFORMATION",
+                "error_message": "PLease choose a valid role"
+            })
+
+    else:
+        return HttpResponseNotAllowed("method not allowed")

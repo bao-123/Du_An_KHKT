@@ -81,10 +81,14 @@ class MainSubject(models.Model):
         return [
             MainSubject.objects.create(name="Toán"),
             MainSubject.objects.create(name="Ngữ Văn"),
-            MainSubject.objects.create(name="Tiếng Anh")
+            MainSubject.objects.create(name="Tiếng Anh"),
+            MainSubject.objects.create(name="KHTN"),
+            MainSubject.objects.create(name="Lịch sử & địa lí")
         ]
-    
 
+
+
+#** Have 2 diem thuong xuyen/1 ki (35 tiet tren 1 nam)
 class SecondSubject(models.Model):
     diem_thuong_xuyen1 = models.FloatField(null=True, default=None)
     diem_thuong_xuyen2 = models.FloatField(null=True, default=None)
@@ -92,12 +96,51 @@ class SecondSubject(models.Model):
     diem_cuoi_ki = models.FloatField(null=True, default=None)
     comment = models.TextField()
 
+
+    @staticmethod
+    def generate_second_subjects():
+        #* mon co 2 diem thuong xuyen 1 hoc ki
+        return [
+            SecondSubject.objects.create(name="Công nghệ"),
+            SecondSubject.objects.create(name="GDCD"),
+            SecondSubject.objects.create(name="Tin học"),
+        ]
+
+
     def serialize(self):
         return {
             "thuong_xuyen1": self.diem_thuong_xuyen1,
             "thuong_xuyen2": self.diem_thuong_xuyen2,
             "giua_ki": self.diem_giua_ki,
             "cuoi_ki": self.diem_cuoi_ki,
+            "teacher_comment": self.comment
+        }
+
+
+#* mon hoc danh gia bang nhan xet (dat/ko dat)
+class EvaluateByCommentSubject(models.Model):
+    name = models.CharField(max_length=20)
+    is_passed = models.BooleanField(null=True, default=None) #* Dat hay chua dat
+    comment = models.TextField()
+
+
+    @staticmethod
+    def generate_comment_subject():
+        return [
+            EvaluateByCommentSubject.objects.create(name="GDTC"),
+            EvaluateByCommentSubject.objects.create(name="GDĐP"),
+            EvaluateByCommentSubject.objects.create(name="HĐTN-HN"),
+            EvaluateByCommentSubject.objects.create(name="Mĩ Thuật"),
+            EvaluateByCommentSubject.objects.create(name="Âm nhạc")
+        ]
+
+    def __str__(self):
+        return f"id: {self.id}|{self.name} of {self.student}"
+    
+
+    def serialize(self):
+        return {
+            "is_passed": self.is_passed,
             "teacher_comment": self.comment
         }
 
@@ -115,7 +158,8 @@ class Student(models.Model):
     birthday = models.DateField(blank=False)
     is_boy = models.BooleanField()
     main_subjects = models.ManyToManyField(MainSubject, default=MainSubject.generate_main_subjects, related_name="student")
-    second_subjects = models.ManyToManyField(SecondSubject, related_name="student")
+    second_subjects = models.ManyToManyField(SecondSubject, default=SecondSubject.generate_second_subjects, related_name="student")
+    comment_subjects = models.ManyToManyField(EvaluateByCommentSubject, default=EvaluateByCommentSubject.generate_comment_subject, related_name="students")
     role = models.CharField(max_length=30, choices=role_choices)
 
 
@@ -196,5 +240,4 @@ def get_student(id: int) -> Student | None:
         return Student.objects.get(pk=id)
     except Student.DoesNotExist:
         return None
-
 
