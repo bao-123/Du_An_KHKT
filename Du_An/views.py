@@ -6,6 +6,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth import login, authenticate, logout
 from django.urls import reverse
 from datetime import date
+from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from .models import *
 
@@ -88,6 +89,19 @@ def register(request: HttpRequest):
         email: str = request.POST["email"]
         raw_password = request.POST["password"]
         #? is_boy = request.POST["is_boy"]
+        if not email or not full_name or not raw_password:
+            return render_register(request, error={
+                "error": "Error occurs",
+                "error_message": "Please fill all the input field"
+            })
+        
+        try:
+            validate_email(email)
+        except ValidationError:
+            return render_register(request, error={
+                "error": "Invalid email",
+                "error_message": "Please enter a valid email"
+            })
 
 
         if "user_type" not in list(request.POST.keys()):
@@ -211,7 +225,59 @@ def view_class(request, id):
         return render_error(error="Not found", error_message="Doesn't found any teacher with this id")
 
 
+def create_student(request: HttpRequest):
+    classes = Class.objects.all()
+    if request.method == "GET":
+        return render(request, "Du_An/create_student.html", {
+            "classes": classes
+        })
+    elif request.method == "POST":
+        full_name = request.POST.get("full_name", None)
+        classroom_id = request.POST.get("class", None)
+        birthday = request.POST.get("birthday", None)
+        gender = request.POST.get("gender", None)
+        role = request.POST.get("role", None)
+        if not full_name or not classroom_id or not birthday \
+        or not gender or not role:
+            return render(request, "Du_An/create_student.html", {
+                "error": "MISSING INFORMATION",
+                "error_message": "Please fill all the input fields",
+                "classes": classes
+            })
+        
+        try:
+            #** if the format of the date in html form changed, remember to change this also.
+            birthday = birthday.split("-") # the first element is month, second is day and the last is year
+            year, month, day = int(birthday[0]), int(birthday[1]), int(birthday[-1])
+            if len(birthday) != 3:
+                return render(request, "Du_An/create_student.html", {
+                "error": "INVALID DATE FORMAT",
+                "error_message": "Please use a valid date format",
+                "classes": classes
+            })
+            student_classroom = Class.objects.get(pk=classroom_id)
 
+            new_student = Student(
+                full_name=full_name,
+                classroom=student_classroom,
+                birthday=date(year, month, day),
+                is_boy= (gender == "boy"),
+                role=role
+            )
+            new_student.full_clean()
+            new_student.save()
+            
+            return HttpResponseRedirect(reverse("view_class", args=(student_classroom.id, )))
+        except Exception as e:
+            print(e)
+            return render(request, "Du_An/create_student.html", {
+                "error": "INVALID INFORMATION",
+                "error_message": "PLease enter valid information.",
+                "classes": classes
+            })
+    else:
+        return HttpResponseNotAllowed("method not allowed")
+    
 
 def render_register(request: HttpRequest, error: dict | None = None):
     DEFAULT_DICT: dict = {
@@ -229,61 +295,3 @@ def render_error(request: HttpRequest, error: str | None = None, error_message: 
         "error_message": error_message,
         "error_image": error_image
     })
-
-
-def create_student(request: HttpRequest):
-    if request.method == "GET":
-        return render(request, "Du_An/create_student.html", {
-            "classes": Class.objects.all()
-        })
-    elif request.method == "POST":
-        full_name = request.POST.get("full_name", None)
-        classroom = request.POST.get("class", None)
-        birthday = request.POST.get("birthday", None)
-        gender = request.POST.get("gender", None)
-        role = request.POST.get("role", None)
-
-        if not full_name or not classroom or not birthday \
-        or not gender or not role:
-            return render(request, "Du_An/create_student.html", {
-                "error": "MISSING INFORMATION",
-                "error_message": "Please fill all the input fields"
-            })
-        
-        try:
-            #** if the format of the date in html form changed, remember to change this also.
-            birthday = birthday.split("/") # the first element is month, second is day and the last is year
-            if len(birthday) != 3:
-                return render(request, "Du_An/create_student.html", {
-                "error": "INVALID DATE FORMAT",
-                "error_message": "Please use a valid date format"
-            })
-        
-
-            new_student = Student(
-                full_name=full_name,
-                birthday=date(birthday[-1], birthday[0], birthday[1]),
-                is_boy= (gender == "boy"),
-                role=role
-            )
-            new_student.full_clean()
-            student_classroom = Class.objects.filter(name=classroom).first()
-            if not student_classroom:
-                return render(request, "Du_An/create_student.html", {
-                "error": "INVALID CLASS",
-                "error_message": "Please choose a valid class"
-            })
-
-            student_classroom.students.add(new_student)
-
-            new_student.save()
-            student_classroom.save(force_update=True)
-        
-        except ValidationError:
-            return render(request, "Du_An/create_student.html", {
-                "error": "INVALID INFORMATION",
-                "error_message": "PLease choose a valid role"
-            })
-
-    else:
-        return HttpResponseNotAllowed("method not allowed")

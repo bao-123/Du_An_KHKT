@@ -24,7 +24,7 @@
                 {% endfor %}
             </select>
             <label for="birthday">Ngay sinh</label>
-            <input type="date" name="birthday" placeholder="YYYY/MM/DD" value="2012/01/01" min="1920-01-01" max="2120-12-31">
+            <input type="date" name="birthday" placeholder="YYYY/MM/DD" min="1920-01-01" max="2120-12-31">
             <input type="radio" value="boy" name="gender" id="boy">
             <label for="boy">Nam</label>
             <input type="radio" value="girl" name="gender" id="girl">
@@ -37,6 +37,7 @@
                 <option value="labor">Lớp phó lao động</option>
                 <option value="student">Học sinh</option>
             </select>
+            <button type="submit" class="btn btn-outline-primary">Create</button>
         </form>
     </div>
 {% endblock %}

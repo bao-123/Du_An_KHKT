@@ -27,12 +27,12 @@
                 <p class="teacherContactInfo"> {{ teacher.contact_information }}</p>
                 <!--* hien thi lop chu nhiem -->
                 <!--TODO: replace the href (to the class's profile page)-->
-                <a class="nav-link" href="#"><p class="teacherFormClass">Lớp chủ nhiệm: {{ teacher.form_class.name }} </p></a>
+                <a class="btn btn-outline-info" href="{% url 'view_class' teacher.form_class.id %}"><p class="teacherFormClass">Lớp chủ nhiệm: {{ teacher.form_class.name }} </p></a>
                 <!--* hien thi danh sách các lớp đang dạy (bộ môn) -->
                 <div class="teacherTeachingClass">
                     {% for classroom in teacher.teaching_classes.all %}
                         <!--TODO: replace the href (to the class's profile )-->
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{% url 'view_class' classroom.id %}">
                             <p class="teacherFormClass"> {{classroom.classroom.name }} </p>
                         </a>
                     {% empty %}

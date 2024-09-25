@@ -11,6 +11,34 @@
     {% if user.is_authenticated %}
         {% if user.teacher %}
             <h1> Hello {{ user.teacher.full_name }}</h1>
+            <hr>
+            <h3>Lớp chủ nhiệm</h3>
+            <div class="formClass">
+                <p class="className"> {{ user.teacher.form_class.name }}</p>
+                <p class="classStudentCount">{{ user.teacher.form_class.student_count}}</p>
+                <p class="classMonitor"> 
+                    {% if user.teacher.form_class.get_monitor %}
+                    {{ user.teacher.form_class.get_monitor}}
+                    {% else %}
+                    Chưa có lớp trưởng
+                    {% endif %}
+                </p>
+            </div>
+            <hr>
+            <h3>Lớp bộ môn</h3>
+            <div class="classes">
+                {% for classroom in user.teacher.teaching_classes.all %}
+                <div class="mb-3"> <!--** margin bottom 3-->
+                    <p class="className"> {{ classroom.classroom.name }} </p>
+                    <p class="classStudentCount"> {{ classroom.classroom.student_count }}</p>
+                    <p class="classFormTeacher">Form teacher: <a class="link-info link-offset-2 link-underline-light link-opacity-75-hover"> {{ classroom.classroom.form_teacher.full_name }}</a></p>
+                    <p class="classMonitor">Lop Truong: {{ classroom.classroom.get_monitor.full_Name }} </p>
+                    <!--TODO: Add more role for classes-->
+                </div>
+                {% empty %}
+                Chưa có lớp bộ môn
+                {% endfor %}
+            </div>
         {% elif user.parent %}
             <h1> Hello {{ user.parent.full_name }} </h1>
             <h2>children</h2>
@@ -19,7 +47,7 @@
                 {% for child in user.parent.children.all %}
                     <div class="child-div">
                         <h2>Name: {{ child.full_name }}</h2>
-                        <h3>Class: {{ child.classroom.first.name }}</h3>
+                        <h3>Class: {{ child.classroom.name }}</h3>
                     </div>
                 {% endfor %}
             </div>
@@ -27,5 +55,3 @@
     {% endif %}
 
 {% endblock %}
-
-

@@ -1,0 +1,19 @@
+{% extends 'Du_An/layout.html' %}
+{% load static %}
+
+{% block title %}{{ student.full_name }}{% endblock %}
+<!--* Replace if you wish-->
+{% block style %}<link href="{% static 'Du_An/css/profile.css' %}" rel="stylesheet">{% endblock %}
+{% block script %} <script src="{% static 'Du_An/js/profile.js' %}"></script> {% endblock %}
+
+{% block body %}
+    <div class="student_profile">
+        <!--* Display the basic information -->
+        <div class="basicInfo">
+            <h2 class="studentName"> {{ student.full_name }} </h2>
+            <p class="studentClass">Lớp: <a href="{% url 'view_class' student.classroom.id %}" class="link-info link-offset-2 link-opacity-75-hover">{{ student.classroom.name }}</a></p>
+            <p class="studentGender">Giới tính: {% if student.is_boy %} Nam {% else %} Nữ {% endif %} </p>
+            <!--TODO-->
+        </div>
+    </div>
+{% endblock %}

@@ -157,6 +157,7 @@ class Student(models.Model):
     full_name = models.CharField(max_length=200)
     birthday = models.DateField(blank=False)
     is_boy = models.BooleanField()
+    classroom = models.ForeignKey("Class", on_delete=models.CASCADE, related_name="students")
     main_subjects = models.ManyToManyField(MainSubject, default=MainSubject.generate_main_subjects, related_name="student")
     second_subjects = models.ManyToManyField(SecondSubject, default=SecondSubject.generate_second_subjects, related_name="student")
     comment_subjects = models.ManyToManyField(EvaluateByCommentSubject, default=EvaluateByCommentSubject.generate_comment_subject, related_name="students")
@@ -169,7 +170,7 @@ class Student(models.Model):
             "name": self.full_name,
             "birthday": self.birthday.strftime("%d/%m/%Y"),
             "is_boy": self.is_boy,
-            "classroom": self.classroom.first().serialize(),
+            "classroom": self.classroom.serialize(),
             "math": [ subject.serialize() for subject in self.main_subjects.all() ]
         }
 
@@ -177,7 +178,6 @@ class Student(models.Model):
 class Class(models.Model):
     form_teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, null=True, default=None, related_name="form_class")
     name = models.CharField(max_length=3, unique=True)
-    students = models.ManyToManyField(Student, blank=True, related_name="classroom")
     subject_teachers = models.ManyToManyField("ClassSubjectTeacher", related_name="classroom")
 
     def student_count(self) -> int:
