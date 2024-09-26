@@ -211,7 +211,17 @@ def view_teacher(request, teacher_id):
     
     
 def view_student(request, id):
-    pass
+    if request.method != "GET":
+        return HttpResponseNotAllowed("method not allowed")
+    try:
+        student = Student.objects.get(pk=id)
+
+        return render(request, "Du_An/student.html", {
+            "student": student,
+            "subjects": Subject.objects.all()
+        })
+    except Student.DoesNotExist:
+        return render_error(request, error="Not found", error_message="Can't found any student with this id")
 
 
 def view_class(request, id):

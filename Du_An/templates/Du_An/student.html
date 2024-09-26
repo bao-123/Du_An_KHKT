@@ -12,8 +12,76 @@
         <div class="basicInfo">
             <h2 class="studentName"> {{ student.full_name }} </h2>
             <p class="studentClass">Lớp: <a href="{% url 'view_class' student.classroom.id %}" class="link-info link-offset-2 link-opacity-75-hover">{{ student.classroom.name }}</a></p>
-            <p class="studentGender">Giới tính: {% if student.is_boy %} Nam {% else %} Nữ {% endif %} </p>
-            <!--TODO-->
+            <p class="studentGender">Giới tính: {% if student.is_boy %} Nam {% else %} Nữ {% endif %}</p>
+            <p class="studentParent">
+                {% for parent in student.parent.all %}
+                <!--TODO: replace the href (to the parent's page)-->
+                    <a href="#" class="link-info link-offset-2 link-underline-dark link-opacity-75-hover"> {{ parent.full_name }}</a>
+                {% empty %}
+                    Học sinh này chưa có phụ huynh nào nhận
+                {% endfor %}
+            </p>
+        </div>
+        <!--* show student's marks -->
+        <div class="studentMark">
+            <!--TODO: Add javascript to display the marks base on the selected subject-->
+            <select id="subject" class="form-control mx-2 me-auto">
+                <!--** Default subject is Toán -->
+                <option selected value="Toán">Toán</option>
+                {% for subject in subjects %}
+                {% if subject.name != "Toán" %}
+                <option value="{{ subject.name }}"> {{ subject.name }} </option>
+                {% endif %}
+                {% endfor %}
+            </select>
+            <div class="subjectMark">
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Điểm thường xuyên 1</td>
+                            <td>Điểm thường xuyên 2</td>
+                            <td>Điểm thường xuyên 3</td>
+                            <td>Điểm thường xuyên 4</td>
+                            <td>Điểm thi giữa kì</td>
+                            <td>Điểm thi cuối kì</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="thuong_xuyen1">
+                                {% if student.get_subjects_mark.math.diem_thuong_xuyen1 %}
+                                {{ student.get_subjects_mark.math.diem_thuong_xuyen1 }}
+                                {% else %}
+                                Chưa có điểm
+                                {% endif %}
+                            </td>
+
+                            <td id="thuong_xuyen2">
+                                {% if student.get_subjects_mark.math.diem_thuong_xuyen1 %}
+                                    {{ student.get_subjects_mark.math.diem_thuong_xuyen1 }}
+                                {% else %}
+                                    Chưa có điểm
+                                {% endif %}
+                            </td>
+
+                            <td id="thuong_xuyen3">
+                                {% if student.get_subjects_mark.math.diem_thuong_xuyen1 %}
+                                    {{ student.get_subjects_mark.math.diem_thuong_xuyen1 }}
+                                {% else %}
+                                    Chưa có điểm
+                                {% endif %}
+                            </td>
+                            <td id="thuong_xuyen4">
+                                {% if student.get_subjects_mark.math.diem_thuong_xuyen1 %}
+                                    {{ student.get_subjects_mark.math.diem_thuong_xuyen1 }}
+                                {% else %}
+                                    Chưa có điểm
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 {% endblock %}

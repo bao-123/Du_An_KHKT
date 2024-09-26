@@ -163,6 +163,24 @@ class Student(models.Model):
     comment_subjects = models.ManyToManyField(EvaluateByCommentSubject, default=EvaluateByCommentSubject.generate_comment_subject, related_name="students")
     role = models.CharField(max_length=30, choices=role_choices)
 
+    #get marks of subjects
+    def get_subjects_mark(self):
+        return {
+            "math": self.main_subjects.filter(name="Toán").first(),
+            "literature": self.main_subjects.filter(name="Ngữ Văn").first(),
+            "English": self.main_subjects.filter(name="Tiếng Anh").first(),
+            "KHTN": self.main_subjects.filter(name="KHTN").first(),
+            "H&G": self.main_subjects.filter(name="Lịch sử & Địa Lí").first(),
+            "Technology": self.main_subjects.filter(name="Công nghệ").first(),
+            "IT": self.main_subjects.filter(name="Tin Học").first(),
+            "GDCD": self.main_subjects.filter(name="GDCD").first(),
+            "GDDP": self.main_subjects.filter(name="GDĐP").first(),
+            "HDTN-HN": self.main_subjects.filter(name="HĐTN-HN").first(),
+            "GDTC": self.main_subjects.filter(name="GDTC").first(),
+            "Art": self.main_subjects.filter(name="Mĩ Thuật").first(),
+            "Music": self.main_subjects.filter(name="Âm Nhạc").first()
+        }
+    
 
     def serialize(self):
         return {

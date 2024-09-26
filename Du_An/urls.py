@@ -11,5 +11,5 @@ urlpatterns = [
     path("teacher/<int:teacher_id>", views.view_teacher, name="view_teacher"),
     path("student/<int:id>", views.view_student, name="view_student"),
     path("class/<int:id>", views.view_class, name="view_class"),
-    path("new_student", views.create_student, name="create_student")
+    path("new_student", views.create_student, name="create_student"),
 ]
