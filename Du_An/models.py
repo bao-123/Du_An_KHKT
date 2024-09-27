@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from datetime import date
 # Create your models here.
 
-
+#**name of instances of this models must be not different from the name of subjects in MainSubject, SecondSubject and EveluateByCommentSubject
 class Subject(models.Model):
     name = models.CharField(max_length=150, unique=True)
 
@@ -90,6 +90,7 @@ class MainSubject(models.Model):
 
 #** Have 2 diem thuong xuyen/1 ki (35 tiet tren 1 nam)
 class SecondSubject(models.Model):
+    name = models.CharField(max_length=20)
     diem_thuong_xuyen1 = models.FloatField(null=True, default=None)
     diem_thuong_xuyen2 = models.FloatField(null=True, default=None)
     diem_giua_ki = models.FloatField(null=True, default=None)
@@ -158,27 +159,38 @@ class Student(models.Model):
     birthday = models.DateField(blank=False)
     is_boy = models.BooleanField()
     classroom = models.ForeignKey("Class", on_delete=models.CASCADE, related_name="students")
-    main_subjects = models.ManyToManyField(MainSubject, default=MainSubject.generate_main_subjects, related_name="student")
-    second_subjects = models.ManyToManyField(SecondSubject, default=SecondSubject.generate_second_subjects, related_name="student")
-    comment_subjects = models.ManyToManyField(EvaluateByCommentSubject, default=EvaluateByCommentSubject.generate_comment_subject, related_name="students")
+    #TODO: fix
+    main_subjects = models.ManyToManyField(MainSubject, related_name="student")
+    second_subjects = models.ManyToManyField(SecondSubject, related_name="student")
+    comment_subjects = models.ManyToManyField(EvaluateByCommentSubject, related_name="student")
+    second_term_main_subjects = models.ManyToManyField(MainSubject, related_name="second_term_student")
+    second_term_second_subjects = models.ManyToManyField(SecondSubject, related_name="second_term_student")
+    second_term_comment_subject = models.ManyToManyField(EvaluateByCommentSubject, related_name="second_term_student")
+
     role = models.CharField(max_length=30, choices=role_choices)
 
-    #get marks of subjects
+    #*get marks of subjects
     def get_subjects_mark(self):
         return {
-            "math": self.main_subjects.filter(name="Toán").first(),
-            "literature": self.main_subjects.filter(name="Ngữ Văn").first(),
-            "English": self.main_subjects.filter(name="Tiếng Anh").first(),
-            "KHTN": self.main_subjects.filter(name="KHTN").first(),
-            "H&G": self.main_subjects.filter(name="Lịch sử & Địa Lí").first(),
-            "Technology": self.main_subjects.filter(name="Công nghệ").first(),
-            "IT": self.main_subjects.filter(name="Tin Học").first(),
-            "GDCD": self.main_subjects.filter(name="GDCD").first(),
-            "GDDP": self.main_subjects.filter(name="GDĐP").first(),
-            "HDTN-HN": self.main_subjects.filter(name="HĐTN-HN").first(),
-            "GDTC": self.main_subjects.filter(name="GDTC").first(),
-            "Art": self.main_subjects.filter(name="Mĩ Thuật").first(),
-            "Music": self.main_subjects.filter(name="Âm Nhạc").first()
+            "main": [
+                {"first_term": self.main_subjects.filter(name="Toán").first(), "second_term": self.second_term_main_subjects.filter(name="Toán").first()},
+                {"first_term": self.main_subjects.filter(name="Ngữ Văn").first(), "second_term": self.second_term_main_subjects.filter(name="Ngữ Văn").first()},
+                {"first_term": self.main_subjects.filter(name="Tiếng Anh").first(), "second_term": self.second_term_main_subjects.filter(name="Tiếng Anh").first()},
+                {"first_term": self.main_subjects.filter(name="KHTN").first(), "second_term": self.second_term_main_subjects.filter(name="KHTN").first()},
+                {"first_term": self.main_subjects.filter(name="Lịch Sử & Địa Lí").first(), "second_term": self.second_term_main_subjects.filter(name="Lịch Sử & Địa Lí").first()},
+            ],
+            "second": [
+                {"first_term": self.second_subjects.filter(name="Tin Học").first(), "second_term": self.second_term_second_subjects.filter(name="Tin Học").first()},
+                {"first_term": self.second_subjects.filter(name="Công Nghệ").first(), "second_term": self.second_term_second_subjects.filter(name="Công Nghệ").first()},
+                {"first_term": self.second_subjects.filter(name="GDCD").first(), "second_term": self.second_term_second_subjects.filter(name="GDCD").first()}
+            ],
+            "comment": [
+                {"first_term": self.comment_subjects.filter(name="GDĐP").first(), "second_term": self.second_term_comment_subject.filter(name="GDĐP").first()},
+                {"first_term": self.comment_subjects.filter(name="HĐTN-HN").first(), "second_term": self.second_term_comment_subject.filter(name="HĐTN-HN").first()},
+                {"first_term": self.comment_subjects.filter(name="GDTC").first(), "second_term": self.second_term_comment_subject.filter(name="GDTC").first()},
+                {"first_term": self.comment_subjects.filter(name="Mĩ Thuật").first(), "second_term": self.second_term_comment_subject.filter(name="Mĩ Thuật").first()},
+                {"first_term": self.comment_subjects.filter(name="Âm Nhạc").first(), "second_term": self.second_term_comment_subject.filter(name="Âm Nhạc").first()}
+            ]
         }
     
 
@@ -232,15 +244,15 @@ class ClassSubjectTeacher(models.Model):
 
     @staticmethod
     def get_subject_teacher(subject: Subject, classroom: Class) -> Teacher | None:
-        class_subject = ClassSubjectTeacher.objects.filter(classroom=classroom, subject=subject)
+        class_subject = ClassSubjectTeacher.objects.filter(classroom=classroom, subject=subject).first()
 
         return class_subject.teacher if class_subject else None
     
     @staticmethod
     def is_teaching(subject: Subject, teacher: Teacher, classroom: Class) -> bool:
-        class_subject = ClassSubjectTeacher.objects.filter(subject=subject, classroom=classroom)
+        class_subject = ClassSubjectTeacher.objects.filter(subject=subject, classroom=classroom).first()
         if not class_subject:
-            raise Exception("Unknow class (or subject) ")
+            raise Exception("Unknow class (or subject)")
         
         return class_subject.teacher == teacher
 

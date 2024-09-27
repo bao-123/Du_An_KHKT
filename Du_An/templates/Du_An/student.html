@@ -1,3 +1,4 @@
+<!--TODO: fix this-->
 {% extends 'Du_An/layout.html' %}
 {% load static %}
 
@@ -27,58 +28,132 @@
             <!--TODO: Add javascript to display the marks base on the selected subject-->
             <select id="subject" class="form-control mx-2 me-auto">
                 <!--** Default subject is Toán -->
-                <option selected value="Toán">Toán</option>
+                <option selected disabled>Môn học</option>
                 {% for subject in subjects %}
-                {% if subject.name != "Toán" %}
                 <option value="{{ subject.name }}"> {{ subject.name }} </option>
-                {% endif %}
                 {% endfor %}
             </select>
             <div class="subjectMark">
                 <table>
                     <thead>
                         <tr>
-                            <td>Điểm thường xuyên 1</td>
-                            <td>Điểm thường xuyên 2</td>
-                            <td>Điểm thường xuyên 3</td>
-                            <td>Điểm thường xuyên 4</td>
-                            <td>Điểm thi giữa kì</td>
-                            <td>Điểm thi cuối kì</td>
+                            <td>Bảng điểm</td>
                         </tr>
+                        <!--TODO: Add năm học-->
                     </thead>
                     <tbody>
                         <tr>
-                            <td id="thuong_xuyen1">
-                                {% if student.get_subjects_mark.math.diem_thuong_xuyen1 %}
-                                {{ student.get_subjects_mark.math.diem_thuong_xuyen1 }}
-                                {% else %}
-                                Chưa có điểm
-                                {% endif %}
-                            </td>
-
-                            <td id="thuong_xuyen2">
-                                {% if student.get_subjects_mark.math.diem_thuong_xuyen1 %}
-                                    {{ student.get_subjects_mark.math.diem_thuong_xuyen1 }}
-                                {% else %}
-                                    Chưa có điểm
-                                {% endif %}
-                            </td>
-
-                            <td id="thuong_xuyen3">
-                                {% if student.get_subjects_mark.math.diem_thuong_xuyen1 %}
-                                    {{ student.get_subjects_mark.math.diem_thuong_xuyen1 }}
-                                {% else %}
-                                    Chưa có điểm
-                                {% endif %}
-                            </td>
-                            <td id="thuong_xuyen4">
-                                {% if student.get_subjects_mark.math.diem_thuong_xuyen1 %}
-                                    {{ student.get_subjects_mark.math.diem_thuong_xuyen1 }}
-                                {% else %}
-                                    Chưa có điểm
-                                {% endif %}
-                            </td>
+                            <td>Kì 1</td>
                         </tr>
+                        {% for subject in student.get_subjects_mark.main %}
+                        <div id="subject.first_term.name" style="display: none;">
+                            <tr>
+                                <!--TODO: fix this-->
+                                <td>{{ subject.first_term.name }} </td>
+                            </tr>
+                            <tr>
+                                <td>Kì 1</td>
+                            </tr>
+                            <tr>
+                                <td>Điểm thường xuyên 1 </td>
+                                <td>Điểm thường xuyên 2</td>
+                                <td>Điểm thường xuyên 3</td>
+                                <td>Điểm thường xuyên 4</td>
+                                <td>Điểm giữa kì</td>
+                                <td>Điểm cuối kì</td>
+                            </tr>
+                            <!--* Hiển thị điểm-->
+                            <tr>
+                                <td> 
+                                    {% if subject.first_term.diem_thuong_xuyen1 %}
+                                    {{ subject.first_term.diem_thuong_xuyen1 }}
+                                    {% else %}
+                                    Chưa có điểm
+                                    {% endif %}
+                                 </td>
+                                <td> 
+                                    {% if subject.first_term.diem_thuong_xuyen2 %}
+                                    {{ subject.first_term.diem_thuong_xuyen2 }}
+                                    {% else %}
+                                    Chưa có điểm
+                                    {% endif %}
+                                 </td>
+                                <td> 
+                                    {% if subject.first_term.diem_thuong_xuyen3 %}
+                                    {{ subject.first_term.diem_thuong_xuyen3 }}
+                                    {% else %}
+                                    Chưa có điểm
+                                    {% endif %}
+                                 </td>
+                                <td> 
+                                    {% if subject.first_term.diem_thuong_xuyen4 %}
+                                    {{ subject.first_term.diem_thuong_xuyen4 }}
+                                    {% else %}
+                                    Chưa có điểm
+                                    {% endif %}
+                                 </td>
+                                <td> 
+                                    {% if subject.first_term.diem_giua_ki %}
+                                    {{ subject.first_term.diem_giua_ki }} </td>
+                                    {% else %}
+                                    Chưa có điểm
+                                    {% endif %}
+                                    
+                                <td> 
+                                    {% if subject.first_term.diem_cuoi_ki %}
+                                    {{ subject.first_term.diem_cuoi_ki }} </td>
+                                    {% else %}
+                                    Chưa có điểm
+                                    {% endif %}
+                                    
+                            </tr>
+                            <tr>
+                                <td>Kì 2</td>
+                            </tr>
+                            <tr>
+                                <td> 
+                                    {% if subject.second_term.diem_thuong_xuyen1 %}
+                                    {{ subject.second_term.diem_thuong_xuyen1 }}
+                                    {% else %}
+                                    Chưa có điểm
+                                    {% endif %}
+                                 </td>
+                                <td> 
+                                    {% if subject.second_term.diem_thuong_xuyen2 %}
+                                    {{ subject.second_term.diem_thuong_xuyen2 }}
+                                    {% else %}
+                                    Chưa có điểm
+                                    {% endif %}
+                                </td>
+                                <td> 
+                                    {% if subject.second_term.diem_thuong_xuyen3 %}
+                                    {{ subject.second_term.diem_thuong_xuyen3 }}
+                                    {% else %}
+                                    Chưa có điểm
+                                    {% endif %}
+                                </td>
+                                <td> 
+                                    {% if subject.second_term.diem_thuong_xuyen4 %}
+                                    {{ subject.second_term.diem_thuong_xuyen4 }}
+                                    {% else %}
+                                    Chưa có điểm
+                                    {% endif %}
+                                </td>
+                                <td> 
+                                    {% if subject.second_term.diem_giua_ki %}
+                                    {{ subject.second_term.diem_giua_ki }} </td>
+                                    {% else %}
+                                    Chưa có điểm
+                                    {% endif %}
+                                <td> 
+                                    {% if subject.second_term.diem_cuoi_ki %}
+                                    {{ subject.second_term.diem_cuoi_ki }} </td>
+                                    {% else %}
+                                    Chưa có điểm
+                                    {% endif %}
+                            </tr>
+                        </div>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>

@@ -274,8 +274,19 @@ def create_student(request: HttpRequest):
                 is_boy= (gender == "boy"),
                 role=role
             )
+
             new_student.full_clean()
             new_student.save()
+
+            new_student.main_subjects.set(MainSubject.generate_main_subjects())
+            new_student.second_subjects.set(SecondSubject.generate_second_subjects())
+            new_student.comment_subjects.set(EvaluateByCommentSubject.generate_comment_subject())
+            new_student.second_term_main_subjects.set(MainSubject.generate_main_subjects())
+            new_student.second_term_second_subjects.set(SecondSubject.generate_second_subjects())
+            new_student.second_term_comment_subject.set(EvaluateByCommentSubject.generate_comment_subject())
+
+            new_student.save(force_update=True)
+
             
             return HttpResponseRedirect(reverse("view_class", args=(student_classroom.id, )))
         except Exception as e:
@@ -288,6 +299,27 @@ def create_student(request: HttpRequest):
     else:
         return HttpResponseNotAllowed("method not allowed")
     
+
+#* set the class's form teacher
+def update_class(request: HttpRequest):
+    if request.method != "POST":
+        return HttpResponseNotAllowed("method not allowed.")
+    
+    classroom_id = request.POST.get("classroom_id", None)
+    if not isinstance(request.user, Teacher):
+        return render_error(request, error="Permisson denied", error_message="ONly teachers can do this!")
+    try:
+        classroom = Class.objects.get(pk=classroom_id)
+        if classroom.form_teacher:
+          return render_error(request, error="Error occurs", error_message="This class already have a form teacher!")
+        
+        classroom.form_teacher = request.user
+
+        classroom.save(force_update=True)
+
+        return HttpResponseRedirect(reverse("view_class", args=(classroom_id, )))
+    except Class.DoesNotExist:
+        return render_error(request, error="Not found", error_message="Doesn't found any class with this id")
 
 def render_register(request: HttpRequest, error: dict | None = None):
     DEFAULT_DICT: dict = {
