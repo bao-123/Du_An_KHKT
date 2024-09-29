@@ -13,6 +13,7 @@
             <h1> Hello {{ user.teacher.full_name }}</h1>
             <hr>
             <h3>Lớp chủ nhiệm</h3>
+            {% if user.teacher.form_class %}
             <div class="formClass">
                 <p class="className"> {{ user.teacher.form_class.name }}</p>
                 <p class="classStudentCount">{{ user.teacher.form_class.student_count}}</p>
@@ -24,6 +25,9 @@
                     {% endif %}
                 </p>
             </div>
+            {% else %}
+            Chưa có lớp chủ nhiệm. <a href="{% url 'classes' %}" class="link-info link-offset-2 link-opacity-75-hover">Xem danh sách các lớp</a>
+            {% endif %}
             <hr>
             <h3>Lớp bộ môn</h3>
             <div class="classes">

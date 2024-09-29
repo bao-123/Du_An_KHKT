@@ -21,7 +21,6 @@
                     <a href="{% url 'view_teacher' classroom.form_teacher.id %}"> {{ classroom.form_teacher.full_name }} </a>
                 {% else %}
                     Chua co GVCN
-                    <!--TODO: fix-->
                     <form action="{% url 'update_class' %}" method="post">
                         {% csrf_token %}
                         <input type="hidden" value=" {{ classroom.id }}" name="classroom_id">
@@ -51,6 +50,7 @@
                         <p>{{ student.full_name }}</p>
                         <p>Birthday: {{ student.birthday }} </p>
                         <p>Role: {{ student.role }}</p>
+                        <a href="{% url 'view_student' student.id %}" class="btn btn-outline-primary">Details</a>
                     </div>
                     {% empty %}
                     Chua co hoc sinh

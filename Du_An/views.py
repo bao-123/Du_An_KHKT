@@ -10,7 +10,7 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from .models import *
 
-# Create your views here.
+# Create your views here. 
 
 def index(request):
     if request.method == "GET":
@@ -235,6 +235,23 @@ def view_class(request, id):
         return render_error(error="Not found", error_message="Doesn't found any teacher with this id")
 
 
+
+def view_parent(request: HttpRequest, id: int):
+    if request.method != "GET":
+        return HttpResponseNotAllowed("method not allowed")
+    
+    try:
+        parent = Parent.objects.get(pk=id)
+        #TODO: code parent.html
+        return render(request, "Du_An/parent.html", {
+            "parent": parent
+        })
+    
+    except Parent.DoesNotExist:
+        return render_error(request, error="Not found", error_message="Doesn't found any parent with this id")
+    
+
+    
 def create_student(request: HttpRequest):
     classes = Class.objects.all()
     if request.method == "GET":
@@ -305,15 +322,15 @@ def update_class(request: HttpRequest):
     if request.method != "POST":
         return HttpResponseNotAllowed("method not allowed.")
     
-    classroom_id = request.POST.get("classroom_id", None)
-    if not isinstance(request.user, Teacher):
+    classroom_id = int(request.POST.get("classroom_id", None))
+    if not hasattr(request.user, "teacher"):
         return render_error(request, error="Permisson denied", error_message="ONly teachers can do this!")
     try:
         classroom = Class.objects.get(pk=classroom_id)
         if classroom.form_teacher:
           return render_error(request, error="Error occurs", error_message="This class already have a form teacher!")
         
-        classroom.form_teacher = request.user
+        classroom.form_teacher = request.user.teacher
 
         classroom.save(force_update=True)
 
