@@ -15,9 +15,10 @@
             <p class="studentClass">Lớp: <a href="{% url 'view_class' student.classroom.id %}" class="link-info link-offset-2 link-opacity-75-hover">{{ student.classroom.name }}</a></p>
             <p class="studentGender">Giới tính: {% if student.is_boy %} Nam {% else %} Nữ {% endif %}</p>
             <p class="studentParent">
+                Phu huynh: 
                 {% for parent in student.parent.all %}
                 <!--TODO: replace the href (to the parent's page)-->
-                    <a href="#" class="link-info link-offset-2 link-underline-dark link-opacity-75-hover"> {{ parent.full_name }}</a>
+                    <a href="{% url 'view_parent' parent.id %}" class="link-info link-offset-2 link-underline-dark link-opacity-75-hover"> {{ parent.full_name }}</a>,
                 {% empty %}
                     Học sinh này chưa có phụ huynh nào nhận
                 {% endfor %}
@@ -26,7 +27,7 @@
         <!--* show student's marks -->
         <div class="studentMark">
             <!--TODO: Add javascript to display the marks base on the selected subject-->
-            <select id="subject" class="form-condivol mx-2 me-auto">
+            <select id="subjects_select" class="form-condivol mx-2 me-auto">
                 <!--** Default subject is Toán -->
                 <option selected disabled>Môn học</option>
                 {% for subject in subjects %}
@@ -41,7 +42,7 @@
                 <!--TODO: fix this-->
                 <!--** main subjects (4 thuong xuyen)-->
                 {% for subject in student.get_subjects_mark.main %}
-                    <div id="subject.first_term.name" style="display: none;" class="subjectMarkDisplay">
+                    <div id="{{ subject.first_term.name }}" style="display: none;" class="subjectMarkDisplay">
                         <div class="subject_name_container">
                             <!--TODO: fix this-->
                             <p class="subject_name">{{ subject.first_term.name }}</p>
@@ -170,7 +171,7 @@
                 {% endfor %}
                 <!--** second subjects (2 thuong xuyen) -->
                 {% for second_subject in student.get_subjects_mark.second %}
-                    <div id="second_subject.first_term.name" style="display: none;" class="subjectMarkDisplay">
+                    <div id="{{ second_subject.first_term.name }}" style="display: none;" class="subjectMarkDisplay">
                         <div class="subject_name_container">
                             <p class="subject_name"> {{ second_subject.name }} </p>
                         </div>

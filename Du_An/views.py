@@ -251,7 +251,6 @@ def view_parent(request: HttpRequest, id: int):
         return render_error(request, error="Not found", error_message="Doesn't found any parent with this id")
     
 
-    
 def create_student(request: HttpRequest):
     classes = Class.objects.all()
     if request.method == "GET":
@@ -282,8 +281,16 @@ def create_student(request: HttpRequest):
                 "error_message": "Please use a valid date format",
                 "classes": classes
             })
+            #* get selected class
             student_classroom = Class.objects.get(pk=classroom_id)
 
+            #** ensure that there is only a monitor in a class
+            if student_classroom.get_student_by_role("monitor") and role == "monitor":
+                return render(request, "Du_An/create_student.html", {
+                    "error": "Fail to create student",
+                    "error_message": "This class already have a monitor"
+                })
+            
             new_student = Student(
                 full_name=full_name,
                 classroom=student_classroom,
@@ -325,6 +332,11 @@ def update_class(request: HttpRequest):
     classroom_id = int(request.POST.get("classroom_id", None))
     if not hasattr(request.user, "teacher"):
         return render_error(request, error="Permisson denied", error_message="ONly teachers can do this!")
+    
+    #ensure that a teacher only have a form class at a time
+    if request.user.teacher.form_class:
+        return render_error(request, error="Error occurs", error_message="You already have a form class")
+    
     try:
         classroom = Class.objects.get(pk=classroom_id)
         if classroom.form_teacher:
@@ -337,6 +349,7 @@ def update_class(request: HttpRequest):
         return HttpResponseRedirect(reverse("view_class", args=(classroom_id, )))
     except Class.DoesNotExist:
         return render_error(request, error="Not found", error_message="Doesn't found any class with this id")
+
 
 def render_register(request: HttpRequest, error: dict | None = None):
     DEFAULT_DICT: dict = {

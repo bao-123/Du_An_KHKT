@@ -11,10 +11,22 @@
         <div class="basicInfo">
             <h1 class="className">{{ classroom.name }}</h1>
             <p class="classSiSo">Si so: {{ classroom.student_count }}</p>       <!--TODO: Replace the href -->
-            <p class="classMonitor">Lop truong: {% if classroom.get_monitor %} <a href="#">{{ classroom.get_monitor.name }}</a> 
-                                                {% else %} Chua co lop truong 
-                                                {% endif %}
-            </p>
+
+            <!--* display class's staff committee -->
+            <div class="classStaffs">
+                <h2>Ban can su lop</h2>
+            {% for staff in classroom.get_class_staff_committee %}
+            {% if staff %}
+
+            <p class="classStaffName">Ten: <a href="{% url 'view_student' staff.id %}" class="link-info link-offset-2">{{ staff.full_name}} </a> </p>
+            <p class="classStaffRole">Vai tro: {{ staff.role }} </p>
+
+            {% endif %}
+            {% empty %}
+            Lop chua co ban can su
+            {% endfor %}
+        </div>
+
             <!--TODO: Display other role (lop pho hoc tap, van the my,...)-->
             <p class="classFormTeacher">Giao vien chu nhiem: 
                 {% if classroom.form_teacher %}

@@ -16,7 +16,7 @@
             {% if user.teacher.form_class %}
             <div class="formClass">
                 <p class="className"> {{ user.teacher.form_class.name }}</p>
-                <p class="classStudentCount">{{ user.teacher.form_class.student_count}}</p>
+                <p class="classStudentCount">Si so{{ user.teacher.form_class.student_count}}</p>
                 <p class="classMonitor"> 
                     {% if user.teacher.form_class.get_monitor %}
                     {{ user.teacher.form_class.get_monitor}}
@@ -24,6 +24,7 @@
                     Chưa có lớp trưởng
                     {% endif %}
                 </p>
+                <a href="{% url 'view_class' user.teacher.form_class.id %}" class="btn btn-outline-primary"> Details </a>
             </div>
             {% else %}
             Chưa có lớp chủ nhiệm. <a href="{% url 'classes' %}" class="link-info link-offset-2 link-opacity-75-hover">Xem danh sách các lớp</a>

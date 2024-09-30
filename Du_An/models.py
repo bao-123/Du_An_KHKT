@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from datetime import date
 # Create your models here.
 
+#* students's roles
+STUDENT_ROLE: list[str] = ["monitor", "academic", "art", "labor"]
+
 #**name of instances of this models must be not different from the name of subjects in MainSubject, SecondSubject and EveluateByCommentSubject
 class Subject(models.Model):
     name = models.CharField(max_length=150, unique=True)
@@ -206,6 +209,7 @@ class Student(models.Model):
 
 
 class Class(models.Model):
+
     form_teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, null=True, default=None, related_name="form_class")
     name = models.CharField(max_length=3, unique=True)
     subject_teachers = models.ManyToManyField("ClassSubjectTeacher", related_name="classroom")
@@ -213,12 +217,14 @@ class Class(models.Model):
     def student_count(self) -> int:
         return self.students.count()
     
-    def get_monitor(self) -> Student | None:
-        return self.students.filter(role="monitor").first()
-    
+    def get_class_staff_committee(self):
+        return self.students.filter(role__in=STUDENT_ROLE)
 
     def get_student_by_role(self, role: str) -> Student | None:
-        return self.students.filter(role=role).first()
+        try:
+            return self.students.get(role=role)
+        except Student.DoesNotExist:
+            return None
     
 
     def __str__(self):

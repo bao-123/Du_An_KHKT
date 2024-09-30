@@ -25,6 +25,11 @@
                     <li class="nav-item">
                         <a href="{% url 'classes' %}" class="nav-link">Danh sách lớp</a>
                     </li>
+                    {% if user.teacher %}
+                    <li class="nav-item">
+                        <a href="{% url 'create_student' %}" class="nav-link">Tạo học sinh</a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a href="{% url 'logout' %}" class="nav-link">Logout</a>
                     </li>
