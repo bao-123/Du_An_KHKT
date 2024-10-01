@@ -8,5 +8,15 @@
 
 
 {% block body %}
-
+    <div class="parentInfo">
+        <div class="basicInfo">
+            <p class="parentName Name"> {{ parent.full_name }} </p>
+            <div class="children">
+                {% for child in parent.children.all %}
+                    <a href="{% url 'view_student' child.id %}" class="link-info link-offset-2 link-opacity-75-hover"> {{ child.full_name}} </a>
+                {% endfor %}
+            </div>
+        </div>
+        <!--TODO-->
+    </div>
 {% endblock %}

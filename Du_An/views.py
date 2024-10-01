@@ -88,6 +88,8 @@ def register(request: HttpRequest):
         full_name: str = request.POST["full_name"]
         email: str = request.POST["email"]
         raw_password = request.POST["password"]
+        contact_info = request.POST["contact_info"]
+
         #? is_boy = request.POST["is_boy"]
         if not email or not full_name or not raw_password:
             return render_register(request, error={
@@ -129,6 +131,7 @@ def register(request: HttpRequest):
                     full_name=full_name, #** Use full_name instead of username
                     username=email,
                     password = make_password(raw_password),
+                    contact_info=contact_info
                     #is_boy=is_boy
                     #TODO: add some needed information.       
                 )
@@ -164,7 +167,8 @@ def register(request: HttpRequest):
                 parent = Parent.objects.create(
                     full_name=full_name,
                     username=email,
-                    password = make_password(raw_password)
+                    password = make_password(raw_password),
+                    contact_info=contact_info
                 )
             except IntegrityError:
                 return render_register(request,  error={

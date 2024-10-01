@@ -47,6 +47,7 @@ class Parent(User):
     #** username field stored user's email (unique)
     full_name = models.CharField(max_length=200, unique=False)
     children = models.ManyToManyField("Student", related_name="parent")
+    contact_information = models.TextField(default='')
 
     def serialize(self):
         return {
@@ -232,12 +233,13 @@ class Class(models.Model):
     
 
     def serialize(self):
+        monitor = self.get_student_by_role(role="monitor")
         return {
             "id": self.id,
             "name": self.name,
             "form_teacher": self.form_teacher.serialize() if self.form_teacher else None,
             "subject_teachers": [ teacher.serialize() for teacher in self.subject_teachers.all() ],
-            "monitor": self.get_monitor().serialize() if self.get_monitor() else None
+            "monitor": monitor if monitor else None
         }
     
     def get_students(self):

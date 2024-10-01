@@ -1,6 +1,6 @@
 {% extends 'Du_An/layout.html' %}
 {% load static %}
-
+{% load tags %}
 
 {% block style %} <link href="{% static 'Du_An/css/dashboard.css' %}" rel="stylesheet">
 {% endblock %}
@@ -17,13 +17,18 @@
             <div class="formClass">
                 <p class="className"> {{ user.teacher.form_class.name }}</p>
                 <p class="classStudentCount">Si so{{ user.teacher.form_class.student_count}}</p>
-                <p class="classMonitor"> 
-                    {% if user.teacher.form_class.get_monitor %}
-                    {{ user.teacher.form_class.get_monitor}}
-                    {% else %}
-                    Chưa có lớp trưởng
-                    {% endif %}
-                </p>
+                <div class="classStaffs">
+                    <h2>Ban cán sự lớp</h2>
+                    {% for staff in user.teacher.get_class_staff_committee %}
+                        {% if staff %}
+                        <!--** staff here is a Student object -->
+                        <p class="classStaffName">Tên: <a href="{% url 'view_student' staff.id %}" class="link-info link-offset-2 link-opacity-75-hover"> {{ staff.full_name }} </a> </p>
+                        <p class="classStaffRole">{{ staff.role }}</p>
+                        {% endif %}
+                    {% empty %}
+                    Lớp  chưa có ban cán sự
+                    {% endfor %}
+                </div>
                 <a href="{% url 'view_class' user.teacher.form_class.id %}" class="btn btn-outline-primary"> Details </a>
             </div>
             {% else %}
@@ -37,7 +42,7 @@
                     <p class="className"> {{ classroom.classroom.name }} </p>
                     <p class="classStudentCount"> {{ classroom.classroom.student_count }}</p>
                     <p class="classFormTeacher">Form teacher: <a class="link-info link-offset-2 link-underline-light link-opacity-75-hover"> {{ classroom.classroom.form_teacher.full_name }}</a></p>
-                    <p class="classMonitor">Lop Truong: {{ classroom.classroom.get_monitor.full_Name }} </p>
+                    <p class="classMonitor">Lop Truong: {% get_student_by_role classroom.classroom 'monitor' %} </p>
                     <!--TODO: Add more role for classes-->
                 </div>
                 {% empty %}
