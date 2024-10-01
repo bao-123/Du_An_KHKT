@@ -15,49 +15,63 @@
 
         <form action="{% url 'register' %}" method="post">
             {% csrf_token %}
-            <label for="username">Họ và tên</label>
-            <input type="text" name="full_name" autocomplete="off" name="username">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email">
-            <label for="password">Mật Khẩu</label>
-            <input type="password" name="password" id="password">
-
-            <h3 id="type_label">Bạn là?</h3>
-            <div class="roleSelect">
-            <input type="radio" name="user_type" value="teacher" id="teacher">
-            <label for="teacher">Giáo viên</label>
-            <input type="radio" name="user_type" value="parent" id="parent">
-            <label for="parent">Phụ huynh</label>
+            <div class="mb-3 inputDiv">
+                <label for="username" class="form-label">Họ và tên</label>
+                <input type="text" name="full_name" autocomplete="off" name="username" class="form-control mx-auto">
             </div>
 
-            <div id="for_teacher">
+            <div class="mb-3 inputDiv">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" name="email" class="form-control mx-auto">
+            </div>
+
+            <div class="mb-3 inputDiv">
+                <label for="password" class="form-label">Mật Khẩu</label>
+                <input type="password" name="password" id="password" class="form-control mx-auto">
+            </div>
+
+            <h3 id="type_label" class="mark">Bạn là?</h3>
+            <div class="roleSelect">
+                <div class="mb-3">
+                    <input type="radio" name="user_type" class="form-check-input" value="teacher" id="teacher">
+                    <label for="teacher" class="form-check-label">Giáo viên</label>
+                </div>
+                <div class="mb-3">
+                    <input type="radio" name="user_type" value="parent" class="form-check-input" id="parent">
+                    <label for="parent" class="form-check-label">Phụ huynh</label>
+                </div>
+            </div>
+
+            <div id="for_teacher" class="mb-3">
                 <h3>Chọn môn học đang dạy (chỉ dành cho giáo viên)</h3>
                 <!--TODO-->
-                <select name="subjects[]" multiple>
+                <select name="subjects[]" class="form-select mb-3" size="4" multiple>
                     {% for subject in subjects %}
                         <option value="{{ subject.id }}">{{ subject.name }}</option>
                     {% endfor %}
                 </select>
-            </div>
-            <label for="form_class_select">Chọn lớp chủ nhiệm (nếu có)</label>
-            <select name="form_class" id="form_class_select">
-                <option selected disabled >Lớp chủ nhiệm</option>
-                {% for class in classes %}
-                    <option value="{{ class.id }}"> {{ class.name }} </option>
-                {% endfor %}
-            </select>
 
-            <div id="for_parent">
+                <label for="form_class_select">Chọn lớp chủ nhiệm (nếu có)</label>
+                <select name="form_class" class="form-select" id="form_class_select">
+                    <option selected disabled >Lớp chủ nhiệm</option>
+                    {% for class in classes %}
+                        <option value="{{ class.id }}"> {{ class.name }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div id="for_parent" class="mb-3">
                 <!--TODO-->
                 <h3>Chọn con của bạn (chỉ dành cho phụ huynh)</h3>
-                <select name="children[]" multiple>
+                <select name="children[]" class="form-select" multiple>
                     {% for child in children %}
                     <option value="{{ child.id }}"> {{ child.name }} | {{ child.classroom.name }} </option>
                     {% endfor %}
                 </select>
             </div>
-            <label for="contact_info">Thông tin liên lạc (Không bắt buộc) </label>
-            <textarea name="contact_info" id="contact_info" cols="20" rows="10" placeholder="Thông tin liên lạc của bạn (sđt, facebook, zalo,...)"></textarea>
+
+            <label for="contact_info" class="form-label">Thông tin liên lạc (Không bắt buộc) </label>
+            <textarea name="contact_info" id="contact_info" class="form-control mb-3" cols="5" rows="10" placeholder="Thông tin liên lạc của bạn (sđt, facebook, zalo,...)"></textarea>
             <button type="submit" class="btn btn-primary mx-auto me-auto mb-4">Đăng kí</button>
         </form>
     </div>

@@ -5,15 +5,40 @@ body
 
 form
 {
-    display: flex;
-    flex-direction: column;
     text-align: center;
-    justify-content: center;
-    row-gap: 1rem;
 }
+
+
 form > input, select
+{
+    max-width: 400px;
+    margin: auto;
+}
+
+
+.inputDiv
 {
     max-width: 400px;
     margin-left: auto;
     margin-right: auto;
+}
+
+
+label
+{
+    font-weight: 500;
+    font-size: 18px;
+    
+}
+
+
+form > textarea
+{
+    max-height: 300px;
+}
+
+
+.roleSelect
+{
+    display: block;
 }
