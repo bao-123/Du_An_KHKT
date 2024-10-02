@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseBadRequest, HttpResponseRedirect, HttpResponseNotAllowed, HttpRequest
+from django.http import HttpResponseBadRequest, HttpResponseRedirect, HttpResponseNotAllowed, HttpRequest, JsonResponse
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
@@ -8,6 +8,7 @@ from django.urls import reverse
 from datetime import date
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+import json
 from .models import *
 
 # Create your views here. 
@@ -79,6 +80,7 @@ def logout_view(request):
     logout(request)
 
     return HttpResponseRedirect(reverse("index"))
+
 
 def register(request: HttpRequest):
     if request.method == "GET":
@@ -215,17 +217,65 @@ def view_teacher(request, teacher_id):
     
     
 def view_student(request, id):
-    if request.method != "GET":
-        return HttpResponseNotAllowed("method not allowed")
-    try:
-        student = Student.objects.get(pk=id)
+    if request.method == "GET":
+        try:
+            student = Student.objects.get(pk=id)
 
-        return render(request, "Du_An/student.html", {
-            "student": student,
-            "subjects": Subject.objects.all()
-        })
-    except Student.DoesNotExist:
-        return render_error(request, error="Not found", error_message="Can't found any student with this id")
+            return render(request, "Du_An/student.html", {
+                "student": student,
+                "subjects": Subject.objects.all()
+            })
+        except Student.DoesNotExist:
+            return render_error(request, error="Not found", error_message="Can't found any student with this id")
+    elif request.method == "PUT":
+        if not hasattr(request.user, "teacher"):
+            return JsonResponse({"message": "Only teachers can do this!"}, status=401)
+        
+        #** body should be a dict
+        body: dict = json.loads(request.body)
+        subject: str = body.get("subject")
+        #** new mark
+        new_mark: float = body.get("mark")
+        #** 'mark_type' should be a str with some possible values like 'thuong_xuyen1', 'thuong_xuyen2', ...
+        mark_type: str = body.get("mark")
+        #** semester: 1 or 2
+        semester: int = body.get("semester")
+
+        if not body or not subject or \
+           not new_mark or not mark_type:
+            return JsonResponse({"message": "Missing information"},
+                                status=400)
+        
+        try:
+            student = Student.objects.get(pk=id)
+            if not ClassSubjectTeacher.is_teaching(Subject.objects.get(name=subject), request.user.teacher, student.classroom):
+                return JsonResponse({"message": "Permission denied"}, status=401)
+            
+            if semester not in [1, 2]:
+                return JsonResponse({"message": "Invalid semester"}, status=400)
+            
+            if subject in MAIN_SUBJECTS:
+                student_subject = student.main_subjects.get(name=subject) if semester == 1 else student.second_term_main_subjects.get(name=subject)
+            elif subject in SECOND_SUBJECTS:
+                student_subject = student.second_subjects.get(name=subject) if semester == 1 else student.second_term_second_subjects.get(name=subject)
+            elif subject in COMMENT_SUBJECTS:
+                student_subject = student.comment_subjects.get(name=subject) if semester == 1 else student.second_term_comment_subject.get(name=subject)
+            else:
+                return JsonResponse({"message": "Unknow subject"}, status=400)
+            
+            match(mark_type):
+                case "thuong_xuyen1":
+                    pass
+                    #TODO: làm hệ thống nhập điểm cho học sinh
+                    #**: Làm sao để nhập được 'đạt'/'ko đạt' cho các môn đánh giá
+                
+
+
+        except:
+            return JsonResponse({"message": "Failed to update student's marks"}, status=400)
+
+    else:
+        return HttpResponseNotAllowed("method not allowed.")
 
 
 def view_class(request, id):
@@ -237,7 +287,6 @@ def view_class(request, id):
         })
     except Class.DoesNotExist:
         return render_error(error="Not found", error_message="Doesn't found any teacher with this id")
-
 
 
 def view_parent(request: HttpRequest, id: int):

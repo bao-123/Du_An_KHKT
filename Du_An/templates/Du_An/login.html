@@ -11,19 +11,21 @@
             <p class="error_message"> {{ error_message }} </p>
         </div>
         
-        <form action="{% url 'login' %}" method="post">
+        <form action="{% url 'login' %}" method="post" class="">
             {% csrf_token %}
-            <label for="email">Email:</label>
-            <input name="email" type="email" id="email" required>
-            <input type="password" name="password" placeholder="Mật khẩu" required>
+            <label for="email">Email</label>
+            <input name="email" type="email" id="email" class="form-control mx-auto mb-3" placeholder="Email" required>
+            <label for="password">Mật Khẩu</label>
+            <input type="password" name="password" class="form-control mx-auto" placeholder="Mật khẩu" id="password" required>
 
-            <p class="roleSelectLabel">Bạn Là?</p>
-            <select name="role" required>
+            <label for="loginRoleSelect">Bạn Là?</p>
+            <select name="role" class="form-select mb-3" id="loginRoleSelect" required>
                 <option selected disabled>Giáo Viên/Phụ Huynh</option>
                 <option value="teacher">Giáo Viên</option>
                 <option value="parent">Phụ Huynh</option>
             </select>
-            <button type="submit">Đăng Nhập</button>
+
+            <button type="submit" class="btn btn-outline-primary">Đăng Nhập</button>
         </form>
     </div>
 {% endblock %}

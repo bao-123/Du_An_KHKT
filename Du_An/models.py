@@ -3,8 +3,13 @@ from django.contrib.auth.models import User
 from datetime import date
 # Create your models here.
 
+#**CONSTANTs
 #* students's roles
 STUDENT_ROLE: list[str] = ["monitor", "academic", "art", "labor"]
+MAIN_SUBJECTS: list[str] = ["Toán", "Tiếng Anh", "Ngữ Văn", "Lịch sử & Địa Lí", "KHTN"]
+SECOND_SUBJECTS: list[str] = ["Tin Học", "GDCD", "Công Nghệ"]
+COMMENT_SUBJECTS: list[str] = ["GDĐP", "HĐTN-HN", "Mĩ Thuật", "Âm Nhạc"]
+
 
 #**name of instances of this models must be not different from the name of subjects in MainSubject, SecondSubject and EveluateByCommentSubject
 class Subject(models.Model):
@@ -270,12 +275,3 @@ def create_main_subject(name: str):
     subject = MainSubject.objects.create(name=name)
 
     return subject
-
-
-#function to get a student
-def get_student(id: int) -> Student | None:
-    try:
-        return Student.objects.get(pk=id)
-    except Student.DoesNotExist:
-        return None
-
