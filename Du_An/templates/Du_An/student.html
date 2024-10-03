@@ -23,10 +23,12 @@
                     Học sinh này chưa có phụ huynh nào nhận
                 {% endfor %}
             </p>
-            
         </div>
         <!--* show student's marks -->
         <div class="studentMark">
+            {% if is_teaching %}
+                <button class="btn btn-primary" id="updateMark">Cap nhap diem</button>
+            {% endif %}
             <!--TODO: Add javascript to display the marks base on the selected subject-->
             <select id="subjects_select" class="form-condivol mx-2 me-auto">
                 <!--** Default subject is Toán -->

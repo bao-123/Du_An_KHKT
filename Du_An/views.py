@@ -256,20 +256,46 @@ def view_student(request, id):
             
             if subject in MAIN_SUBJECTS:
                 student_subject = student.main_subjects.get(name=subject) if semester == 1 else student.second_term_main_subjects.get(name=subject)
+                
             elif subject in SECOND_SUBJECTS:
                 student_subject = student.second_subjects.get(name=subject) if semester == 1 else student.second_term_second_subjects.get(name=subject)
+                
             elif subject in COMMENT_SUBJECTS:
                 student_subject = student.comment_subjects.get(name=subject) if semester == 1 else student.second_term_comment_subject.get(name=subject)
+                    
             else:
                 return JsonResponse({"message": "Unknow subject"}, status=400)
             
             match(mark_type):
-                case "thuong_xuyen1":
-                    pass
-                    #TODO: làm hệ thống nhập điểm cho học sinh
-                    #**: Làm sao để nhập được 'đạt'/'ko đạt' cho các môn đánh giá
+                case "tx1":
+                    student_subject.diem_thuong_xuyen1 = new_mark
+                    
+                case "tx2":
+                        student_subject.diem_thuong_xuyen2 = new_mark
                 
+                case "tx3":
+                        student_subject.diem_thuong_xuyen3 = new_mark
+                    
+                case "tx4":
+                        student_subject.diem_thuong_xuyen4 = new_mark
 
+                case "gk":
+                        student_subject.diem_giua_ki = new_mark
+                
+                case "ck":
+                        student_subject.diem_cuoi_ki = new_mark
+                
+                #** for eveluate-by-comment subject
+                case "is_passed":
+                        #** Set the 'is_passed' to True if the mark is one, otherwise set it to False
+                        student_subject.is_passed = new_mark == 1
+                
+                case _:
+                    return JsonResponse({"message": "Unknow attribute"}, status=400)
+                
+            student_subject.save()
+
+            return JsonResponse({"message": "Update successfully"}, status=200)
 
         except:
             return JsonResponse({"message": "Failed to update student's marks"}, status=400)

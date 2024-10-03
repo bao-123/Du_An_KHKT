@@ -61,7 +61,7 @@ class Parent(User):
             "email": self.email,
         }
 
-
+#** ensure that a MainSubject (or SecondSubject,...) object only point to a student
 class MainSubject(models.Model):
     name = models.CharField(max_length=20)
     # -1.0 mean teacher doesn't submit the mark of that student yet.
@@ -105,7 +105,6 @@ class SecondSubject(models.Model):
     diem_giua_ki = models.FloatField(null=True, default=None)
     diem_cuoi_ki = models.FloatField(null=True, default=None)
     comment = models.TextField()
-
 
     @staticmethod
     def generate_second_subjects():
@@ -178,6 +177,8 @@ class Student(models.Model):
 
     role = models.CharField(max_length=30, choices=role_choices)
 
+    def __str__(self):
+        return f"{self.id}| {self.full_name}| {self.classroom.name}| {"Boy" if self.is_boy else "Girl"} { f"| {self.role}" if self.role != "student" else ''}"
     #*get marks of subjects
     def get_subjects_mark(self):
         return {
