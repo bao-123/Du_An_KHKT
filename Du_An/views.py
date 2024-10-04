@@ -446,3 +446,4 @@ def render_error(request: HttpRequest, error: str | None = None, error_message: 
         "error_message": error_message,
         "error_image": error_image
     })
+
