@@ -191,13 +191,34 @@ def register(request: HttpRequest):
 
 
 def view_classes(request):
-    if request.method != "GET":
-        return HttpResponseNotAllowed("Method not allowed")
-    classes = Class.objects.all()
+    if request.method == "GET":
+        classes = Class.objects.all()
 
-    return render(request, "Du_An/classes.html", {
-        "classes": classes
-    })
+        return render(request, "Du_An/classes.html", {
+            "classes": classes
+        })
+    #** API to add class's subject teacher
+    elif request.method == "PUT":
+        if not hasattr(request.user, "teacher"):
+            return HttpResponseNotAllowed("Only teachers can do this")
+        
+        body = json.loads(request.body)
+        class_id = body.get("class_id")
+        subject_id = body.get("subject_id") #** id of a 'Subject' instance
+
+        try:
+            classroom = Class.objects.get(pk=class_id)
+            subject = Subject.objects.get(pk=subject_id)
+
+            if ClassSubjectTeacher.get_subject_teacher(subject, classroom):
+                return JsonResponse({"message": f"This class already have a {subject.name} teacher"}, status=400)
+            classroom_subject_teacher = ClassSubjectTeacher(subject=subject, teacher=request.user)
+            classroom.subject_teachers.add(classroom_subject_teacher)
+
+        except Class.DoesNotExist:
+            return JsonResponse({"message": "Lỗi, Không tìm thấy lớp học này"}, status=400)
+        except Subject.DoesNotExist:
+            return JsonResponse({"message": "Lỗi, không tìm thấy môn học này"}, status=400)
 
 
 @login_required(login_url="login")
@@ -235,9 +256,9 @@ def view_student(request, id):
         body: dict = json.loads(request.body)
         subject: str = body.get("subject")
         #** new mark
-        new_mark: float = body.get("mark")
+        new_mark: float = body.get("new_mark")
         #** 'mark_type' should be a str with some possible values like 'thuong_xuyen1', 'thuong_xuyen2', ...
-        mark_type: str = body.get("mark")
+        mark_type: str = body.get("mark_type")
         #** semester: 1 or 2
         semester: int = body.get("semester")
 

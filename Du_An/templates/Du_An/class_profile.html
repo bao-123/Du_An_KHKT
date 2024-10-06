@@ -69,7 +69,7 @@
                     {% endfor %}
                 </div>
                 <div id="subjectTeachersDisplay" style="display: none;">
-                    {% for teacher in classroom.subject_teachers.all %}
+                    {% for teacher in classroom.get_teachers %}
                     <div class="teacher">
                         <p class="teacherName">Ten: <a href="{% url 'view_teacher' teacher.teacher.id %}" class="nav-link"> {{ teacher.teacher.full_name}} </a></p>
                         <p class="teacherSubject">Day mon: {{ teacher.subject.name }} </p>
@@ -77,6 +77,12 @@
                     {% empty %}
                     Chua co giao vien
                     {% endfor %}
+                    {% if user.teacher %}
+                        {% if user.teacher not in classroom.get_teachers %}
+                        <!--TODO: add JS-->
+                            <button id="teachClass" class="btn btn-outline-info">Trở thành giáo viên bộ môn của lớp này</button>
+                        {% endif %}
+                    {% endif %}
                 </div>
                 <!--TODO: Them thong tin thi dua(neu co)-->
                 <div id="classDetails" style="display: none;"></div>

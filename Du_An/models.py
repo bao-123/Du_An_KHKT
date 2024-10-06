@@ -219,9 +219,6 @@ class Class(models.Model):
     form_teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, null=True, default=None, related_name="form_class")
     name = models.CharField(max_length=3, unique=True)
     subject_teachers = models.ManyToManyField("ClassSubjectTeacher", related_name="classroom")
-
-    def student_count(self) -> int:
-        return self.students.count()
     
     def get_class_staff_committee(self):
         return self.students.filter(role__in=STUDENT_ROLE)
@@ -249,6 +246,9 @@ class Class(models.Model):
     
     def get_students(self):
         return [ student.serialize() for student in self.students.all() ]
+    
+    def get_teachers(self):
+        return [ teacher.teacher for teacher in self.subject_teachers.all() ]
 
 
 class ClassSubjectTeacher(models.Model):
@@ -257,9 +257,10 @@ class ClassSubjectTeacher(models.Model):
 
     @staticmethod
     def get_subject_teacher(subject: Subject, classroom: Class) -> Teacher | None:
-        class_subject = ClassSubjectTeacher.objects.filter(classroom=classroom, subject=subject).first()
-
-        return class_subject.teacher if class_subject else None
+        try:
+            return ClassSubjectTeacher.objects.get(subject=subject, classroom=classroom)
+        except ClassSubjectTeacher.DoesNotExist:
+            return None
     
     @staticmethod
     def is_teaching(subject: Subject, teacher: Teacher, classroom: Class) -> bool:

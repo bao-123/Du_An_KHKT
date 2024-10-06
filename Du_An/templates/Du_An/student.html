@@ -14,8 +14,9 @@
             <h2 class="studentName"> {{ student.full_name }} </h2>
             <p class="studentClass">Lớp: <a href="{% url 'view_class' student.classroom.id %}" class="link-info link-offset-2 link-opacity-75-hover">{{ student.classroom.name }}</a></p>
             <p class="studentGender">Giới tính: {% if student.is_boy %} Nam {% else %} Nữ {% endif %}</p>
+            <p class="studentRole">Chức vụ: {{ student.role }}</p>
             <p class="studentParent">
-                Phu huynh: 
+                Phụ huynh: 
                 {% for parent in student.parent.all %}
                 <!--TODO: replace the href (to the parent's page)-->
                     <a href="{% url 'view_parent' parent.id %}" class="link-info link-offset-2 link-underline-dark link-opacity-75-hover"> {{ parent.full_name }}</a>,
@@ -166,7 +167,7 @@
                                 Chưa có điểm
                                 {% endif %}
                             </div>
-
+                            {% if user.teacher in student.classroom.subject_teachers.all %}
                         </div>
                     </div>
                 {% empty %}
@@ -248,9 +249,9 @@
                                     Chua co diem 
                                 {% endif %}
                             </div>
-
-                        </div>
-
+                            {% if user.teacher in student.classroom.get_teachers %}
+                                
+                            {% endif %}
                     </div>
                 {% empty %}
                 Error while loading page
