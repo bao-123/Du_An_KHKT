@@ -1,4 +1,4 @@
-import {updateMarkURL} from "./document.js"
+import {updateMarkURL, addClassSubjectTeacherURL} from "./document.js"
 //utils
 
 //* function to create HTML tags
@@ -45,6 +45,49 @@ async function updateMark(id, subject, semester, new_mark, mark_type)
     }
     catch(error)
     {
+        console.error(error);
+    }
+}
+
+
+//* a function to set a teacher to be a subject teacher of a particular class
+async function teachClass(subject_id, classroom_id) {
+    //@@subject_id should be a id of a subject 
+
+    try {
+        const response = await fetch(addClassSubjectTeacherURL, {
+            method: "PUT",
+            body: JSON.stringify() // TODO
+        })
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// * This function will display a error (or success) message on a particular
+function displayMessage(divId, header, content, type, size)
+{
+    /*
+        @@divId the id of the div that we are gonna display the message in
+        @@header is the content for the header of the message, @@content is the content of the message 
+        @@type will be the type of the message (valid value are 'error', 'success', 'info', ...)
+        @@size is size of message (valid value are 'lg', 'md', 'sm')
+    */
+
+    const messageDiv = document.createElement("div");
+    const messageHeader = document.createElement("p");
+    const messageContent = document.createElement("p");
+
+    messageDiv.classList.add(type, size);
+    messageHeader.classList.add("header");
+    messageContent.classList.add("content");
+
+    messageDiv.appendChild(messageHeader);
+    messageDiv.appendChild(messageContent);
+
+    try {
+        document.getElementById(divId).appendChild(messageDiv);
+    } catch (error) {
         console.error(error);
     }
 }

@@ -82,8 +82,8 @@ class MainSubject(models.Model):
             "cuoi_ki": self.diem_cuoi_ki,
             "teacher_comment": self.comment
         }
-    
-    #TODO: Add more main subjects (if needed)
+  
+  
     @staticmethod
     def generate_main_subjects():
         return [

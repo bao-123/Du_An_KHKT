@@ -401,7 +401,7 @@ def create_student(request: HttpRequest):
 
             new_student.full_clean()
             new_student.save()
-
+            #TODO: fix
             new_student.main_subjects.set(MainSubject.generate_main_subjects())
             new_student.second_subjects.set(SecondSubject.generate_second_subjects())
             new_student.comment_subjects.set(EvaluateByCommentSubject.generate_comment_subject())

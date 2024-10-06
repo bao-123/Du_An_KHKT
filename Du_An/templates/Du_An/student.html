@@ -1,6 +1,7 @@
 <!--TODO: fix this-->
 {% extends 'Du_An/layout.html' %}
 {% load static %}
+{% load tags %}
 
 {% block title %}{{ student.full_name }}{% endblock %}
 <!--* Replace if you wish-->
@@ -167,7 +168,6 @@
                                 Chưa có điểm
                                 {% endif %}
                             </div>
-                            {% if user.teacher in student.classroom.subject_teachers.all %}
                         </div>
                     </div>
                 {% empty %}
@@ -249,13 +249,23 @@
                                     Chua co diem 
                                 {% endif %}
                             </div>
-                            {% if user.teacher in student.classroom.get_teachers %}
-                                
-                            {% endif %}
                     </div>
                 {% empty %}
                 Error while loading page
                 {% endfor %}
+                
+                {% if user.teacher in student.classroom.get_teachers %}
+                <form id="updateMarkForm">
+                    <!--* teacher will select the subject that they want to update-->
+                    <select>
+                        <!-- TODO: update this so it still working in case the teacher teach mor ethan 1 subject -->
+
+                        <option value="{% get_subject student.classroom user.teacher 'id' %}" selected>{% get_subject student.classroom user.teacher 'name' %}</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Cập nhập điểm cho học sinh</button>
+                </form>
+                {% endif %}
+
             </div>
         </div>
     </div>
