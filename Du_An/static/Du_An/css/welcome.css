@@ -1,0 +1,35 @@
+body
+{
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+    width: fit-content;
+    height: fit-content;
+    margin: 0;
+    background-image: url("../images/Welcome.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    /* can le cho chu */
+    margin-left: auto;
+    margin-right: auto;
+}
+/* ** tap viet comment vo*/
+.marks{
+    color: rgb(252, 252, 188);
+    font-weight: 1000;
+    font-size: 46px;
+    font-style: normal;
+    display: inline;
+}
+
+.main-description
+{
+    text-align: center;
+}
+.description{
+    font-weight: 1000;
+    font-size: 48px;
+    font-style: normal; /* code cham the */
+    color: rgb(245, 90, 90);
+    display: inline;
+}
