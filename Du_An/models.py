@@ -177,7 +177,9 @@ class Student(models.Model):
     role = models.CharField(max_length=30, choices=role_choices)
 
     def __str__(self):
-        return f"{self.id}| {self.full_name}| {self.classroom.name}| {"Boy" if self.is_boy else "Girl"} { f"| {self.role}" if self.role != "student" else ''}"
+        return f"{self.id}| {self.full_name}| {self.classroom.name} | {self.role}"
+
+
     #*get marks of subjects
     def get_subjects_mark(self):
         return {

@@ -215,6 +215,8 @@ def view_classes(request):
             classroom_subject_teacher = ClassSubjectTeacher(subject=subject, teacher=request.user)
             classroom.subject_teachers.add(classroom_subject_teacher)
 
+            return JsonResponse({"message": "Successfully"}, status=200)
+
         except Class.DoesNotExist:
             return JsonResponse({"message": "Lỗi, Không tìm thấy lớp học này"}, status=400)
         except Subject.DoesNotExist:

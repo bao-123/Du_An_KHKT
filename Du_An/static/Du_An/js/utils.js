@@ -19,7 +19,6 @@ function tag(name, content, classes, id='') {
 
 
 //** function to update student's mark
-//*! Chưa code xog */
 async function updateMark(id, subject, semester, new_mark, mark_type)
 {
     /*
@@ -33,6 +32,9 @@ async function updateMark(id, subject, semester, new_mark, mark_type)
     {
         const response = await fetch(`${updateMarkURL}/${id}`, {
             method: "PUT",
+            headers: {
+                "X-CSRFToken": getCSRF()
+            },
             body: JSON.stringify({
                 id: id,
                 subject: subject,
@@ -57,8 +59,15 @@ async function teachClass(subject_id, classroom_id) {
     try {
         const response = await fetch(addClassSubjectTeacherURL, {
             method: "PUT",
-            body: JSON.stringify() // TODO
-        })
+            headers: {
+                "X-CSRFToken": getCSRF()
+            },
+            body: JSON.stringify({
+                class_id: classroom_id,
+                subject_id: subject_id
+            })
+        });
+        return {status: response.status, message: (await response.json()).message};
     } catch (error) {
         console.error(error);
     }
@@ -90,4 +99,11 @@ function displayMessage(divId, header, content, type, size)
     } catch (error) {
         console.error(error);
     }
+}
+
+
+//-I simple function to get csrf token
+function getCSRF() {
+    const parts = document.cookie.split("csrftoken=");
+    return parts.length == 2 ? parts.pop().split(";").shift() : '';
 }
