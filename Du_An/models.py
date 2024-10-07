@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 #**CONSTANTs
 #* students's roles
 STUDENT_ROLE: list[str] = ["monitor", "academic", "art", "labor"]
-MAIN_SUBJECTS: list[str] = ["Toán", "Tiếng Anh", "Ngữ Văn", "Lịch sử & Địa Lí", "KHTN"]
+#-W The names here must be correct with the names of 'Subject' instances
+MAIN_SUBJECTS: list[str] = ["Toán", "Tiếng Anh", "Ngữ Văn", "Lịch Sử & Địa Lí", "KHTN"]
 SECOND_SUBJECTS: list[str] = ["Tin Học", "GDCD", "Công Nghệ"]
 COMMENT_SUBJECTS: list[str] = ["GDĐP", "HĐTN-HN", "Mĩ Thuật", "Âm Nhạc"]
 
@@ -62,14 +63,14 @@ class Parent(User):
 
 #** ensure that a MainSubject (or SecondSubject,...) object only point to a student
 class MainSubject(models.Model):
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=20) #! Shouldn't set 'blank' to True in a CharField
     # -1.0 mean teacher doesn't submit the mark of that student yet.
-    diem_thuong_xuyen1 = models.FloatField(null=True, default=None)
-    diem_thuong_xuyen2 = models.FloatField(null=True, default=None)
-    diem_thuong_xuyen3 = models.FloatField(null=True, default=None)
-    diem_thuong_xuyen4 = models.FloatField(null=True, default=None)
-    diem_giua_ki = models.FloatField(null=True, default=None)
-    diem_cuoi_ki = models.FloatField(null=True, default=None)
+    diem_thuong_xuyen1 = models.FloatField(null=True, blank=True, default=None)
+    diem_thuong_xuyen2 = models.FloatField(null=True, blank=True, default=None)
+    diem_thuong_xuyen3 = models.FloatField(null=True, blank=True, default=None)
+    diem_thuong_xuyen4 = models.FloatField(null=True, blank=True, default=None)
+    diem_giua_ki = models.FloatField(null=True, blank=True, default=None)
+    diem_cuoi_ki = models.FloatField(null=True, blank=True, default=None)
     comment = models.TextField()
 
     def serialize(self):
@@ -82,37 +83,27 @@ class MainSubject(models.Model):
             "cuoi_ki": self.diem_cuoi_ki,
             "teacher_comment": self.comment
         }
-    
-    #TODO: Add more main subjects (if needed)
+  
+  
     @staticmethod
     def generate_main_subjects():
-        return [
-            MainSubject.objects.create(name="Toán"),
-            MainSubject.objects.create(name="Ngữ Văn"),
-            MainSubject.objects.create(name="Tiếng Anh"),
-            MainSubject.objects.create(name="KHTN"),
-            MainSubject.objects.create(name="Lịch sử & địa lí")
-        ]
+        return [ MainSubject.objects.create(name=subject_name) for subject_name in MAIN_SUBJECTS]
 
 
 
 #** Have 2 diem thuong xuyen/1 ki (35 tiet tren 1 nam)
 class SecondSubject(models.Model):
     name = models.CharField(max_length=20)
-    diem_thuong_xuyen1 = models.FloatField(null=True, default=None)
-    diem_thuong_xuyen2 = models.FloatField(null=True, default=None)
-    diem_giua_ki = models.FloatField(null=True, default=None)
-    diem_cuoi_ki = models.FloatField(null=True, default=None)
-    comment = models.TextField()
+    diem_thuong_xuyen1 = models.FloatField(null=True, blank=True, default=None)
+    diem_thuong_xuyen2 = models.FloatField(null=True, blank=True, default=None)
+    diem_giua_ki = models.FloatField(null=True, blank=True, default=None)
+    diem_cuoi_ki = models.FloatField(null=True, blank=True, default=None)
+    comment = models.TextField(blank=True)
 
     @staticmethod
     def generate_second_subjects():
         #* mon co 2 diem thuong xuyen 1 hoc ki
-        return [
-            SecondSubject.objects.create(name="Công nghệ"),
-            SecondSubject.objects.create(name="GDCD"),
-            SecondSubject.objects.create(name="Tin học"),
-        ]
+        return [SecondSubject.objects.create(name=subject) for subject in SECOND_SUBJECTS]
 
 
     def serialize(self):
@@ -128,19 +119,13 @@ class SecondSubject(models.Model):
 #* mon hoc danh gia bang nhan xet (dat/ko dat)
 class EvaluateByCommentSubject(models.Model):
     name = models.CharField(max_length=20)
-    is_passed = models.BooleanField(null=True, default=None) #* Dat hay chua dat
+    is_passed = models.BooleanField(null=True, blank=True, default=None) #* Dat hay chua dat
     comment = models.TextField()
 
 
     @staticmethod
     def generate_comment_subject():
-        return [
-            EvaluateByCommentSubject.objects.create(name="GDTC"),
-            EvaluateByCommentSubject.objects.create(name="GDĐP"),
-            EvaluateByCommentSubject.objects.create(name="HĐTN-HN"),
-            EvaluateByCommentSubject.objects.create(name="Mĩ Thuật"),
-            EvaluateByCommentSubject.objects.create(name="Âm nhạc")
-        ]
+        return [EvaluateByCommentSubject.objects.create(name=subject) for subject in COMMENT_SUBJECTS]
 
     def __str__(self):
         return f"id: {self.id}|{self.name} of {self.student}"
@@ -172,12 +157,14 @@ class Student(models.Model):
     comment_subjects = models.ManyToManyField(EvaluateByCommentSubject, related_name="student")
     second_term_main_subjects = models.ManyToManyField(MainSubject, related_name="second_term_student")
     second_term_second_subjects = models.ManyToManyField(SecondSubject, related_name="second_term_student")
-    second_term_comment_subject = models.ManyToManyField(EvaluateByCommentSubject, related_name="second_term_student")
+    second_term_comment_subjects = models.ManyToManyField(EvaluateByCommentSubject, related_name="second_term_student")
 
     role = models.CharField(max_length=30, choices=role_choices)
 
     def __str__(self):
-        return f"{self.id}| {self.full_name}| {self.classroom.name}| {"Boy" if self.is_boy else "Girl"} { f"| {self.role}" if self.role != "student" else ''}"
+        return f"{self.id}| {self.full_name}| {self.classroom.name} | {self.role}"
+
+
     #*get marks of subjects
     def get_subjects_mark(self):
         return {
@@ -194,11 +181,11 @@ class Student(models.Model):
                 {"first_term": self.second_subjects.filter(name="GDCD").first(), "second_term": self.second_term_second_subjects.filter(name="GDCD").first()}
             ],
             "comment": [
-                {"first_term": self.comment_subjects.filter(name="GDĐP").first(), "second_term": self.second_term_comment_subject.filter(name="GDĐP").first()},
-                {"first_term": self.comment_subjects.filter(name="HĐTN-HN").first(), "second_term": self.second_term_comment_subject.filter(name="HĐTN-HN").first()},
-                {"first_term": self.comment_subjects.filter(name="GDTC").first(), "second_term": self.second_term_comment_subject.filter(name="GDTC").first()},
-                {"first_term": self.comment_subjects.filter(name="Mĩ Thuật").first(), "second_term": self.second_term_comment_subject.filter(name="Mĩ Thuật").first()},
-                {"first_term": self.comment_subjects.filter(name="Âm Nhạc").first(), "second_term": self.second_term_comment_subject.filter(name="Âm Nhạc").first()}
+                {"first_term": self.comment_subjects.filter(name="GDĐP").first(), "second_term": self.second_term_comment_subjects.filter(name="GDĐP").first()},
+                {"first_term": self.comment_subjects.filter(name="HĐTN-HN").first(), "second_term": self.second_term_comment_subjects.filter(name="HĐTN-HN").first()},
+                {"first_term": self.comment_subjects.filter(name="GDTC").first(), "second_term": self.second_term_comment_subjects.filter(name="GDTC").first()},
+                {"first_term": self.comment_subjects.filter(name="Mĩ Thuật").first(), "second_term": self.second_term_comment_subjects.filter(name="Mĩ Thuật").first()},
+                {"first_term": self.comment_subjects.filter(name="Âm Nhạc").first(), "second_term": self.second_term_comment_subjects.filter(name="Âm Nhạc").first()}
             ]
         }
     
@@ -219,9 +206,6 @@ class Class(models.Model):
     form_teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, null=True, default=None, related_name="form_class")
     name = models.CharField(max_length=3, unique=True)
     subject_teachers = models.ManyToManyField("ClassSubjectTeacher", related_name="classroom")
-
-    def student_count(self) -> int:
-        return self.students.count()
     
     def get_class_staff_committee(self):
         return self.students.filter(role__in=STUDENT_ROLE)
@@ -249,6 +233,9 @@ class Class(models.Model):
     
     def get_students(self):
         return [ student.serialize() for student in self.students.all() ]
+    
+    def get_teachers(self):
+        return [ teacher.teacher for teacher in self.subject_teachers.all() ]
 
 
 class ClassSubjectTeacher(models.Model):
@@ -257,9 +244,10 @@ class ClassSubjectTeacher(models.Model):
 
     @staticmethod
     def get_subject_teacher(subject: Subject, classroom: Class) -> Teacher | None:
-        class_subject = ClassSubjectTeacher.objects.filter(classroom=classroom, subject=subject).first()
-
-        return class_subject.teacher if class_subject else None
+        try:
+            return ClassSubjectTeacher.objects.get(subject=subject, classroom=classroom)
+        except ClassSubjectTeacher.DoesNotExist:
+            return None
     
     @staticmethod
     def is_teaching(subject: Subject, teacher: Teacher, classroom: Class) -> bool:

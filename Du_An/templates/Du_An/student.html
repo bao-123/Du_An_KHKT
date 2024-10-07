@@ -1,6 +1,7 @@
 <!--TODO: fix this-->
 {% extends 'Du_An/layout.html' %}
 {% load static %}
+{% load tags %}
 
 {% block title %}{{ student.full_name }}{% endblock %}
 <!--* Replace if you wish-->
@@ -14,8 +15,9 @@
             <h2 class="studentName"> {{ student.full_name }} </h2>
             <p class="studentClass">Lớp: <a href="{% url 'view_class' student.classroom.id %}" class="link-info link-offset-2 link-opacity-75-hover">{{ student.classroom.name }}</a></p>
             <p class="studentGender">Giới tính: {% if student.is_boy %} Nam {% else %} Nữ {% endif %}</p>
+            <p class="studentRole">Chức vụ: {{ student.role }}</p>
             <p class="studentParent">
-                Phu huynh: 
+                Phụ huynh: 
                 {% for parent in student.parent.all %}
                 <!--TODO: replace the href (to the parent's page)-->
                     <a href="{% url 'view_parent' parent.id %}" class="link-info link-offset-2 link-underline-dark link-opacity-75-hover"> {{ parent.full_name }}</a>,
@@ -166,7 +168,6 @@
                                 Chưa có điểm
                                 {% endif %}
                             </div>
-
                         </div>
                     </div>
                 {% empty %}
@@ -248,13 +249,29 @@
                                     Chua co diem 
                                 {% endif %}
                             </div>
-
-                        </div>
-
                     </div>
                 {% empty %}
                 Error while loading page
                 {% endfor %}
+                <!--* Display comment subjects-->
+                <!--TODO: FIX-->
+                {% for comment_subject in student.get_subjects_mark.comment %}
+                    <div id="{{ comment_subject.first_term.name }}" style="display: none;">
+                        <p>{% if comment_subject.is_passed == True %} Đạt {% elif comment_subject is None %} Chưa có kết quả {% else %} Không đạt {% endif %} </p>
+                        <p> {{ comment_subject.comment }} </p>
+                    </div>
+                {% endfor %}
+                {% if user.teacher in student.classroom.get_teachers %}
+                <form id="updateMarkForm">
+                    <!--* teacher will select the subject that they want to update-->
+                    <select>
+                        <!-- TODO: update this so it still working in case the teacher teach mor ethan 1 subject -->
+
+                        <option value="{% get_subject student.classroom user.teacher 'id' %}" selected>{% get_subject student.classroom user.teacher 'name' %}</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Cập nhập điểm cho học sinh</button>
+                </form>
+                {% endif %}
             </div>
         </div>
     </div>
