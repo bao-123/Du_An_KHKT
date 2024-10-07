@@ -34,7 +34,7 @@ class TestUtils():
         student.second_subjects.set(SecondSubject.generate_second_subjects())
         student.second_term_second_subjects.set(SecondSubject.generate_second_subjects())
         student.comment_subjects.set(EvaluateByCommentSubject.generate_comment_subject())
-        student.second_term_comment_subject.set(EvaluateByCommentSubject.generate_comment_subject())
+        student.second_term_comment_subjects.set(EvaluateByCommentSubject.generate_comment_subject())
 
         return student
 

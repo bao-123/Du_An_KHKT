@@ -284,7 +284,7 @@ def view_student(request, id):
                 student_subject = student.second_subjects.get(name=subject) if semester == 1 else student.second_term_second_subjects.get(name=subject)
                 
             elif subject in COMMENT_SUBJECTS:
-                student_subject = student.comment_subjects.get(name=subject) if semester == 1 else student.second_term_comment_subject.get(name=subject)
+                student_subject = student.comment_subjects.get(name=subject) if semester == 1 else student.second_term_comment_subjects.get(name=subject)
                     
             else:
                 return JsonResponse({"message": "Unknow subject"}, status=400)
@@ -409,7 +409,7 @@ def create_student(request: HttpRequest):
             new_student.comment_subjects.set(EvaluateByCommentSubject.generate_comment_subject())
             new_student.second_term_main_subjects.set(MainSubject.generate_main_subjects())
             new_student.second_term_second_subjects.set(SecondSubject.generate_second_subjects())
-            new_student.second_term_comment_subject.set(EvaluateByCommentSubject.generate_comment_subject())
+            new_student.second_term_comment_subjects.set(EvaluateByCommentSubject.generate_comment_subject())
 
             new_student.save(force_update=True)
 

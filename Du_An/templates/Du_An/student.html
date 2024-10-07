@@ -253,7 +253,14 @@
                 {% empty %}
                 Error while loading page
                 {% endfor %}
-                
+                <!--* Display comment subjects-->
+                <!--TODO: FIX-->
+                {% for comment_subject in student.get_subjects_mark.comment %}
+                    <div id="{{ comment_subject.first_term.name }}" style="display: none;">
+                        <p>{% if comment_subject.is_passed == True %} Đạt {% elif comment_subject is None %} Chưa có kết quả {% else %} Không đạt {% endif %} </p>
+                        <p> {{ comment_subject.comment }} </p>
+                    </div>
+                {% endfor %}
                 {% if user.teacher in student.classroom.get_teachers %}
                 <form id="updateMarkForm">
                     <!--* teacher will select the subject that they want to update-->
@@ -265,7 +272,6 @@
                     <button type="submit" class="btn btn-primary">Cập nhập điểm cho học sinh</button>
                 </form>
                 {% endif %}
-
             </div>
         </div>
     </div>
