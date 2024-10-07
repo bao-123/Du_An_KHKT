@@ -8,14 +8,15 @@ form
 {
     margin: auto;
     text-align: center;
-    width: 500px;
-    padding: 1rem;
+    padding: 3rem;
     background-color: rgba(167, 167, 167, 0.24);
     border: 1px solid grey;
     border-radius: 12px;
     box-shadow: 8px 8px 10px rgb(59, 59, 59);
-    height: 500px;
+    height: fit-content;
     background-color: rgb(238, 96, 96);
+    width: fit-content;
+    margin-bottom: 5rem;
 }
 
 
@@ -51,4 +52,20 @@ form > textarea
 .roleSelect
 {
     display: block;
+}
+.errorDisplay{
+    background-color: rgb(255, 0, 0, 0.616);
+    text-align: center;
+    border: 5px solid;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding-top: 7px;
+}
+.error_message{
+    font-size: 25px;
+    font-style: italic;
+}
+.LogoPH{
+    width: 75px;
+    height: 78px;
 }

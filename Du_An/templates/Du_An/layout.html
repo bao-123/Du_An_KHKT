@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -14,7 +15,9 @@
     <!--* navigation bar -->
     <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand mb-4" href="{% url 'dashboard' %}">Du An</a>
+            <a class="navbar-brand mb-4" href="{% url 'dashboard' %}">
+                <img class="LogoPH" src="{% static 'Du_An/images/PHLogo(2).png' %}" alt="Logo">
+            </a>
 
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto mb-3">
