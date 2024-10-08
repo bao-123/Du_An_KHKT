@@ -1,14 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import date
 # Create your models here.
 
-#**CONSTANTs
+#-I CONSTANTs
 #* students's roles
 STUDENT_ROLE: list[str] = ["monitor", "academic", "art", "labor"]
 #-W The names here must be correct with the names of 'Subject' instances
 MAIN_SUBJECTS: list[str] = ["Toán", "Tiếng Anh", "Ngữ Văn", "Lịch Sử & Địa Lí", "KHTN"]
 SECOND_SUBJECTS: list[str] = ["Tin Học", "GDCD", "Công Nghệ"]
 COMMENT_SUBJECTS: list[str] = ["GDĐP", "HĐTN-HN", "Mĩ Thuật", "Âm Nhạc"]
+this_year: int = date.today().year
 
 
 #**name of instances of this models must be not different from the name of subjects in MainSubject, SecondSubject and EveluateByCommentSubject
@@ -139,47 +141,42 @@ class EvaluateByCommentSubject(models.Model):
 
 
 class Student(models.Model):
-    role_choices = [
-        ("monitor", "Lớp trưởng"),
-        ("academic", "lớp phó học tập"),
-        ("art", "lớp phó văn thể mỹ"),
-        ("labor", "lớp phó lao động"),
-        ("student", "Học sinh")
-    ]
 
     full_name = models.CharField(max_length=200)
     birthday = models.DateField(blank=False)
     is_boy = models.BooleanField()
-    classroom = models.ForeignKey("Class", on_delete=models.CASCADE, related_name="students")
     #TODO: fix
-    main_subjects = models.ManyToManyField(MainSubject, related_name="student")
-    second_subjects = models.ManyToManyField(SecondSubject, related_name="student")
-    comment_subjects = models.ManyToManyField(EvaluateByCommentSubject, related_name="student")
-    second_term_main_subjects = models.ManyToManyField(MainSubject, related_name="second_term_student")
-    second_term_second_subjects = models.ManyToManyField(SecondSubject, related_name="second_term_student")
-    second_term_comment_subjects = models.ManyToManyField(EvaluateByCommentSubject, related_name="second_term_student")
-
-    role = models.CharField(max_length=30, choices=role_choices)
+    #* Replaced!
+    """ 
+    //main_subjects = models.ManyToManyField(MainSubject, related_name="student")
+    //second_subjects = models.ManyToManyField(SecondSubject, related_name="student")
+    //comment_subjects = models.ManyToManyField(EvaluateByCommentSubject, related_name="student")
+    //second_term_main_subjects = models.ManyToManyField(MainSubject, related_name="second_term_student")
+    //second_term_second_subjects = models.ManyToManyField(SecondSubject, related_name="second_term_student")
+    //second_term_comment_subjects = models.ManyToManyField(EvaluateByCommentSubject, related_name="second_term_student") """
+    #! Using porperty 'profiles' insteads.
 
     def __str__(self):
         return f"{self.id}| {self.full_name}| {self.classroom.name} | {self.role}"
 
 
     #*get marks of subjects
-    def get_subjects_mark(self):
+    def get_subjects_mark(self, year: int = this_year):
         return {
             "main": [
-                {"first_term": self.main_subjects.filter(name="Toán").first(), "second_term": self.second_term_main_subjects.filter(name="Toán").first()},
-                {"first_term": self.main_subjects.filter(name="Ngữ Văn").first(), "second_term": self.second_term_main_subjects.filter(name="Ngữ Văn").first()},
-                {"first_term": self.main_subjects.filter(name="Tiếng Anh").first(), "second_term": self.second_term_main_subjects.filter(name="Tiếng Anh").first()},
-                {"first_term": self.main_subjects.filter(name="KHTN").first(), "second_term": self.second_term_main_subjects.filter(name="KHTN").first()},
-                {"first_term": self.main_subjects.filter(name="Lịch Sử & Địa Lí").first(), "second_term": self.second_term_main_subjects.filter(name="Lịch Sử & Địa Lí").first()},
+                #** Rewrite this
+                {"first_term": self.profiles.filter(year=year).first().main_subjects.filter(name="Toán").first(), "second_term": self.profiles.filter(year=year).first().second_term_main_subjects.filter(name="Toán").first()},
+                {"first_term": self.profiles.filter(year=year).first().main_subjects.filter(name="Ngữ Văn").first(), "second_term": self.profiles.filter(year=year).first().second_term_main_subjects.filter(name="Ngữ Văn").first()},
+                {"first_term": self.profiles.filter(year=year).first().main_subjects.filter(name="Tiếng Anh").first(), "second_term": self.profiles.filter(year=year).first().second_term_main_subjects.filter(name="Tiếng Anh").first()},
+                {"first_term": self.profiles.filter(year=year).first().main_subjects.filter(name="KHTN").first(), "second_term": self.profiles.filter(year=year).first().second_term_main_subjects.filter(name="KHTN").first()},
+                {"first_term": self.profiles.filter(year=year).first().main_subjects.filter(name="Lịch Sử & Địa Lí").first(), "second_term": self.profiles.filter(year=year).first().second_term_main_subjects.filter(name="Lịch Sử & Địa Lí").first()},
             ],
             "second": [
-                {"first_term": self.second_subjects.filter(name="Tin Học").first(), "second_term": self.second_term_second_subjects.filter(name="Tin Học").first()},
-                {"first_term": self.second_subjects.filter(name="Công Nghệ").first(), "second_term": self.second_term_second_subjects.filter(name="Công Nghệ").first()},
-                {"first_term": self.second_subjects.filter(name="GDCD").first(), "second_term": self.second_term_second_subjects.filter(name="GDCD").first()}
+                {"first_term": self.profiles.filter(year=year).first().second_subjects.filter(name="Tin Học").first(), "second_term": self.profiles.filter(year=year).first().second_term_second_subjects.filter(name="Tin Học").first()},
+                {"first_term": self.profiles.filter(year=year).first().second_subjects.filter(name="Công Nghệ").first(), "second_term": self.profiles.filter(year=year).first().second_term_second_subjects.filter(name="Công Nghệ").first()},
+                {"first_term": self.profiles.filter(year=year).first().second_subjects.filter(name="GDCD").first(), "second_term": self.profiles.filter(year=year).first().second_term_second_subjects.filter(name="GDCD").first()}
             ],
+            #TODO:
             "comment": [
                 {"first_term": self.comment_subjects.filter(name="GDĐP").first(), "second_term": self.second_term_comment_subjects.filter(name="GDĐP").first()},
                 {"first_term": self.comment_subjects.filter(name="HĐTN-HN").first(), "second_term": self.second_term_comment_subjects.filter(name="HĐTN-HN").first()},
@@ -195,24 +192,55 @@ class Student(models.Model):
             "id": self.id,
             "name": self.full_name,
             "birthday": self.birthday.strftime("%d/%m/%Y"),
-            "is_boy": self.is_boy,
-            "classroom": self.classroom.serialize(),
-            "math": [ subject.serialize() for subject in self.main_subjects.all() ]
+            "profiles": [ profile.serialize() for profile in self.profiles.all() ]
+        }
+
+
+#TODO: Finish
+#-I Implement to store student data (mark) by years (năm học)
+class StudentYearProfile(models.Model):
+
+    role_choices = [
+        ("monitor", "Lớp trưởng"),
+        ("academic", "lớp phó học tập"),
+        ("art", "lớp phó văn thể mỹ"),
+        ("labor", "lớp phó lao động"),
+        ("student", "Học sinh")
+    ]
+
+    year = models.PositiveSmallIntegerField(blank=False, default=this_year)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="profiles") #-W profile with 's'
+    classroom = models.ForeignKey("Class", on_delete=models.CASCADE, related_name="students")
+    role = models.CharField(max_length=30, choices=role_choices)
+    main_subjects = models.ManyToManyField(MainSubject, related_name="student")
+    second_subjects = models.ManyToManyField(SecondSubject, related_name="student")
+    comment_subjects = models.ManyToManyField(EvaluateByCommentSubject, related_name="student")
+    second_term_main_subjects = models.ManyToManyField(MainSubject, related_name="second_term_student")
+    second_term_second_subjects = models.ManyToManyField(SecondSubject, related_name="second_term_student")
+    second_term_comment_subjects = models.ManyToManyField(EvaluateByCommentSubject, related_name="second_term_student")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "year": self.year,
+            "classroom": self.classroom.serilize(),
+            "role": self.role,
+            "subjects": self.student.get_subjects_mark()
         }
 
 
 class Class(models.Model):
 
-    form_teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, null=True, default=None, related_name="form_class")
-    name = models.CharField(max_length=3, unique=True)
-    subject_teachers = models.ManyToManyField("ClassSubjectTeacher", related_name="classroom")
     
-    def get_class_staff_committee(self):
-        return self.students.filter(role__in=STUDENT_ROLE)
-
-    def get_student_by_role(self, role: str) -> Student | None:
+    def get_class_staff_committee(self, year: int = this_year):
         try:
-            return self.students.get(role=role)
+            return self.profiles.get(year=year).filter(role__in=STUDENT_ROLE)
+        except:
+            return None
+
+    def get_student_by_role(self, role: str, year: int = this_year) -> Student | None:
+        try:
+            return self.profiles.get(year=year).students.get(role=role)
         except Student.DoesNotExist:
             return None
     
@@ -231,11 +259,24 @@ class Class(models.Model):
             "monitor": monitor if monitor else None
         }
     
-    def get_students(self):
-        return [ student.serialize() for student in self.students.all() ]
+    def get_students(self, year: int = this_year):
+        return [ student_profile.student.serialize() for student_profile in self.profiles.get(year=year).students.all() ] #* self.students is 'StudentYearProfile'
     
-    def get_teachers(self):
-        return [ teacher.teacher for teacher in self.subject_teachers.all() ]
+    def get_teachers(self, year: int = date.today().year ) -> list[Teacher] | None:
+        try:
+            return [ teacher.teacher for teacher in self.profiles.get(year=year).subject_teachers.all() ]
+        except ClassYearProfile.DoesNotExist:
+            return None
+
+
+#TODO: Finish
+#-I Store class's data by years
+class ClassYearProfile(models.Model):
+    classroom = models.ForeignKey(Class, on_delete=models.CASCADE, related_name="profiles") #-W profile with 's'
+    year = models.PositiveSmallIntegerField(blank=False, default=date.today().year)
+    form_teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, null=True, default=None, related_name="form_class")
+    name = models.CharField(max_length=3, unique=True)
+    subject_teachers = models.ManyToManyField("ClassSubjectTeacher", related_name="classroom")
 
 
 class ClassSubjectTeacher(models.Model):
@@ -263,3 +304,4 @@ def create_main_subject(name: str):
     subject = MainSubject.objects.create(name=name)
 
     return subject
+

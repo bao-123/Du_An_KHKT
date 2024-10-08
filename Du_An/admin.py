@@ -16,9 +16,7 @@ def correct_name(modeladmin, request, query_set):
 
 # Register your models here.
 class StudentAdminModel(admin.ModelAdmin):
-    list_display = ("id", "full_name", "classroom", "is_boy", "role")
-    filter_horizontal = ("main_subjects", "second_subjects", "second_term_main_subjects", "second_term_second_subjects",
-                         "comment_subjects", "second_term_comment_subjects")
+    list_display = ("id", "full_name", "is_boy", "role")
 
 class ParentAdmin(admin.ModelAdmin):
     filter_horizontal = ("children", )
@@ -27,7 +25,7 @@ class SubjectAdmin(admin.ModelAdmin):
     list_display = ("id", "name")
 
 class SubjectTeacherAdmin(admin.ModelAdmin):
-    filter_horizontal = ("subject_teachers", )
+    pass
 
 admin.site.register(Student, StudentAdminModel)
 admin.site.register(Class, SubjectTeacherAdmin)
@@ -38,6 +36,8 @@ admin.site.register(SecondSubject, SubjectAdmin)
 admin.site.register(EvaluateByCommentSubject, SubjectAdmin)
 admin.site.register(ClassSubjectTeacher)
 admin.site.register(Subject)
+admin.site.register(ClassYearProfile)
+admin.site.register(StudentYearProfile)
 
 
 """
