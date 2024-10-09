@@ -16,7 +16,7 @@ def correct_name(modeladmin, request, query_set):
 
 # Register your models here.
 class StudentAdminModel(admin.ModelAdmin):
-    list_display = ("id", "full_name", "is_boy", "role")
+    list_display = ("id", "full_name", "is_boy")
 
 class ParentAdmin(admin.ModelAdmin):
     filter_horizontal = ("children", )

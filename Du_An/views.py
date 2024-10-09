@@ -395,23 +395,18 @@ def create_student(request: HttpRequest):
             
             new_student = Student(
                 full_name=full_name,
-                classroom=student_classroom,
-                birthday=date(year, month, day),
                 is_boy= (gender == "boy"),
-                role=role
             )
 
             new_student.full_clean()
             new_student.save()
-            #TODO: fix
-            new_student.main_subjects.set(MainSubject.generate_main_subjects())
-            new_student.second_subjects.set(SecondSubject.generate_second_subjects())
-            new_student.comment_subjects.set(EvaluateByCommentSubject.generate_comment_subject())
-            new_student.second_term_main_subjects.set(MainSubject.generate_main_subjects())
-            new_student.second_term_second_subjects.set(SecondSubject.generate_second_subjects())
-            new_student.second_term_comment_subjects.set(EvaluateByCommentSubject.generate_comment_subject())
+            
+            try:
+                StudentYearProfile.create_profile(new_student, role, student_classroom) 
+            except ValidationError:
+                pass
 
-            new_student.save(force_update=True)
+            #//new_student.save(force_update=True)
 
             
             return HttpResponseRedirect(reverse("view_class", args=(student_classroom.id, )))

@@ -27,7 +27,7 @@ class Subject(models.Model):
         return self.name
     
     def get_teachers(self) -> list:
-        return [teacher.serialize for teacher in self.teachers.all()]
+        return [teacher.serialize() for teacher in self.teachers.all()]
     
     def teacher_count(self):
         return self.teachers.count()
@@ -45,6 +45,7 @@ class Teacher(User):
             "id": self.id,
             "name": self.full_name,
             "email": self.email,
+            "contact_info": self.contact_information
             #"is_boy": self.is_boy
         }
     
@@ -61,7 +62,9 @@ class Parent(User):
             "id": self.id,
             "name": self.full_name,
             "email": self.email,
+            "contact_info": self.contact_information
         }
+    
 
 #** ensure that a MainSubject (or SecondSubject,...) object only point to a student
 class MainSubject(models.Model):
@@ -162,27 +165,25 @@ class Student(models.Model):
 
     #*get marks of subjects
     def get_subjects_mark(self, year: int = this_year):
+        try:
+            profile = self.profiles.get(year=year)
+        except Student.DoesNotExist:
+            return None
+        
         return {
             "main": [
                 #** Rewrite this
-                {"first_term": self.profiles.filter(year=year).first().main_subjects.filter(name="Toán").first(), "second_term": self.profiles.filter(year=year).first().second_term_main_subjects.filter(name="Toán").first()},
-                {"first_term": self.profiles.filter(year=year).first().main_subjects.filter(name="Ngữ Văn").first(), "second_term": self.profiles.filter(year=year).first().second_term_main_subjects.filter(name="Ngữ Văn").first()},
-                {"first_term": self.profiles.filter(year=year).first().main_subjects.filter(name="Tiếng Anh").first(), "second_term": self.profiles.filter(year=year).first().second_term_main_subjects.filter(name="Tiếng Anh").first()},
-                {"first_term": self.profiles.filter(year=year).first().main_subjects.filter(name="KHTN").first(), "second_term": self.profiles.filter(year=year).first().second_term_main_subjects.filter(name="KHTN").first()},
-                {"first_term": self.profiles.filter(year=year).first().main_subjects.filter(name="Lịch Sử & Địa Lí").first(), "second_term": self.profiles.filter(year=year).first().second_term_main_subjects.filter(name="Lịch Sử & Địa Lí").first()},
+                {"first_term": profile.main_subjects.filter(name=name).first(), "second_term": profile.second_term_main_subjects.filter(name=name).first()}
+                for name in MAIN_SUBJECTS
             ],
             "second": [
-                {"first_term": self.profiles.filter(year=year).first().second_subjects.filter(name="Tin Học").first(), "second_term": self.profiles.filter(year=year).first().second_term_second_subjects.filter(name="Tin Học").first()},
-                {"first_term": self.profiles.filter(year=year).first().second_subjects.filter(name="Công Nghệ").first(), "second_term": self.profiles.filter(year=year).first().second_term_second_subjects.filter(name="Công Nghệ").first()},
-                {"first_term": self.profiles.filter(year=year).first().second_subjects.filter(name="GDCD").first(), "second_term": self.profiles.filter(year=year).first().second_term_second_subjects.filter(name="GDCD").first()}
+                {"first_term": profile.second_subjects.filter(name=name).first(), "second_term": profile.second_term_second_subjects.filter(name=name).first()}
+                for name in SECOND_SUBJECTS
             ],
             #TODO:
             "comment": [
-                {"first_term": self.comment_subjects.filter(name="GDĐP").first(), "second_term": self.second_term_comment_subjects.filter(name="GDĐP").first()},
-                {"first_term": self.comment_subjects.filter(name="HĐTN-HN").first(), "second_term": self.second_term_comment_subjects.filter(name="HĐTN-HN").first()},
-                {"first_term": self.comment_subjects.filter(name="GDTC").first(), "second_term": self.second_term_comment_subjects.filter(name="GDTC").first()},
-                {"first_term": self.comment_subjects.filter(name="Mĩ Thuật").first(), "second_term": self.second_term_comment_subjects.filter(name="Mĩ Thuật").first()},
-                {"first_term": self.comment_subjects.filter(name="Âm Nhạc").first(), "second_term": self.second_term_comment_subjects.filter(name="Âm Nhạc").first()}
+                {"first_term": profile.comment_subjects.filter(name=name).first(), "second_term": profile.second_term_comment_subjects.filter(name=name).first()}
+                for name in COMMENT_SUBJECTS
             ]
         }
     
@@ -210,7 +211,7 @@ class StudentYearProfile(models.Model):
 
     year = models.PositiveSmallIntegerField(blank=False, default=this_year)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="profiles") #-W profile with 's'
-    classroom = models.ForeignKey("Class", on_delete=models.CASCADE, related_name="students")
+    classroom = models.ForeignKey("ClassYearProfile", on_delete=models.CASCADE, related_name="students")
     role = models.CharField(max_length=30, choices=role_choices)
     main_subjects = models.ManyToManyField(MainSubject, related_name="student")
     second_subjects = models.ManyToManyField(SecondSubject, related_name="student")
@@ -227,22 +228,32 @@ class StudentYearProfile(models.Model):
             "role": self.role,
             "subjects": self.student.get_subjects_mark()
         }
+    
+    @classmethod
+    def create_profile(student: Student, role: str, classroom, year: int = this_year): #@@classroom should be a 'Class' instance
+        profile = StudentYearProfile(
+            student=student,
+            year=year,
+            classroom=classroom,
+            role=role,
+        )
+        profile.full_clean()
+        profile.save()
+
+        profile.main_subjects.set(MainSubject.generate_main_subjects())
+        profile.second_term_main_subjects.set(MainSubject.generate_main_subjects())
+        profile.second_subjects.set(SecondSubject.generate_second_subjects())
+        profile.second_term_second_subjects.set(SecondSubject.generate_second_subjects())
+        profile.comment_subjects.set(EvaluateByCommentSubject.generate_comment_subject())
+        profile.second_term_comment_subjects.set(EvaluateByCommentSubject.generate_comment_subject())
+
+        profile.save(force_update=True) #* Ensure
+
+        return profile
 
 
 class Class(models.Model):
-
-    
-    def get_class_staff_committee(self, year: int = this_year):
-        try:
-            return self.profiles.get(year=year).filter(role__in=STUDENT_ROLE)
-        except:
-            return None
-
-    def get_student_by_role(self, role: str, year: int = this_year) -> Student | None:
-        try:
-            return self.profiles.get(year=year).students.get(role=role)
-        except Student.DoesNotExist:
-            return None
+    name = models.CharField(max_length=3, unique=True)
     
 
     def __str__(self):
@@ -250,13 +261,10 @@ class Class(models.Model):
     
 
     def serialize(self):
-        monitor = self.get_student_by_role(role="monitor")
         return {
             "id": self.id,
             "name": self.name,
-            "form_teacher": self.form_teacher.serialize() if self.form_teacher else None,
-            "subject_teachers": [ teacher.serialize() for teacher in self.subject_teachers.all() ],
-            "monitor": monitor if monitor else None
+            "profiles": [ profile.serialize() for profile in self.profiles.all() ]
         }
     
     def get_students(self, year: int = this_year):
@@ -275,8 +283,30 @@ class ClassYearProfile(models.Model):
     classroom = models.ForeignKey(Class, on_delete=models.CASCADE, related_name="profiles") #-W profile with 's'
     year = models.PositiveSmallIntegerField(blank=False, default=date.today().year)
     form_teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, null=True, default=None, related_name="form_class")
-    name = models.CharField(max_length=3, unique=True)
     subject_teachers = models.ManyToManyField("ClassSubjectTeacher", related_name="classroom")
+
+
+    def get_class_staff_committee(self):
+        try:
+            return self.students.filter(role__in=STUDENT_ROLE)
+        except:
+            return None
+        
+
+    def get_student_by_role(self, role: str) -> StudentYearProfile | None:
+        try:
+            return self.students.get(role=role)
+        except StudentYearProfile.DoesNotExist:
+            return None
+        
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "year": self.year,
+            "form_teacher": self.form_teacher.serialize(),
+            "subject_teachers": [ teacher.teacher.serialize() for teacher in self.subject_teachers.all() ]
+        }
 
 
 class ClassSubjectTeacher(models.Model):
@@ -284,24 +314,18 @@ class ClassSubjectTeacher(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT, related_name="teaching_classes")
 
     @staticmethod
-    def get_subject_teacher(subject: Subject, classroom: Class) -> Teacher | None:
+    def get_subject_teacher(subject: Subject, classroom: ClassYearProfile) -> Teacher | None:
         try:
             return ClassSubjectTeacher.objects.get(subject=subject, classroom=classroom)
         except ClassSubjectTeacher.DoesNotExist:
             return None
     
     @staticmethod
-    def is_teaching(subject: Subject, teacher: Teacher, classroom: Class) -> bool:
+    def is_teaching(subject: Subject, teacher: Teacher, classroom: ClassYearProfile) -> bool:
         class_subject = ClassSubjectTeacher.objects.filter(subject=subject, classroom=classroom).first()
         if not class_subject:
             raise Exception("Unknow class (or subject)")
         
         return class_subject.teacher == teacher
 
-
-#function to create a Subject
-def create_main_subject(name: str):
-    subject = MainSubject.objects.create(name=name)
-
-    return subject
 
