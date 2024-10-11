@@ -6,10 +6,18 @@ from datetime import date
 #-I CONSTANTs
 #* students's roles
 STUDENT_ROLE: list[str] = ["monitor", "academic", "art", "labor"]
+role_choices = [
+        ("monitor", "Lớp trưởng"),
+        ("academic", "lớp phó học tập"),
+        ("art", "lớp phó văn thể mỹ"),
+        ("labor", "lớp phó lao động"),
+        ("student", "Học sinh")
+    ]
+
 #-W The names here must be correct with the names of 'Subject' instances
 MAIN_SUBJECTS: list[str] = ["Toán", "Tiếng Anh", "Ngữ Văn", "Lịch Sử & Địa Lí", "KHTN"]
 SECOND_SUBJECTS: list[str] = ["Tin Học", "GDCD", "Công Nghệ"]
-COMMENT_SUBJECTS: list[str] = ["GDĐP", "HĐTN-HN", "Mĩ Thuật", "Âm Nhạc"]
+COMMENT_SUBJECTS: list[str] = ["GDĐP", "GDTC", "HĐTN-HN", "Mĩ Thuật", "Âm Nhạc"]
 this_year: int = date.today().year
 
 
@@ -195,19 +203,12 @@ class Student(models.Model):
             "birthday": self.birthday.strftime("%d/%m/%Y"),
             "profiles": [ profile.serialize() for profile in self.profiles.all() ]
         }
-
+    
 
 #TODO: Finish
 #-I Implement to store student data (mark) by years (năm học)
 class StudentYearProfile(models.Model):
 
-    role_choices = [
-        ("monitor", "Lớp trưởng"),
-        ("academic", "lớp phó học tập"),
-        ("art", "lớp phó văn thể mỹ"),
-        ("labor", "lớp phó lao động"),
-        ("student", "Học sinh")
-    ]
 
     year = models.PositiveSmallIntegerField(blank=False, default=this_year)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="profiles") #-W profile with 's'
@@ -314,9 +315,9 @@ class ClassSubjectTeacher(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT, related_name="teaching_classes")
 
     @staticmethod
-    def get_subject_teacher(subject: Subject, classroom: ClassYearProfile) -> Teacher | None:
+    def get_subject_teacher(subject: Subject, classProfile: ClassYearProfile) -> Teacher | None:
         try:
-            return ClassSubjectTeacher.objects.get(subject=subject, classroom=classroom)
+            return ClassSubjectTeacher.objects.get(subject=subject, classroom=classProfile).teacher
         except ClassSubjectTeacher.DoesNotExist:
             return None
     

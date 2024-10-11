@@ -195,25 +195,33 @@ def view_classes(request):
         classes = Class.objects.all()
 
         return render(request, "Du_An/classes.html", {
-            "classes": classes
+            "classes": [ {"class": classroom, "profile": classroom.profiles.get(year=this_year)} for classroom in classes ]
         })
     #** API to add class's subject teacher
     elif request.method == "PUT":
         if not hasattr(request.user, "teacher"):
             return HttpResponseNotAllowed("Only teachers can do this")
         
-        body = json.loads(request.body)
+        body: dict = json.loads(request.body)
         class_id = body.get("class_id")
         subject_id = body.get("subject_id") #** id of a 'Subject' instance
+        year = body.get("year")
 
         try:
             classroom = Class.objects.get(pk=class_id)
+            if year:
+                class_profile = classroom.profiles.get(year=year)
+            else:
+                class_profile = classroom.profiles.get(year=this_year) 
+
             subject = Subject.objects.get(pk=subject_id)
 
-            if ClassSubjectTeacher.get_subject_teacher(subject, classroom):
+            if ClassSubjectTeacher.get_subject_teacher(subject, class_profile):
                 return JsonResponse({"message": f"This class already have a {subject.name} teacher"}, status=400)
             classroom_subject_teacher = ClassSubjectTeacher(subject=subject, teacher=request.user)
-            classroom.subject_teachers.add(classroom_subject_teacher)
+            class_profile.subject_teachers.add(classroom_subject_teacher)
+
+            class_profile.save(force_update=True)
 
             return JsonResponse({"message": "Successfully"}, status=200)
 
@@ -243,9 +251,10 @@ def view_student(request, id):
     if request.method == "GET":
         try:
             student = Student.objects.get(pk=id)
-
+            student_profile = student.profiles.get(year=this_year) #* 'this_year' is declared in 'models.py'
             return render(request, "Du_An/student.html", {
                 "student": student,
+                "student_profile": student,
                 "subjects": Subject.objects.all()
             })
         except Student.DoesNotExist:
@@ -328,14 +337,20 @@ def view_student(request, id):
 
 
 def view_class(request, id):
+    if request.method != "GET":
+        return HttpResponseNotAllowed("method not allowed")
     try:
         request_class = Class.objects.get(pk=id)
+        class_profile = request_class.profiles.get(year=this_year) #TODO: Update to get others year
 
         return render(request, "Du_An/class_profile.html", {
-            "classroom": request_class
+            "classroom": request_class,
+            "class_profile": class_profile
         })
     except Class.DoesNotExist:
         return render_error(error="Not found", error_message="Doesn't found any teacher with this id")
+    except ClassYearProfile.DoesNotExist:
+        return render_error(request, error="NVALID YEAR", error_message="Doesn't found any profile in this year")
 
 
 def view_parent(request: HttpRequest, id: int):
@@ -396,6 +411,7 @@ def create_student(request: HttpRequest):
             new_student = Student(
                 full_name=full_name,
                 is_boy= (gender == "boy"),
+                birthday=date(year, month, day)
             )
 
             new_student.full_clean()
@@ -404,7 +420,7 @@ def create_student(request: HttpRequest):
             try:
                 StudentYearProfile.create_profile(new_student, role, student_classroom) 
             except ValidationError:
-                pass
+                pass #TODO
 
             #//new_student.save(force_update=True)
 
@@ -427,6 +443,8 @@ def update_class(request: HttpRequest):
         return HttpResponseNotAllowed("method not allowed.")
     
     classroom_id = int(request.POST.get("classroom_id", None))
+    year = int(request.POST.get("year", this_year))
+
     if not hasattr(request.user, "teacher"):
         return render_error(request, error="Permisson denied", error_message="ONly teachers can do this!")
     
@@ -436,16 +454,19 @@ def update_class(request: HttpRequest):
     
     try:
         classroom = Class.objects.get(pk=classroom_id)
-        if classroom.form_teacher:
+        class_profile: ClassYearProfile = classroom.profiles.get(year=year)
+        if class_profile.form_teacher:
           return render_error(request, error="Error occurs", error_message="This class already have a form teacher!")
         
-        classroom.form_teacher = request.user.teacher
+        class_profile.form_teacher = request.user.teacher
 
-        classroom.save(force_update=True)
+        class_profile.save(force_update=True)
 
         return HttpResponseRedirect(reverse("view_class", args=(classroom_id, )))
     except Class.DoesNotExist:
         return render_error(request, error="Not found", error_message="Doesn't found any class with this id")
+    except ClassYearProfile.DoesNotExist:
+        return render_error(request, error="Invalid year", error_message="Doesn't found any profile of this class in this year")
 
 
 def render_register(request: HttpRequest, error: dict | None = None):

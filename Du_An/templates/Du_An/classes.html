@@ -1,4 +1,5 @@
 {% extends 'Du_An/layout.html' %}
+{% load static tags %}
 
 {% block title %}Vnadu: Classes {% endblock %}
 
@@ -6,12 +7,12 @@
     <div class="classes">
         {% for class in classes %}
             <div class="class">
-                <p class="class_name"> {{ class.name }} </p>
-                <p class="class_student_count">Si so: {{ class.student_count }} </p>
+                <p class="class_name"> {{ class.class.name }} </p>
+                <p class="class_student_count">Si so: {{ class.profile.students.count }} </p>
                 <!--TODO: Replace the href (to the teacher's profile page)-->
-                {% if class.form_teacher %}
+                {% if class.profile.form_teacher %}
                 <p>
-                    Form teacher: <a class="link-primary link-offset-2 link-opacity-75-hover link-underline-info" href="{% url 'view_teacher' class.form_teacher.id %}">{{ class.form_teacher.full_name }} </a>
+                    Form teacher: <a class="link-primary link-offset-2 link-opacity-75-hover link-underline-info" href="{% url 'view_teacher' class.profile.form_teacher.id %}">{{ class.profile.form_teacher.full_name }} </a>
                 </p>
                 {% else %}
                 <p>Chưa có giáo viên chủ nhiệm</p>
@@ -20,7 +21,9 @@
                 <!--TODO: Replace the href (to the monitor's profile page)-->
                 <p>
                     <!--TODO: fix the display of class's monitor-->
-                    Monitor: {% if class.monitor %} <a href="{% url 'view_student' class.monitor.id %}" class="link-info link-underline-info link-offset-2 link-opacity-75-hover">{{ class.monitor.full_name}}</a> {% else %} chưa có lớp trưởng {% endif %}
+                    {% autoescape off %}
+                        {% get_student_page_link class 'monitor' 'link-info link-offset-2 link-opacity-hover-75'  %}
+                    {% endautoescape %}
                 </p>
                 <a href="{% url 'view_class' class.id %}" class="btn btn-outline-info">Details</a>
             </div>
