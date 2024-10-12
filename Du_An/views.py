@@ -342,14 +342,14 @@ def view_class(request, id):
         return HttpResponseNotAllowed("method not allowed")
     try:
         request_class = Class.objects.get(pk=id)
-        class_profile = request_class.profiles.get(year=this_year) #TODO: Update to get others year
+        class_profile = request_class.get_profile() #TODO: Update to get others year
 
         return render(request, "Du_An/class_profile.html", {
             "classroom": request_class,
             "class_profile": class_profile
         })
     except Class.DoesNotExist:
-        return render_error(error="Not found", error_message="Doesn't found any teacher with this id")
+        return render_error(request, error="Not found", error_message="Doesn't found any teacher with this id")
     except ClassYearProfile.DoesNotExist:
         return render_error(request, error="NVALID YEAR", error_message="Doesn't found any profile in this year")
 

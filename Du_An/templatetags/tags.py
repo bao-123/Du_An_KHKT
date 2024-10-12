@@ -45,6 +45,7 @@ def get_profile(classroom: Class, porperty: str, year: int = this_year): #* 'thi
         return None
     
 
+@register.simple_tag
 def get_role_name(role: str) -> str | None:
     if role not in STUDENT_ROLE:
         return 

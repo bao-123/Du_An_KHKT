@@ -171,8 +171,8 @@ class Student(models.Model):
     #* Get the profile of this year
     def get_profile(self, year: int = this_year):
         try:
-            return self.profiles.get(year=this_year)
-        except Student.DoesNotExist:
+            return self.profiles.get(year=year)
+        except StudentYearProfile.DoesNotExist:
             return None
         
 
@@ -285,21 +285,16 @@ class Class(models.Model):
     
 
     #* get the profile of this year
-    def get_profile(self):
+    def get_profile(self, year: int =this_year):
         try:
-            return self.profiles.get(year=this_year)
+            return self.profiles.get(year=year)
         except ClassYearProfile.DoesNotExist:
             return None
         
         
     def get_students(self, year: int = this_year):
         return [ student_profile.student.serialize() for student_profile in self.profiles.get(year=year).students.all() ] #* self.students is 'StudentYearProfile'
-    
-    def get_teachers(self, year: int = date.today().year ) -> list[Teacher] | None:
-        try:
-            return [ teacher.teacher for teacher in self.profiles.get(year=year).subject_teachers.all() ]
-        except ClassYearProfile.DoesNotExist:
-            return None
+
 
 
 #TODO: Finish
@@ -316,7 +311,12 @@ class ClassYearProfile(models.Model):
             return self.students.filter(role__in=STUDENT_ROLE)
         except:
             return None
-        
+    
+
+    def get_teachers(self):
+        return self.subject_teachers.all()
+    
+
     def get_student_by_role(self, role: str) -> StudentYearProfile | None:
         try:
             return self.students.get(role=role) #-W self.students is a ManyToManyRelatedManager (to StudentYearProfile)

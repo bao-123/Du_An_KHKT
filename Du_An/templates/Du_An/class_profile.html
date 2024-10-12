@@ -1,5 +1,5 @@
 {% extends 'Du_An/layout.html' %}
-{% load static %}
+{% load static tags %}
 
 {% block title %}Class: {{ classroom.name }} {% endblock %}
 {% block style %} <link href="{% static 'Du_An/css/profile.css' %}" rel="stylesheet"> {% endblock %}
@@ -10,16 +10,16 @@
         <!--* Display class's basic info-->
         <div class="basicInfo">
             <h1 class="className">{{ classroom.name }}</h1>
-            <p class="classSiSo">Si so: {{ classroom.student_count }}</p>       <!--TODO: Replace the href -->
+            <p class="classSiSo">Si so: {{ class_profile.students.count }}</p>       <!--TODO: Replace the href -->
 
             <!--* display class's staff committee -->
             <div class="classStaffs">
                 <h2>Ban can su lop</h2>
-            {% for staff in classroom.get_class_staff_committee %}
-            {% if staff %}
+            {% for staff_profile in class_profile.get_class_staff_committee %}
+            {% if staff_profile %}
 
-            <p class="classStaffName">Ten: <a href="{% url 'view_student' staff.id %}" class="link-info link-offset-2">{{ staff.full_name}} </a> </p>
-            <p class="classStaffRole">Vai tro: {{ staff.role }} </p>
+            <p class="classStaffName">Ten: <a href="{% url 'view_student' staff_profile.student.id %}" class="link-info link-offset-2">{{ staff_profile.student.full_name }} </a> </p>
+            <p class="classStaffRole">Vai tro: {% get_role_name staff_profile.role %} </p>
 
             {% endif %}
             {% empty %}
@@ -29,8 +29,8 @@
 
             <!--TODO: Display other role (lop pho hoc tap, van the my,...)-->
             <p class="classFormTeacher">Giao vien chu nhiem: 
-                {% if classroom.form_teacher %}
-                    <a href="{% url 'view_teacher' classroom.form_teacher.id %}"> {{ classroom.form_teacher.full_name }} </a>
+                {% if class_profile.form_teacher %}
+                    <a href="{% url 'view_teacher' class_profile.form_teacher.id %}"> {{ class_profile.form_teacher.full_name }} </a>
                 {% else %}
                     Chua co GVCN
                     <form action="{% url 'update_class' %}" method="post">
@@ -49,27 +49,27 @@
                     <button class="nav-link active" id="studentTab">Students</button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="teacherTab">Teachers</button>
+                    <button class="nav-link link-secondary" id="teacherTab">Teachers</button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="details">Details</button>
+                    <button class="nav-link link-secondary" id="details">Details</button>
                 </li>
             </ul>
             <div id="infoDisplay">
                 <div id="students">
-                    {% for student in classroom.students.all %}
+                    {% for profile in class_profile.students.all %}
                     <div class="studentDisplay">
-                        <p>{{ student.full_name }}</p>
-                        <p>Birthday: {{ student.birthday }} </p>
-                        <p>Role: {{ student.role }}</p>
-                        <a href="{% url 'view_student' student.id %}" class="btn btn-outline-primary">Details</a>
+                        <p>{{ profile.student.full_name }}</p>
+                        <p>Birthday: {{ profile.student.birthday }} </p>
+                        <p>Role: {% get_role_name profile.role %} </p>
+                        <a href="{% url 'view_student' profile.student.id %}" class="btn btn-outline-primary">Details</a>
                     </div>
                     {% empty %}
                     Chua co hoc sinh
                     {% endfor %}
                 </div>
                 <div id="subjectTeachersDisplay" style="display: none;">
-                    {% for teacher in classroom.get_teachers %}
+                    {% for teacher in class_profile.get_teachers %}
                     <div class="teacher">
                         <p class="teacherName">Ten: <a href="{% url 'view_teacher' teacher.teacher.id %}" class="nav-link"> {{ teacher.teacher.full_name}} </a></p>
                         <p class="teacherSubject">Day mon: {{ teacher.subject.name }} </p>
@@ -78,7 +78,7 @@
                     Chua co giao vien
                     {% endfor %}
                     {% if user.teacher %}
-                        {% if user.teacher not in classroom.get_teachers %}
+                        {% if user.teacher not in class_profile.get_teachers %}
                         <!--TODO: add JS-->
                             <button id="teachClass" class="btn btn-outline-info">Trở thành giáo viên bộ môn của lớp này</button>
                         {% endif %}

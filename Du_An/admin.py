@@ -46,7 +46,7 @@ class SubjectAdmin(admin.ModelAdmin):
 
 
 class ClassYearProfileAdmin(admin.ModelAdmin):
-    list_display = ("classroom", "year")
+    list_display = ("id", "classroom", "year")
 
 admin.site.register(Student, StudentAdminModel)
 admin.site.register(Class, ClassAdmin)
