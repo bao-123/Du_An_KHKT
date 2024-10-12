@@ -42,7 +42,7 @@
                     <p class="className"> {{ classroom.classroom.name }} </p>
                     <p class="classStudentCount"> {{ classroom.classroom.student_count }}</p>
                     <p class="classFormTeacher">Form teacher: <a class="link-info link-offset-2 link-underline-light link-opacity-75-hover"> {{ classroom.classroom.form_teacher.full_name }}</a></p>
-                    <p class="classMonitor">Lop Truong: {% get_student_by_role classroom.classroom 'monitor' %} </p>
+                    <p class="classMonitor">Lop Truong: {% autoescape off %} {% get_student_page_link classroom.classroom 'monitor' 'link-info link-offset-2 link-opacity-75-hover' %} {% endautoescape %} </p>
                     <!--TODO: Add more role for classes-->
                 </div>
                 {% empty %}

@@ -13,6 +13,7 @@ def get_student_by_role(classroom: Class, role, porpery: str, year: int = this_y
         return f"Lớp chưa có {get_role_name(role)}"
 
 
+@register.simple_tag
 def get_student_page_link(classroom: Class, role: str, tagclass: str, year: int = this_year) -> str | None:
     try:
         student = classroom.profiles.get(year=year).students.get(role=role)

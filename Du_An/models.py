@@ -37,9 +37,6 @@ class Subject(models.Model):
     def get_teachers(self) -> list:
         return [teacher.serialize() for teacher in self.teachers.all()]
     
-    def teacher_count(self):
-        return self.teachers.count()
-    
 
 class Teacher(User):
     #** use full_name instead because username is unique
@@ -168,8 +165,16 @@ class Student(models.Model):
     #! Using porperty 'profiles' insteads.
 
     def __str__(self):
-        return f"{self.id}| {self.full_name}| {self.classroom.name} | {self.role}"
+        profile = self.get_profile()
+        return f"{self.id}| {self.full_name}| {profile.get_classroom().name} | {profile.role}"
 
+    #* Get the profile of this year
+    def get_profile(self, year: int = this_year):
+        try:
+            return self.profiles.get(year=this_year)
+        except Student.DoesNotExist:
+            return None
+        
 
     #*get marks of subjects
     def get_subjects_mark(self, year: int = this_year):
@@ -230,12 +235,22 @@ class StudentYearProfile(models.Model):
             "subjects": self.student.get_subjects_mark()
         }
     
-    @classmethod
+
+    def get_classroom(self, year: int = this_year):
+        try:
+            return self.classroom.classroom
+        except:
+            return None
+        
+
+    @staticmethod
     def create_profile(student: Student, role: str, classroom, year: int = this_year): #@@classroom should be a 'Class' instance
+        print(role)
+        print(classroom)
         profile = StudentYearProfile(
             student=student,
             year=year,
-            classroom=classroom,
+            classroom=classroom.profiles.get(year=year), #-I The year of the profile must be equal to the year of the classroom's profile
             role=role,
         )
         profile.full_clean()
@@ -268,6 +283,15 @@ class Class(models.Model):
             "profiles": [ profile.serialize() for profile in self.profiles.all() ]
         }
     
+
+    #* get the profile of this year
+    def get_profile(self):
+        try:
+            return self.profiles.get(year=this_year)
+        except ClassYearProfile.DoesNotExist:
+            return None
+        
+        
     def get_students(self, year: int = this_year):
         return [ student_profile.student.serialize() for student_profile in self.profiles.get(year=year).students.all() ] #* self.students is 'StudentYearProfile'
     
@@ -283,8 +307,8 @@ class Class(models.Model):
 class ClassYearProfile(models.Model):
     classroom = models.ForeignKey(Class, on_delete=models.CASCADE, related_name="profiles") #-W profile with 's'
     year = models.PositiveSmallIntegerField(blank=False, default=date.today().year)
-    form_teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, null=True, default=None, related_name="form_class")
-    subject_teachers = models.ManyToManyField("ClassSubjectTeacher", related_name="classroom")
+    form_teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, null=True, blank=True, default=None, related_name="form_class")
+    subject_teachers = models.ManyToManyField("ClassSubjectTeacher", blank=True, related_name="classroom")
 
 
     def get_class_staff_committee(self):
@@ -293,10 +317,9 @@ class ClassYearProfile(models.Model):
         except:
             return None
         
-
     def get_student_by_role(self, role: str) -> StudentYearProfile | None:
         try:
-            return self.students.get(role=role)
+            return self.students.get(role=role) #-W self.students is a ManyToManyRelatedManager (to StudentYearProfile)
         except StudentYearProfile.DoesNotExist:
             return None
         
@@ -305,7 +328,7 @@ class ClassYearProfile(models.Model):
         return {
             "id": self.id,
             "year": self.year,
-            "form_teacher": self.form_teacher.serialize(),
+            "form_teacher": self.form_teacher.serialize() if self.form_teacher else None,
             "subject_teachers": [ teacher.teacher.serialize() for teacher in self.subject_teachers.all() ]
         }
 

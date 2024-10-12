@@ -1,5 +1,6 @@
 {% extends 'Du_An/layout.html' %}
-{% load static tags %}
+{% load static %}
+{% load tags %}
 
 {% block title %}Vnadu: Classes {% endblock %}
 
@@ -22,10 +23,10 @@
                 <p>
                     <!--TODO: fix the display of class's monitor-->
                     {% autoescape off %}
-                        {% get_student_page_link class 'monitor' 'link-info link-offset-2 link-opacity-hover-75'  %}
+                        {% get_student_page_link class.class 'monitor' 'link-info link-offset-2 link-opacity-hover-75'  %}
                     {% endautoescape %}
                 </p>
-                <a href="{% url 'view_class' class.id %}" class="btn btn-outline-info">Details</a>
+                <a href="{% url 'view_class' class.class.id %}" class="btn btn-outline-info">Details</a>
             </div>
         {% endfor %}
     </div>

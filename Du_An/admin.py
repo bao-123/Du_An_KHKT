@@ -18,8 +18,15 @@ def check_subjects(modeladmin, request, query_set):
         if obj.name not in (MAIN_SUBJECTS + SECOND_SUBJECTS + COMMENT_SUBJECTS):
             print(obj.name)
             raise Exception("Invalid subject!!!")
-    
 
+    
+@admin.action(description="create profiles")
+def create_profiles(modeladmin, request, query_set):
+    for obj in query_set:
+        for i in range(2010, 2025):
+            ClassYearProfile.objects.create(year=i, classroom=obj)
+
+    
 # Register your models here.
 class StudentAdminModel(admin.ModelAdmin):
     list_display = ("id", "full_name", "is_boy")
@@ -30,14 +37,19 @@ class ParentAdmin(admin.ModelAdmin):
 class SubjectAdmin(admin.ModelAdmin):
     list_display = ("id", "name")
 
-class SubjectTeacherAdmin(admin.ModelAdmin):
-    pass
+class ClassAdmin(admin.ModelAdmin):
+    list_display = ("name", )
+    actions = [create_profiles, ]
 
 class SubjectAdmin(admin.ModelAdmin):
     actions = [check_subjects, ]
 
+
+class ClassYearProfileAdmin(admin.ModelAdmin):
+    list_display = ("classroom", "year")
+
 admin.site.register(Student, StudentAdminModel)
-admin.site.register(Class, SubjectTeacherAdmin)
+admin.site.register(Class, ClassAdmin)
 admin.site.register(Teacher)
 admin.site.register(Parent, ParentAdmin)
 admin.site.register(MainSubject, SubjectAdmin)
@@ -45,7 +57,7 @@ admin.site.register(SecondSubject, SubjectAdmin)
 admin.site.register(EvaluateByCommentSubject, SubjectAdmin)
 admin.site.register(ClassSubjectTeacher)
 admin.site.register(Subject, SubjectAdmin)
-admin.site.register(ClassYearProfile)
+admin.site.register(ClassYearProfile, ClassYearProfileAdmin)
 admin.site.register(StudentYearProfile)
 
 

@@ -133,7 +133,7 @@ def register(request: HttpRequest):
                     full_name=full_name, #** Use full_name instead of username
                     username=email,
                     password = make_password(raw_password),
-                    contact_info=contact_info
+                    contact_information=contact_info
                     #is_boy=is_boy
                     #TODO: add some needed information.       
                 )
@@ -148,17 +148,19 @@ def register(request: HttpRequest):
             if form_class_id:
                 try:
                     form_class = Class.objects.get(pk=int(form_class_id))
-                    if form_class.form_teacher:
+                    class_profile = form_class.get_profile()
+                    if class_profile.form_teacher:
                         return render_register(request, error={
                             "error": f"{form_class.name} already have a form teacher!",
                             "error_message": "Check if you choose the wrong class or if you are not a form teacher you don't have to choose a form class."
                         })
-                    form_class.form_teacher = teacher
-                    form_class.save(force_update=True)
-                except Class.DoesNotExist:
+                    
+                    class_profile.form_teacher = teacher
+                    class_profile.save(force_update=True)
+                except (Class.DoesNotExist, ClassYearProfile.DoesNotExist):
                     return HttpResponseRedirect(reverse("register"))
 
-            teacher.save()
+            teacher.save(force_update=True)
             login(request, teacher)
 
         elif user_type == "parent":
@@ -170,7 +172,7 @@ def register(request: HttpRequest):
                     full_name=full_name,
                     username=email,
                     password = make_password(raw_password),
-                    contact_info=contact_info
+                    contact_information=contact_info
                 )
             except IntegrityError:
                 return render_register(request,  error={
@@ -251,10 +253,9 @@ def view_student(request, id):
     if request.method == "GET":
         try:
             student = Student.objects.get(pk=id)
-            student_profile = student.profiles.get(year=this_year) #* 'this_year' is declared in 'models.py'
             return render(request, "Du_An/student.html", {
                 "student": student,
-                "student_profile": student,
+                "student_profile": student.get_profile(),
                 "subjects": Subject.objects.all()
             })
         except Student.DoesNotExist:
@@ -372,7 +373,8 @@ def create_student(request: HttpRequest):
     classes = Class.objects.all()
     if request.method == "GET":
         return render(request, "Du_An/create_student.html", {
-            "classes": classes
+            "classes": classes,
+            "role": STUDENT_ROLE #* list  of student's roles
         })
     elif request.method == "POST":
         full_name = request.POST.get("full_name", None)
@@ -389,8 +391,8 @@ def create_student(request: HttpRequest):
             })
         
         try:
-            #** if the format of the date in html form changed, remember to change this also.
-            birthday = birthday.split("-") # the first element is month, second is day and the last is year
+            #-I if the format of the date in html form changed, remember to change this also.
+            birthday = birthday.split("-") #-W the first element is month, second is day and the last is year
             year, month, day = int(birthday[0]), int(birthday[1]), int(birthday[-1])
             if len(birthday) != 3:
                 return render(request, "Du_An/create_student.html", {
@@ -400,9 +402,12 @@ def create_student(request: HttpRequest):
             })
             #* get selected class
             student_classroom = Class.objects.get(pk=classroom_id)
+            print(student_classroom)
+            classroom_profile = student_classroom.get_profile() #* Tam thoi
+            print(classroom_profile)
 
             #** ensure that there is only a monitor in a class
-            if student_classroom.get_student_by_role("monitor") and role == "monitor":
+            if classroom_profile.get_student_by_role("monitor") and role == "monitor":
                 return render(request, "Du_An/create_student.html", {
                     "error": "Fail to create student",
                     "error_message": "This class already have a monitor"
@@ -427,7 +432,7 @@ def create_student(request: HttpRequest):
             
             return HttpResponseRedirect(reverse("view_class", args=(student_classroom.id, )))
         except Exception as e:
-            print(e)
+            print(e.with_traceback())
             return render(request, "Du_An/create_student.html", {
                 "error": "INVALID INFORMATION",
                 "error_message": "PLease enter valid information.",
