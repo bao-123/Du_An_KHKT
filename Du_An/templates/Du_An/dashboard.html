@@ -16,14 +16,14 @@
             {% if user.teacher.form_class %}
             <div class="formClass">
                 <p class="className"> {{ user.teacher.form_class.name }}</p>
-                <p class="classStudentCount">Si so{{ user.teacher.form_class.student_count}}</p>
+                <p class="classStudentCount">Si so: {{ user.teacher.form_class.get_profile.students.count }}</p>
                 <div class="classStaffs">
                     <h2>Ban cán sự lớp</h2>
-                    {% for staff in user.teacher.get_class_staff_committee %}
+                    {% for staff in user.teacher.form_class.get_profile.get_class_staff_committee %}
                         {% if staff %}
                         <!--** staff here is a Student object -->
                         <p class="classStaffName">Tên: <a href="{% url 'view_student' staff.id %}" class="link-info link-offset-2 link-opacity-75-hover"> {{ staff.full_name }} </a> </p>
-                        <p class="classStaffRole">{{ staff.role }}</p>
+                        <p class="classStaffRole">{% get_role_name staff.get_profile.role %}</p>
                         {% endif %}
                     {% empty %}
                     Lớp  chưa có ban cán sự
@@ -37,12 +37,17 @@
             <hr>
             <h3>Lớp bộ môn</h3>
             <div class="classes">
-                {% for classroom in user.teacher.teaching_classes.all %}
+                {% for classroom in user.teacher.teaching_classes.all %} <!--* classroom here is a 'ClassSubjectTeacher' instance -->
+                <!--* classroom.classroom is a 'ClassYearProfile' instance and classroom.classroom.classroom is it's classroom -->
                 <div class="mb-3"> <!--** margin bottom 3-->
-                    <p class="className"> {{ classroom.classroom.name }} </p>
-                    <p class="classStudentCount"> {{ classroom.classroom.student_count }}</p>
-                    <p class="classFormTeacher">Form teacher: <a class="link-info link-offset-2 link-underline-light link-opacity-75-hover"> {{ classroom.classroom.form_teacher.full_name }}</a></p>
-                    <p class="classMonitor">Lop Truong: {% autoescape off %} {% get_student_page_link classroom.classroom 'monitor' 'link-info link-offset-2 link-opacity-75-hover' %} {% endautoescape %} </p>
+                    <p class="className"> {{ classroom.classroom.classroom.name }} </p>
+                    <p class="classStudentCount"> {{ classroom.classroom.students.count }}</p>
+                    {% if classroom.classroom.form_teacher %}
+                    <p class="classFormTeacher">Form teacher: <a href="{% url 'view_teacher' classroom.classroom.form_teacher.id %}" class="link-info link-offset-2 link-underline-light link-opacity-75-hover"> {{ classroom.classroom.form_teacher.full_name }}</a></p>
+                    {% else %}
+                    Lớp chưa có Giáo viên chủ nhiệm
+                    {% endif %}
+                    <p class="classMonitor">Lớp Trưởng: {% autoescape off %} {% get_student_page_link classroom.classroom 'monitor' 'link-info link-offset-2 link-opacity-75-hover' %} {% endautoescape %} </p>
                     <!--TODO: Add more role for classes-->
                 </div>
                 {% empty %}
@@ -57,11 +62,16 @@
                 {% for child in user.parent.children.all %}
                     <div class="child-div">
                         <h2>Name: {{ child.full_name }}</h2>
-                        <h3>Class: {{ child.classroom.name }}</h3>
+                        <h3>Class: {{ child.get_profile.classroom.classroom.name }}</h3>
                     </div>
                 {% endfor %}
             </div>
+        {% else %}
+            You're not either teacher or parent
         {% endif %}
+    {% else %}
+    <a class="btn btn-outline-primary" href="{% url 'login' %}">Đăng nhập</a>
+    <a class="btn btn-outline-primary" href="{% url 'register' %}">Đăng kí</a>
     {% endif %}
 
 {% endblock %}

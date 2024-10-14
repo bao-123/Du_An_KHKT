@@ -230,7 +230,7 @@ class StudentYearProfile(models.Model):
         return {
             "id": self.id,
             "year": self.year,
-            "classroom": self.classroom.serilize(),
+            "classroom": self.classroom.serialize(),
             "role": self.role,
             "subjects": self.student.get_subjects_mark()
         }
@@ -305,6 +305,9 @@ class ClassYearProfile(models.Model):
     form_teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, null=True, blank=True, default=None, related_name="form_class")
     subject_teachers = models.ManyToManyField("ClassSubjectTeacher", blank=True, related_name="classroom")
 
+
+    def __str__(self):
+        return f"{self.id}| {self.classroom.name}| {self.year}"
 
     def get_class_staff_committee(self):
         try:

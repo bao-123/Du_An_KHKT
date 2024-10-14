@@ -191,11 +191,11 @@ def register(request: HttpRequest):
         return HttpResponseNotAllowed("method not allowed.")
     
 
-
+#TODO: FIx!!!
 def view_classes(request):
     if request.method == "GET":
         classes = Class.objects.all()
-
+        print([{"class": classroom, "profile": classroom.profiles.get(year=this_year)} for classroom in classes ])
         return render(request, "Du_An/classes.html", {
             "classes": [ {"class": classroom, "profile": classroom.profiles.get(year=this_year)} for classroom in classes ]
         })
@@ -248,7 +248,8 @@ def view_teacher(request, teacher_id):
         return render_error(request, error="Not found", 
                             error_message="Doesn't found any teacher with this id") #* Add error_image (a path to a image in static) if wish.
     
-    
+
+@login_required(login_url="login")
 def view_student(request, id):
     if request.method == "GET":
         try:
@@ -260,6 +261,7 @@ def view_student(request, id):
             })
         except Student.DoesNotExist:
             return render_error(request, error="Not found", error_message="Can't found any student with this id")
+        
     elif request.method == "PUT":
         if not hasattr(request.user, "teacher"):
             return JsonResponse({"message": "Only teachers can do this!"}, status=401)
@@ -337,6 +339,7 @@ def view_student(request, id):
         return HttpResponseNotAllowed("method not allowed.")
 
 
+@login_required(login_url="login")
 def view_class(request, id):
     if request.method != "GET":
         return HttpResponseNotAllowed("method not allowed")
@@ -354,6 +357,7 @@ def view_class(request, id):
         return render_error(request, error="NVALID YEAR", error_message="Doesn't found any profile in this year")
 
 
+@login_required(login_url="login")
 def view_parent(request: HttpRequest, id: int):
     if request.method != "GET":
         return HttpResponseNotAllowed("method not allowed")
@@ -369,6 +373,7 @@ def view_parent(request: HttpRequest, id: int):
         return render_error(request, error="Not found", error_message="Doesn't found any parent with this id")
     
 
+@login_required(login_url="login")
 def create_student(request: HttpRequest):
     classes = Class.objects.all()
     if request.method == "GET":
@@ -442,6 +447,7 @@ def create_student(request: HttpRequest):
         return HttpResponseNotAllowed("method not allowed")
     
 
+@login_required(login_url="login")
 #* set the class's form teacher
 def update_class(request: HttpRequest):
     if request.method != "POST":

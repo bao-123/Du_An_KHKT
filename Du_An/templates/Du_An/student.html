@@ -12,10 +12,13 @@
     <div class="student_profile">
         <!--* Display the basic information -->
         <div class="basicInfo">
+            <!---I student is a 'Student' instance -->
+            <!---I student_profile is a 'studentYearProfile' instance -->
+            <!---I student_profile.classroom is a 'ClassYearProfile' instance -->
             <h2 class="studentName"> {{ student.full_name }} </h2>
-            <p class="studentClass">Lớp: <a href="{% url 'view_class' student.classroom.id %}" class="link-info link-offset-2 link-opacity-75-hover">{{ student.classroom.name }}</a></p>
+            <p class="studentClass">Lớp: <a href="{% url 'view_class' student_profile.classroom.id %}" class="link-info link-offset-2 link-opacity-75-hover">{{ student_profile.classroom.classroom.name }}</a></p>
             <p class="studentGender">Giới tính: {% if student.is_boy %} Nam {% else %} Nữ {% endif %}</p>
-            <p class="studentRole">Chức vụ: {{ student.role }}</p>
+            <p class="studentRole">Chức vụ: {{ student_profile.role }}</p>
             <p class="studentParent">
                 Phụ huynh: 
                 {% for parent in student.parent.all %}
@@ -46,6 +49,7 @@
                 </div>
                 <!--TODO: fix this-->
                 <!--** main subjects (4 thuong xuyen)-->
+                <!--* get_subjects_mark without 'year' parameters will return the marks of this year -->
                 {% for subject in student.get_subjects_mark.main %}
                     <div id="{{ subject.first_term.name }}" style="display: none;" class="subjectMarkDisplay">
                         <div class="subject_name_container">
@@ -67,7 +71,7 @@
 
                         <!--* Hiển thị điểm-->
                         <div class="marks">
-                            <div class="thuong_xuyen mark"> 
+                            <div class="thuong_xuyen diem"> 
                                 {% if subject.first_term.diem_thuong_xuyen1 %}
                                 {{ subject.first_term.diem_thuong_xuyen1 }}
                                 {% else %}
@@ -75,7 +79,7 @@
                                 {% endif %}
                             </div>
 
-                            <div class="thuong_xuyen mark"> 
+                            <div class="thuong_xuyen diem"> 
                                 {% if subject.first_term.diem_thuong_xuyen2 %}
                                 {{ subject.first_term.diem_thuong_xuyen2 }}
                                 {% else %}
@@ -83,7 +87,7 @@
                                 {% endif %}
                             </div>
 
-                            <div class="thuong_xuyen mark"> 
+                            <div class="thuong_xuyen diem"> 
                                 {% if subject.first_term.diem_thuong_xuyen3 %}
                                 {{ subject.first_term.diem_thuong_xuyen3 }}
                                 {% else %}
@@ -91,7 +95,7 @@
                                 {% endif %}
                             </div>
 
-                            <div class="thuong_xuyen mark"> 
+                            <div class="thuong_xuyen diem"> 
                                 {% if subject.first_term.diem_thuong_xuyen4 %}
                                 {{ subject.first_term.diem_thuong_xuyen4 }}
                                 {% else %}
@@ -99,7 +103,7 @@
                                 {% endif %}
                             </div>
 
-                            <div class="giua_ki mark"> 
+                            <div class="giua_ki diem"> 
                                 {% if subject.first_term.diem_giua_ki %}
                                 {{ subject.first_term.diem_giua_ki }}
                                 {% else %}
@@ -107,7 +111,7 @@
                                 {% endif %}
                             </div>
 
-                            <div class="cuoi_ki mark"> 
+                            <div class="cuoi_ki diem"> 
                                 {% if subject.first_term.diem_cuoi_ki %}
                                 {{ subject.first_term.diem_cuoi_ki }} 
                                 {% else %}
@@ -181,6 +185,12 @@
                         </div>
                         <div>
                             <p class="term_headers">Kì 1</p>
+                        </div>
+                        <div class="mark_table_headers">
+                            <p>Điểm thường xuyên 1 </p>
+                            <p>Điểm thường xuyên 2</p>
+                            <p>Điểm giữa kì</p>
+                            <p>Điểm cuối kì</p>
                         </div>
                         <div class="marks">
                             <div class="thuong_xuyen diem">
@@ -257,7 +267,7 @@
                 <!--TODO: FIX-->
                 {% for comment_subject in student.get_subjects_mark.comment %}
                     <div id="{{ comment_subject.first_term.name }}" style="display: none;">
-                        <p>{% if comment_subject.is_passed == True %} Đạt {% elif comment_subject is None %} Chưa có kết quả {% else %} Không đạt {% endif %} </p>
+                        <p>{% if comment_subject.is_passed == True %} Đạt {% elif comment_subject.is_passed == False %} Chưa đạt {% else %} Chưa có kết quả {% endif %} </p>
                         <p> {{ comment_subject.comment }} </p>
                     </div>
                 {% endfor %}

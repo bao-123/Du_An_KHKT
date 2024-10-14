@@ -17,13 +17,8 @@
     <!--* navigation bar -->
     <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
         <div class="container-fluid">
-<<<<<<< HEAD
-            <a class="navbar-brand mb-4" href="{% url 'dashboard' %}">
-                <img class="LogoPH" src="{% static 'Du_An/images/PHLogo(2).png' %}" alt="Logo">
-            </a>
-=======
+            
             <a class="navbar-brand mb-4" href="{% url 'dashboard' %}"><img src="{% static 'Du_An/images/PHLogoWeb.png' %}" alt="dashboard"></a>
->>>>>>> 176918ace77af4a5be00515e2a1c1122590b1487
 
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto mb-3">
@@ -44,7 +39,10 @@
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a href="{% url 'login' %}" class="nav-link">login</a>
+                        <a href="{% url 'login' %}" class="nav-link">Đăng nhập</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'register' %}" class="nav-link"> Đăng ký</a>
                     </li>
                     {% endif %}
                 </ul>

@@ -26,8 +26,12 @@
                 <!--* hien thi thong tin lien lac -->
                 <p class="teacherContactInfo"> {{ teacher.contact_information }}</p>
                 <!--* hien thi lop chu nhiem -->
-                <!--TODO: replace the href (to the class's profile page)-->
-                <a class="btn btn-outline-info" href="{% url 'view_class' teacher.form_class.id %}"><p class="teacherFormClass">Lớp chủ nhiệm: {{ teacher.form_class.name }} </p></a>
+                {% if teacher.form_class %}
+                    <!--* teacher.form_class is a 'ClassYearProfile' instance -->
+                    <a class="btn btn-outline-info" href="{% url 'view_class' teacher.form_class.classroom.id %}"><p class="teacherFormClass">Lớp chủ nhiệm: {{ teacher.form_class.classroom.name }} </p></a>
+                {% else %}
+                    <h3>Chưa có lớp chủ nhiệm</h3>
+                {% endif %}
                 <!--* hien thi danh sách các lớp đang dạy (bộ môn) -->
                 <div class="teacherTeachingClass">
                     {% for classroom in teacher.teaching_classes.all %}
