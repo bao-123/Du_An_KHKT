@@ -7,6 +7,7 @@
 {% block body %}
     <div class="classes">
         {% for class in classes %}
+        {% if class %}
             <div class="class">
                 <p class="class_name"> {{ class.class.name }} </p>
                 <p class="class_student_count">Si so: {{ class.profile.students.count }} </p>
@@ -22,12 +23,18 @@
                 <!--TODO: Replace the href (to the monitor's profile page)-->
                 <p>
                     <!--TODO: fix the display of class's monitor-->
-                    {% autoescape off %}
-                        {% get_student_page_link class.class 'monitor' 'link-info link-offset-2 link-opacity-hover-75'  %}
-                    {% endautoescape %}
+                    {% if class.class %}
+                        {% autoescape off %}
+                            {% get_student_page_link class.class 'monitor' 'link-info link-offset-2 link-opacity-hover-75'  %}
+                        {% endautoescape %}
+                    {% endif %}
                 </p>
                 <a href="{% url 'view_class' class.class.id %}" class="btn btn-outline-info">Details</a>
             </div>
+        {% else %}
+            None
+        {% endif %}
+
         {% endfor %}
     </div>
 {% endblock %}

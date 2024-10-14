@@ -1,5 +1,5 @@
 {% extends 'Du_An/layout.html' %}
-{% load static %}
+{% load static tags %}
 
 {% block title %} {{ parent.name }} {% endblock %}
 
@@ -12,13 +12,14 @@
         <div class="basicInfo">
             <p class="parentName Name"> {{ parent.full_name }} </p>
             <div class="children">
-                <h1>Các con</h1>
+                <h2>Các con</h2>
                 {% for child in parent.children.all %}
                     <div class="child">
                         <h3>{{ child.full_name }}</h3>
                         <p>Ngày sinh: {{ child.birthday }} </p>
-                        <p>Lớp: <a href="{% url 'view_class' child.classroom.id %}" class="link-info link-offset-2 link-opacity-75-hover"> {{ child.classroom.name }} </a> </p>
-                        <p>Chức vụ:  {{ child.role }} </p>
+                        <!--* child.get_profile.classroom is a 'ClassYearProfile' instance -->
+                        <p>Lớp: <a href="{% url 'view_class' child.get_profile.classroom.classroom.id %}" class="link-info link-offset-2 link-opacity-75-hover"> {{ child.get_profile.classroom.classroom.name }} </a> </p>
+                        <p>Chức vụ:  {% get_role_name child.get_profile.role %} </p>
                         <p> {% if child.is_boy %}Nam {% else %} Nữ {% endif %} </p>
                         <a href="{% url 'view_student' child.id %}" class="btn btn-primary">Thông tin chi tiết</a>
                     </div>

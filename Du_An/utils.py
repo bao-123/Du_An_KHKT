@@ -1,6 +1,17 @@
 from .models import *
 from datetime import date
 
+#Utils functions for views
+class ViewUtils():
+
+    @staticmethod
+    def get_form_class(teacher: Teacher):
+        try:
+            return teacher.form_class
+        except Teacher.form_class.RelatedObjectDoesNotExist:
+            return None
+        
+    
 #** functions for testing purpose
 class TestUtils():
 

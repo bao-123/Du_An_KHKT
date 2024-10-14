@@ -10,6 +10,7 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 import json
 from .models import *
+from .utils import ViewUtils
 
 # Create your views here. 
 
@@ -195,10 +196,11 @@ def register(request: HttpRequest):
 def view_classes(request):
     if request.method == "GET":
         classes = Class.objects.all()
-        print([{"class": classroom, "profile": classroom.profiles.get(year=this_year)} for classroom in classes ])
+
         return render(request, "Du_An/classes.html", {
-            "classes": [ {"class": classroom, "profile": classroom.profiles.get(year=this_year)} for classroom in classes ]
+            "classes": [ {"class": classroom, "profile": classroom.profiles.filter(year=this_year).first()} for classroom in classes ]
         })
+    
     #** API to add class's subject teacher
     elif request.method == "PUT":
         if not hasattr(request.user, "teacher"):
@@ -407,9 +409,7 @@ def create_student(request: HttpRequest):
             })
             #* get selected class
             student_classroom = Class.objects.get(pk=classroom_id)
-            print(student_classroom)
             classroom_profile = student_classroom.get_profile() #* Tam thoi
-            print(classroom_profile)
 
             #** ensure that there is only a monitor in a class
             if classroom_profile.get_student_by_role("monitor") and role == "monitor":
@@ -453,16 +453,16 @@ def update_class(request: HttpRequest):
     if request.method != "POST":
         return HttpResponseNotAllowed("method not allowed.")
     
-    classroom_id = int(request.POST.get("classroom_id", None))
+    classroom_id = int(request.POST.get("classroom_id", -1)) #* If there are not class's id, 'classroom_id' will be -1
     year = int(request.POST.get("year", this_year))
 
     if not hasattr(request.user, "teacher"):
         return render_error(request, error="Permisson denied", error_message="ONly teachers can do this!")
     
     #ensure that a teacher only have a form class at a time
-    if request.user.teacher.form_class:
-        return render_error(request, error="Error occurs", error_message="You already have a form class")
-    
+    if ViewUtils.get_form_class(request.user.teacher):
+        return render_error(request, error="Lỗi", error_message="Bạn đã có 1 lớp chủ nhiệm!")
+
     try:
         classroom = Class.objects.get(pk=classroom_id)
         class_profile: ClassYearProfile = classroom.profiles.get(year=year)

@@ -16,7 +16,7 @@
             <!---I student_profile is a 'studentYearProfile' instance -->
             <!---I student_profile.classroom is a 'ClassYearProfile' instance -->
             <h2 class="studentName"> {{ student.full_name }} </h2>
-            <p class="studentClass">Lớp: <a href="{% url 'view_class' student_profile.classroom.id %}" class="link-info link-offset-2 link-opacity-75-hover">{{ student_profile.classroom.classroom.name }}</a></p>
+            <p class="studentClass">Lớp: <a href="{% url 'view_class' student_profile.classroom.classroom.id %}" class="link-info link-offset-2 link-opacity-75-hover">{{ student_profile.classroom.classroom.name }}</a></p>
             <p class="studentGender">Giới tính: {% if student.is_boy %} Nam {% else %} Nữ {% endif %}</p>
             <p class="studentRole">Chức vụ: {{ student_profile.role }}</p>
             <p class="studentParent">

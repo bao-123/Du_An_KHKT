@@ -5,7 +5,7 @@ from datetime import date
 
 #-I CONSTANTs
 #* students's roles
-STUDENT_ROLE: list[str] = ["monitor", "academic", "art", "labor"]
+STUDENT_ROLE: list[str] = ["monitor", "academic", "art", "labor", "student"]
 role_choices = [
         ("monitor", "Lớp trưởng"),
         ("academic", "lớp phó học tập"),
@@ -245,8 +245,6 @@ class StudentYearProfile(models.Model):
 
     @staticmethod
     def create_profile(student: Student, role: str, classroom, year: int = this_year): #@@classroom should be a 'Class' instance
-        print(role)
-        print(classroom)
         profile = StudentYearProfile(
             student=student,
             year=year,

@@ -1,4 +1,6 @@
 from django import template
+from django.utils.html import format_html
+from django.urls import reverse
 from django.core.exceptions import MultipleObjectsReturned
 from ..views import *
 #** No need to import models.py because it's already imported in views.py
@@ -14,16 +16,19 @@ def get_student_by_role(classroom: Class, role, porpery: str, year: int = this_y
 
 
 @register.simple_tag
-def get_student_page_link(classroom: Class, role: str, tagclass: str, year: int = this_year) -> str | None:
+def get_student_page_link(classroom: Class, role: str, tagclass: str, year: int = this_year) -> str:
     try:
-        student = classroom.profiles.get(year=year).students.get(role=role)
+        student: StudentYearProfile = classroom.profiles.get(year=year).students.get(role=role)
         #* HTML code
-        href = "{%" + f"url 'view_student' {student.id}" + "%}"
-        return tag("a", attribute=f"href={href} class={tagclass}", content=student.full_name)
+        href = reverse("view_student", args=(student.student.id, ))
+        return format_html(tag("a", attribute='href="{}" class="{}"', content=student.student.full_name), href, tagclass)
     except StudentYearProfile.DoesNotExist:
         return f"Lớp chưa có {get_role_name(role)}"
+    except ClassYearProfile.DoesNotExist:
+        return "Năm học không hợp lệ"
     except: 
-        return None
+        #! Shouldn't return None
+        return '' #* Return None may raise Error when Django render template
 
 # -I this function will return the id of a 'Subject' instance
 @register.simple_tag
