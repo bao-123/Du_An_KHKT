@@ -1,4 +1,6 @@
-console.log(".");
+const displayMessageId = "addSubjectTeacherMessageDisplay";
+
+import {clear, displayMessage, teachClass} from "./utils.js"
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".nav-link").forEach(button => {
         button.onclick = () => {
@@ -30,5 +32,35 @@ document.addEventListener("DOMContentLoaded", () => {
             button.classList.add("active");
             button.classList.remove("link-secondary");
         };
+    });
+    
+    document.getElementById("teachClass").addEventListener("click", async () => {
+        const subjectSelector = document.getElementById("subjectSelect");
+        const subject_id = subjectSelector.value; //* id of selected subject
+        const class_id = subjectSelector.dataset.classid; //* id of the class
+        
+
+        if(!subject_id)
+        {
+            displayMessage(displayMessageId,
+                 "Please choose a subject", //* Header of the message
+                 "Choose a subject that you want to teach this class", // *message's content
+                 "error", //* message type
+                 "medium"); //* message size
+            return;
+        }
+        //* call API
+        try {
+            const response = await teachClass(subject_id, class_id);
+            clear(displayMessageId); //* clear existed message.
+            displayMessage(displayMessageId,
+                response.status !== 200 ? "Error occurs" : "Successfully",
+                response.message,
+                response.status !== 200 ? "error" : "success",
+                "medium"
+            );
+        } catch (error) {
+            console.error(error);
+        }
     });
 });

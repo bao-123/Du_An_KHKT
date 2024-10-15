@@ -315,7 +315,7 @@ class ClassYearProfile(models.Model):
     
 
     def get_teachers(self):
-        return self.subject_teachers.all()
+        return [subject_teacher.teacher for subject_teacher in self.subject_teachers.all()]
     
 
     def get_student_by_role(self, role: str) -> StudentYearProfile | None:
@@ -352,5 +352,3 @@ class ClassSubjectTeacher(models.Model):
             raise Exception("Unknow class (or subject)")
         
         return class_subject.teacher == teacher
-
-

@@ -2,24 +2,24 @@ import {updateMarkURL, addClassSubjectTeacherURL} from "./document.js"
 //utils
 
 //* function to create HTML tags
-function tag(name, content, classes, id='') {
+export function tag(name, content, classes, id='') {
+    //@@classes should be an Array
+
     const element = document.createElement(name);
 
-    for (let CSSClass of classes) { //** classes should be a array.
+    for (let CSSClass of classes) { 
         element.classList.add(CSSClass);
     }
 
     element.textContent = content;
-    if(id)
-    {
-        element.id = id;
-    }
+    element.id = id;
+
     return element;
 }
 
 
 //** function to update student's mark
-async function updateMark(id, subject, semester, new_mark, mark_type)
+export async function updateMark(id, subject, semester, new_mark, mark_type)
 {
     /*
      @@id is the student's id
@@ -30,17 +30,16 @@ async function updateMark(id, subject, semester, new_mark, mark_type)
       
     try
     {
-        const response = await fetch(`${updateMarkURL}/${id}`, {
+        const response = await fetch(`${updateMarkURL}${id}`, { //-w the "/" is in the 'updateMarkURL' variable
             method: "PUT",
             headers: {
                 "X-CSRFToken": getCSRF()
             },
             body: JSON.stringify({
-                id: id,
                 subject: subject,
                 semester: semester,
                 new_mark: new_mark,
-                mark_type: mark_type //* mark_type should be something like 'thuong_xuyen1', 'thuong_xuyen2', 'giua_ki',...
+                mark_type: mark_type
             })
         });
         return {message: response.message, status: response.status}
@@ -53,28 +52,33 @@ async function updateMark(id, subject, semester, new_mark, mark_type)
 
 
 //* a function to set a teacher to be a subject teacher of a particular class
-async function teachClass(subject_id, classroom_id) {
+export async function teachClass(subject_id, classroom_id, year=null) {
     //@@subject_id should be a id of a subject 
 
     try {
-        const response = await fetch(addClassSubjectTeacherURL, {
+        const response = await fetch(addClassSubjectTeacherURL, { 
             method: "PUT",
             headers: {
                 "X-CSRFToken": getCSRF()
             },
             body: JSON.stringify({
                 class_id: classroom_id,
-                subject_id: subject_id
+                subject_id: subject_id,
+                year: year
             })
-        });
-        return {status: response.status, message: (await response.json()).message};
+        }); 
+
+        //* Error in fetching lead to error in decoding JSON.
+        const message = await response.json();
+
+        return {status: response.status, message: message.message};
     } catch (error) {
         console.error(error);
     }
 }
 
 // * This function will display a error (or success) message on a particular
-function displayMessage(divId, header, content, type, size)
+export function displayMessage(divId, header, content, type, size)
 {
     /*
         @@divId the id of the div that we are gonna display the message in
@@ -83,24 +87,32 @@ function displayMessage(divId, header, content, type, size)
         @@size is size of message (valid value are 'lg', 'md', 'sm')
     */
 
-    const messageDiv = document.createElement("div");
-    const messageHeader = document.createElement("p");
-    const messageContent = document.createElement("p");
-
-    messageDiv.classList.add(type, size);
-    messageHeader.classList.add("header");
-    messageContent.classList.add("content");
-
-    messageDiv.appendChild(messageHeader);
-    messageDiv.appendChild(messageContent);
+        const messageHeader = tag("p", header, ["header"]);
+        const messageContent = tag("p", content, ["content"]);
 
     try {
-        document.getElementById(divId).appendChild(messageDiv);
+        
+        const messageDiv = document.getElementById(divId);
+        messageDiv.classList.add(type, size)
+        messageDiv.appendChild(messageHeader);
+        messageDiv.appendChild(messageContent);
+
     } catch (error) {
         console.error(error);
     }
 }
 
+
+//-I Simple function to clear a content of a element
+export function clear(divId) {
+    const div = document.getElementById(divId);
+    if(!div)
+    {
+        throw new Error(`Not found any element with this id (${divId})`);
+    }
+
+    div.innerHTML = '';
+}
 
 //-I simple function to get csrf token
 function getCSRF() {

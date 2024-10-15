@@ -3,7 +3,7 @@
 
 {% block title %}Class: {{ classroom.name }} {% endblock %}
 {% block style %} <link href="{% static 'Du_An/css/profile.css' %}" rel="stylesheet"> {% endblock %}
-{% block script %} <script src="{% static 'Du_An/js/class_profile.js' %}"></script> {% endblock %}
+{% block script %} <script src="{% static 'Du_An/js/class_profile.js' %}" type="module"></script> {% endblock %}
 
 {% block body %}
     <div class="classDisplay">
@@ -78,10 +78,20 @@
                     Chua co giao vien
                     {% endfor %}
                     {% if user.teacher %}
-                        {% if user.teacher not in class_profile.get_teachers %}
-                        <!--TODO: add JS-->
-                            <button id="teachClass" class="btn btn-outline-info">Trở thành giáo viên bộ môn của lớp này</button>
+                        {% if user.teacher in class_profile.get_teachers %}
+                            <div>
+                                <h3>Bạn đã dạy môn: {% get_teaching_subjects class_profile user.teacher %} cho lớp {{ classroom.name }} </h3>
+                            </div>
                         {% endif %}
+                        
+                        <div id="addSubjectTeacherMessageDisplay"></div>
+                        <select id="subjectSelect" class="form-select mb-3" data-classid="{{ class_profile.classroom.id }}">
+                            <option selected disabled value="">Chọn môn bạn muốn dạy lớp này</option>
+                            {% for subject in user.teacher.subject.all %}
+                                <option value="{{ subject.id }}"> {{ subject.name }} </option>
+                            {% endfor %}
+                        </select>
+                        <button id="teachClass" class="btn btn-outline-info">Trở thành giáo viên bộ môn của lớp này</button>
                     {% endif %}
                 </div>
                 <!--TODO: Them thong tin thi dua(neu co)-->

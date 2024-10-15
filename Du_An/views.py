@@ -109,12 +109,9 @@ def register(request: HttpRequest):
             })
 
 
-        if "user_type" not in list(request.POST.keys()):
-            return render_register(request, error={
-                "error": "Error occurs",
-                "error_message": "Please choose either teacher or parent"
-            })
-        user_type = request.POST["user_type"]
+        user_type = request.POST.get("user_type", None)
+        if not user_type:
+            return render_register(request, error={"error": "Failed to register", "error_message": "Please choose your account's type (either parent or teacher)"})
 
         if user_type == "teacher":
             subjects_id = request.POST.getlist("subjects[]")
@@ -122,7 +119,7 @@ def register(request: HttpRequest):
             if not subjects_id:
                 return render_register(request, error={
                     "error": "require at lease 1 subject",
-                    "error": "Please choose at lease 1 subject"
+                    "error_message": "Please choose at lease 1 subject"
                 })
             
             subjects = Subject.objects.filter(pk__in=subjects_id)
@@ -192,7 +189,7 @@ def register(request: HttpRequest):
         return HttpResponseNotAllowed("method not allowed.")
     
 
-#TODO: FIx!!!
+
 def view_classes(request):
     if request.method == "GET":
         classes = Class.objects.all()
@@ -209,20 +206,18 @@ def view_classes(request):
         body: dict = json.loads(request.body)
         class_id = body.get("class_id")
         subject_id = body.get("subject_id") #** id of a 'Subject' instance
-        year = body.get("year")
+        year = body.get("year") if body.get("year") else this_year
 
         try:
             classroom = Class.objects.get(pk=class_id)
-            if year:
-                class_profile = classroom.profiles.get(year=year)
-            else:
-                class_profile = classroom.profiles.get(year=this_year) 
+            class_profile = classroom.profiles.get(year=year)
 
             subject = Subject.objects.get(pk=subject_id)
 
             if ClassSubjectTeacher.get_subject_teacher(subject, class_profile):
                 return JsonResponse({"message": f"This class already have a {subject.name} teacher"}, status=400)
-            classroom_subject_teacher = ClassSubjectTeacher(subject=subject, teacher=request.user)
+            classroom_subject_teacher = ClassSubjectTeacher(subject=subject, teacher=request.user.teacher)
+            classroom_subject_teacher.save()
             class_profile.subject_teachers.add(classroom_subject_teacher)
 
             class_profile.save(force_update=True)
@@ -284,21 +279,21 @@ def view_student(request, id):
                                 status=400)
         
         try:
-            student = Student.objects.get(pk=id)
-            if not ClassSubjectTeacher.is_teaching(Subject.objects.get(name=subject), request.user.teacher, student.classroom):
+            student_profile = Student.objects.get(pk=id).get_profile() #TODO: Update so we can update marks for other years
+            if not ClassSubjectTeacher.is_teaching(Subject.objects.get(name=subject), request.user.teacher, student_profile.classroom):
                 return JsonResponse({"message": "Permission denied"}, status=401)
             
             if semester not in [1, 2]:
                 return JsonResponse({"message": "Invalid semester"}, status=400)
             
             if subject in MAIN_SUBJECTS:
-                student_subject = student.main_subjects.get(name=subject) if semester == 1 else student.second_term_main_subjects.get(name=subject)
+                student_subject = student_profile.main_subjects.get(name=subject) if semester == 1 else student_profile.second_term_main_subjects.get(name=subject)
                 
             elif subject in SECOND_SUBJECTS:
-                student_subject = student.second_subjects.get(name=subject) if semester == 1 else student.second_term_second_subjects.get(name=subject)
+                student_subject = student_profile.second_subjects.get(name=subject) if semester == 1 else student_profile.second_term_second_subjects.get(name=subject)
                 
             elif subject in COMMENT_SUBJECTS:
-                student_subject = student.comment_subjects.get(name=subject) if semester == 1 else student.second_term_comment_subjects.get(name=subject)
+                student_subject = student_profile.comment_subjects.get(name=subject) if semester == 1 else student_profile.second_term_comment_subjects.get(name=subject)
                     
             else:
                 return JsonResponse({"message": "Unknow subject"}, status=400)
@@ -311,10 +306,10 @@ def view_student(request, id):
                         student_subject.diem_thuong_xuyen2 = new_mark
                 
                 case "tx3":
-                        student_subject.diem_thuong_xuyen3 = new_mark
+                        student_subject.diem_thuong_xuyen3 = new_mark #* student_subject must be a 'MainSuject' instance
                     
                 case "tx4":
-                        student_subject.diem_thuong_xuyen4 = new_mark
+                        student_subject.diem_thuong_xuyen4 = new_mark #* student_subject must be a 'MainSuject' instance
 
                 case "gk":
                         student_subject.diem_giua_ki = new_mark
@@ -330,7 +325,7 @@ def view_student(request, id):
                 case _:
                     return JsonResponse({"message": "Unknow attribute"}, status=400)
                 
-            student_subject.save()
+            student_subject.save(force_update=True)
 
             return JsonResponse({"message": "Update successfully"}, status=200)
 

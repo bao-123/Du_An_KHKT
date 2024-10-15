@@ -61,20 +61,20 @@ class TestUtils():
         try:
             if type == "teacher":
                 #** We not user 'make_password' just for testing purpose
-                teacher = Teacher(full_name=full_name, username=email, password=password)
+                teacher = Teacher.objects.create(username=email, children=children, full_name=full_name)
 
                 if subjects:
                     teacher.subject.set(subjects)
                 
-                teacher.save()
+                teacher.save(force_update=True)
                 return teacher
             elif type == "parent":
-                parent = Parent(full_name=full_name, username=email, password=password)
+                parent = Parent.objects.create(username=email, full_name=full_name, password=password)
 
                 if children:
                     parent.children.set(children)
 
-                parent.save()
+                parent.save(force_update=True)
 
                 return parent
             else:

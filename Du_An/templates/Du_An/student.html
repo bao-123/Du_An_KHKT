@@ -279,6 +279,7 @@
 
                         <option value="{% get_subject student.classroom user.teacher 'id' %}" selected>{% get_subject student.classroom user.teacher 'name' %}</option>
                     </select>
+                    <input type="number" id="new_mark" class="form-control mx-auto mb-2" placeholder="Điểm" step="0.01" max="10" min="0">
                     <button type="submit" class="btn btn-primary">Cập nhập điểm cho học sinh</button>
                 </form>
                 {% endif %}
