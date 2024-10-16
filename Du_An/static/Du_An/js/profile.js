@@ -21,9 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
         //* Keep the page from reloading
         event.preventDefault()
 
-        const studentId = updateMarkForm.dataset.studentId;
-        const subjectId = updateMarkForm.value;
-        const newMark = document.getElementById("new_mark").value;
+        const studentId = Number(updateMarkForm.dataset.studentId);
+        const subjectId = Number(updateMarkForm.querySelector("#updateMarkSubjectSelect").value);
+        const newMark = Number(document.getElementById("new_mark").value);
         const markType = document.getElementById("markType").value;
         const semester = Number(document.getElementById("semester").value);
 

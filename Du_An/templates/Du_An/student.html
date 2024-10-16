@@ -70,6 +70,7 @@
                         </div>
 
                         <!--* Hiển thị điểm-->
+                        <!--TODO: Replace by JS API calling to display the latest value-->
                         <div class="marks">
                             <div class="thuong_xuyen diem"> 
                                 {% if subject.first_term.diem_thuong_xuyen1 %}
@@ -277,10 +278,9 @@
                     </div>
                     <form id="updateMarkForm" data-student-id="{{ student.id }}">
                         <!--* teacher will select the subject that they want to update-->
-                        <select>
+                        <select id="updateMarkSubjectSelect">
                             <!-- TODO: update this so it still working in case the teacher teach mor ethan 1 subject -->
-
-                            <option value="{% get_subject student_profile.classroom user.teacher '.id' %}" selected>{% get_subject student_profile.classroom user.teacher 'name' %}</option>
+                            <option value="{% get_subject student_profile.classroom user.teacher 'id' %}" selected>{% get_subject student_profile.classroom user.teacher 'name' %}</option>
                         </select>
                         <!--*Select semester -->
                         <select id="semester">

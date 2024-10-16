@@ -272,8 +272,7 @@ def view_student(request, id):
         mark_type: str = body.get("mark_type")
         #** semester: 1 or 2
         semester: int = body.get("semester")
-
-        print(body)
+        
 
         if not body or not subject_id or \
            not new_mark or not mark_type:
