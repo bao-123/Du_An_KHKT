@@ -19,7 +19,7 @@ export function tag(name, content, classes, id='') {
 
 
 //** function to update student's mark
-export async function updateMark(id, subject, semester, new_mark, mark_type)
+export async function updateMark(id, subjectId, semester, new_mark, mark_type)
 {
     /*
      @@id is the student's id
@@ -27,7 +27,7 @@ export async function updateMark(id, subject, semester, new_mark, mark_type)
      @@mark_type should be one of these "tx1", "tx2", "tx3", "tx4","gk", "ck"
      @@semester should be 1 or 2 (Number)   
     */
-      
+    console.log([id, subjectId, semester, new_mark, mark_type]);
     try
     {
         const response = await fetch(`${updateMarkURL}${id}`, { //-w the "/" is in the 'updateMarkURL' variable
@@ -36,7 +36,7 @@ export async function updateMark(id, subject, semester, new_mark, mark_type)
                 "X-CSRFToken": getCSRF()
             },
             body: JSON.stringify({
-                subject: subject,
+                subject_id: subjectId,
                 semester: semester,
                 new_mark: new_mark,
                 mark_type: mark_type

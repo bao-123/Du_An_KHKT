@@ -6,7 +6,7 @@
 {% block title %}{{ student.full_name }}{% endblock %}
 <!--* Replace if you wish-->
 {% block style %}<link href="{% static 'Du_An/css/profile.css' %}" rel="stylesheet">{% endblock %}
-{% block script %} <script src="{% static 'Du_An/js/profile.js' %}"></script> {% endblock %}
+{% block script %} <script src="{% static 'Du_An/js/profile.js' %}" type="module"></script> {% endblock %}
 
 {% block body %}
     <div class="student_profile">
@@ -271,17 +271,37 @@
                         <p> {{ comment_subject.comment }} </p>
                     </div>
                 {% endfor %}
-                {% if user.teacher in student.classroom.get_teachers %}
-                <form id="updateMarkForm">
-                    <!--* teacher will select the subject that they want to update-->
-                    <select>
-                        <!-- TODO: update this so it still working in case the teacher teach mor ethan 1 subject -->
+                {% if user.teacher in student.get_profile.classroom.get_teachers %}
+                <div class="updateMarkDiv">
+                    <div id="updateMarkMesage">
+                    </div>
+                    <form id="updateMarkForm" data-student-id="{{ student.id }}">
+                        <!--* teacher will select the subject that they want to update-->
+                        <select>
+                            <!-- TODO: update this so it still working in case the teacher teach mor ethan 1 subject -->
 
-                        <option value="{% get_subject student.classroom user.teacher 'id' %}" selected>{% get_subject student.classroom user.teacher 'name' %}</option>
-                    </select>
-                    <input type="number" id="new_mark" class="form-control mx-auto mb-2" placeholder="Điểm" step="0.01" max="10" min="0">
-                    <button type="submit" class="btn btn-primary">Cập nhập điểm cho học sinh</button>
-                </form>
+                            <option value="{% get_subject student_profile.classroom user.teacher '.id' %}" selected>{% get_subject student_profile.classroom user.teacher 'name' %}</option>
+                        </select>
+                        <!--*Select semester -->
+                        <select id="semester">
+                            <option value="1" selected>Kì 1</option>
+                            <option value="2"> Kì 2</option>
+                        </select>
+                        <!--* Select mark type-->
+                        <select id="markType">
+                            <!--TODO: Update so only display possible type-->
+                            <option selected disabled value="">Chọn cột điểm</option>
+                            <option value="tx1">Thường xuyên 1</option>
+                            <option value="tx2">Thường xuyên 2</option>
+                            <option value="tx3">Thường xuyên 3</option>
+                            <option value="tx4">Thường xuyên 4</option>
+                            <option value="gk">Giữa Kì</option>
+                            <option value="ck">Cuối kì</option>
+                        </select>
+                        <input type="number" id="new_mark" class="form-control mx-auto mb-2" placeholder="Điểm" step="0.01" max="10" min="0">
+                        <button type="submit" class="btn btn-primary">Cập nhập điểm cho học sinh</button>
+                    </form>
+                </div>
                 {% endif %}
             </div>
         </div>

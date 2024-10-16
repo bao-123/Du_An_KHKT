@@ -265,7 +265,7 @@ def view_student(request, id):
         
         #** body should be a dict
         body: dict = json.loads(request.body)
-        subject: str = body.get("subject")
+        subject_id: int = body.get("subject_id")
         #** new mark
         new_mark: float = body.get("new_mark")
         #** 'mark_type' should be a str with some possible values like 'thuong_xuyen1', 'thuong_xuyen2', ...
@@ -273,27 +273,32 @@ def view_student(request, id):
         #** semester: 1 or 2
         semester: int = body.get("semester")
 
-        if not body or not subject or \
+        print(body)
+
+        if not body or not subject_id or \
            not new_mark or not mark_type:
+            print("missing information")
             return JsonResponse({"message": "Missing information"},
                                 status=400)
         
         try:
+            subject = Subject.objects.get(pk=subject_id)
             student_profile = Student.objects.get(pk=id).get_profile() #TODO: Update so we can update marks for other years
-            if not ClassSubjectTeacher.is_teaching(Subject.objects.get(name=subject), request.user.teacher, student_profile.classroom):
+            if not ClassSubjectTeacher.is_teaching(subject, request.user.teacher, student_profile.classroom):
                 return JsonResponse({"message": "Permission denied"}, status=401)
             
             if semester not in [1, 2]:
+                print("Invalid semester")
                 return JsonResponse({"message": "Invalid semester"}, status=400)
             
-            if subject in MAIN_SUBJECTS:
-                student_subject = student_profile.main_subjects.get(name=subject) if semester == 1 else student_profile.second_term_main_subjects.get(name=subject)
+            if subject.name in MAIN_SUBJECTS:
+                student_subject = student_profile.main_subjects.get(name=subject.name) if semester == 1 else student_profile.second_term_main_subjects.get(name=subject.name)
                 
-            elif subject in SECOND_SUBJECTS:
-                student_subject = student_profile.second_subjects.get(name=subject) if semester == 1 else student_profile.second_term_second_subjects.get(name=subject)
+            elif subject.name in SECOND_SUBJECTS:
+                student_subject = student_profile.second_subjects.get(name=subject.name) if semester == 1 else student_profile.second_term_second_subjects.get(name=subject.name)
                 
-            elif subject in COMMENT_SUBJECTS:
-                student_subject = student_profile.comment_subjects.get(name=subject) if semester == 1 else student_profile.second_term_comment_subjects.get(name=subject)
+            elif subject.name in COMMENT_SUBJECTS:
+                student_subject = student_profile.comment_subjects.get(name=subject.name) if semester == 1 else student_profile.second_term_comment_subjects.get(name=subject.name)
                     
             else:
                 return JsonResponse({"message": "Unknow subject"}, status=400)
@@ -323,6 +328,7 @@ def view_student(request, id):
                         student_subject.is_passed = new_mark == 1
                 
                 case _:
+                    print("Invalid mark type")
                     return JsonResponse({"message": "Unknow attribute"}, status=400)
                 
             student_subject.save(force_update=True)
@@ -491,4 +497,5 @@ def render_error(request: HttpRequest, error: str | None = None, error_message: 
         "error_message": error_message,
         "error_image": error_image
     })
+
 

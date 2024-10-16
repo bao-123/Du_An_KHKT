@@ -32,11 +32,11 @@ def get_student_page_link(classroom: Class, role: str, tagclass: str, year: int 
 
 # -I this function will return the id of a 'Subject' instance
 @register.simple_tag
-def get_subject(classroom: Class, teacher: Teacher, attribute: str ) -> int | None:
+def get_subject(classroom: ClassYearProfile, teacher: Teacher, attribute: str ):
     try:
         # -W A teacher can teach more than 1 subject in a class
         #TODO: Ensure that if the teacher teach more than 1 subject everything still working. (take a look at HTML)
-        subject_teacher: ClassSubjectTeacher = classroom.subject_teachers.get(teacher=teacher) # * This will return a 'ClassSubjectTeacher' instance
+        subject_teacher: ClassSubjectTeacher = classroom.subject_teachers.get(teacher=teacher).subject
         return getattr(subject_teacher, attribute, None)
     except MultipleObjectsReturned:
         return None #TODO
