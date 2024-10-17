@@ -341,6 +341,37 @@ def view_student(request, id):
         return HttpResponseNotAllowed("method not allowed.")
 
 
+#-i API for get a particular subject's marks
+def get_marks(request: HttpRequest, id):
+    if request.method != "GET":
+        return HttpResponseNotAllowed("method not allowed.")
+    
+    try:
+        student = Student.objects.get(pk=id)
+        year = request.GET.get("year") if request.GET.get("year") else this_year
+        student_profile = student.profiles.get(year=year)
+        subject_id = request.GET.get("subject_id")
+        subject = Subject.objects.get(pk=subject_id)
+
+
+        if subject.name in MAIN_SUBJECTS:
+            student_subject = {"first_term": student_profile.main_subjects.get(name=subject.name), "second_term": student_profile.second_main_subjects.get(name=subject.name)}
+        elif subject.name in SECOND_SUBJECTS:
+            student_subject = {"first_term": student_profile.second_subjects.get(name=subject.name), "second_term": student_profile.second_term_second_subjects.get(name=subject.name)}
+        elif subject.name in COMMENT_SUBJECTS:
+            student_subject = {"first_term": student_profile.comment_subjects.get(name=subject.name), "second_term": student_profile.second_term_comment_subjects.get(name=subject.name)}
+        else:
+            return JsonResponse({"message": "Unknow subject"}, status=400)
+        
+        return JsonResponse(student_subject, status=200)
+    except Student.DoesNotExist:
+        return JsonResponse({"message": "Invalid student id"}, status=400)
+    except StudentYearProfile.DoesNotExist:
+        return JsonResponse({"message": "Invalid year"}, status=400)
+    except Subject.DoesNotExist:
+        return JsonResponse({"message": "Invalid subject id"}, status=400)
+
+
 @login_required(login_url="login")
 def view_class(request, id):
     if request.method != "GET":

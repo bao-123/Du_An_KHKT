@@ -31,9 +31,6 @@
         </div>
         <!--* show student's marks -->
         <div class="studentMark">
-            {% if is_teaching %}
-                <button class="btn btn-primary" id="updateMark">Cap nhap diem</button>
-            {% endif %}
             <!--TODO: Add javascript to display the marks base on the selected subject-->
             <select id="subjects_select" class="form-condivol mx-2 me-auto">
                 <!--** Default subject is Toán -->
@@ -42,7 +39,7 @@
                 <option value="{{ subject.name }}"> {{ subject.name }} </option>
                 {% endfor %}
             </select>
-            <div class="subjectMark">
+            <div class="subjectMark mb-3 me-auto">
                     <h2>Bang diem</h2>
                 <div>
                     Chon mon de xem diem
@@ -180,7 +177,7 @@
                 {% endfor %}
                 <!--** second subjects (2 thuong xuyen) -->
                 {% for second_subject in student.get_subjects_mark.second %}
-                    <div id="{{ second_subject.first_term.name }}" style="display: none;" class="subjectMarkDisplay">
+                    <div id="{{ second_subject.first_term.name }}" style="display: none;" class="subjectMark">
                         <div class="subject_name_container">
                             <p class="subject_name"> {{ second_subject.name }} </p>
                         </div>
@@ -272,10 +269,11 @@
                         <p> {{ comment_subject.comment }} </p>
                     </div>
                 {% endfor %}
-                {% if user.teacher in student.get_profile.classroom.get_teachers %}
+            </div>
+            {% if user.teacher in student.get_profile.classroom.get_teachers %}
                 <div class="updateMarkDiv">
-                    <div id="updateMarkMesage">
-                    </div>
+                    <div id="updateMarkMessage"></div>
+
                     <form id="updateMarkForm" data-student-id="{{ student.id }}">
                         <!--* teacher will select the subject that they want to update-->
                         <select id="updateMarkSubjectSelect">
@@ -303,7 +301,6 @@
                     </form>
                 </div>
                 {% endif %}
-            </div>
         </div>
     </div>
 {% endblock %}
