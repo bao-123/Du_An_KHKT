@@ -161,7 +161,8 @@ class Student(models.Model):
     //comment_subjects = models.ManyToManyField(EvaluateByCommentSubject, related_name="student")
     //second_term_main_subjects = models.ManyToManyField(MainSubject, related_name="second_term_student")
     //second_term_second_subjects = models.ManyToManyField(SecondSubject, related_name="second_term_student")
-    //second_term_comment_subjects = models.ManyToManyField(EvaluateByCommentSubject, related_name="second_term_student") """
+    //second_term_comment_subjects = models.ManyToManyField(EvaluateByCommentSubject, related_name="second_term_student") 
+    """
     #! Using porperty 'profiles' insteads.
 
     def __str__(self):

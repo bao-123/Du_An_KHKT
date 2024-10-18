@@ -1,4 +1,4 @@
-import {updateMarkURL, addClassSubjectTeacherURL} from "./document.js"
+import {updateMarkURL, addClassSubjectTeacherURL, getStudentMarksURL} from "./document.js"
 //utils
 
 //* function to create HTML tags
@@ -77,6 +77,22 @@ export async function teachClass(subject_id, classroom_id, year=null) {
     }
 }
 
+
+export async function getSubjectMarks(studentId, subjectId, year=null) {
+    try {
+        const fetchURL = `${getStudentMarksURL}${studentId}?subject_id=${subjectId}` + (year ? `&${year}` : '');
+        const response = await fetch(fetchURL);
+        if(response.status !== 200)
+        {
+            throw new Error((await response.json()).message);
+        }
+        const data = await response.json()
+        return data;
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 // * This function will display a error (or success) message on a particular
 export function displayMessage(divId, header, content, type, size)
 {
@@ -113,6 +129,8 @@ export function clear(divId) {
 
     div.innerHTML = '';
 }
+
+
 
 //-I simple function to get csrf token
 function getCSRF() {

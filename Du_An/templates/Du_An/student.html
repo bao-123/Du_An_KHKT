@@ -9,7 +9,7 @@
 {% block script %} <script src="{% static 'Du_An/js/profile.js' %}" type="module"></script> {% endblock %}
 
 {% block body %}
-    <div class="student_profile">
+    <div id="studentProfile" data-student-id="{{ student.id }}">
         <!--* Display the basic information -->
         <div class="basicInfo">
             <!---I student is a 'Student' instance -->
@@ -31,250 +31,30 @@
         </div>
         <!--* show student's marks -->
         <div class="studentMark">
-            <!--TODO: Add javascript to display the marks base on the selected subject-->
+            <!--TODO: Do this-->
+            <select id="yearSelect">
+                <option value="2024">2024-2025</option>
+            </select>
             <select id="subjects_select" class="form-condivol mx-2 me-auto">
                 <!--** Default subject is Toán -->
                 <option selected disabled>Môn học</option>
                 {% for subject in subjects %}
-                <option value="{{ subject.name }}"> {{ subject.name }} </option>
+                <option value="{{ subject.id }}"> {{ subject.name }} </option>
                 {% endfor %}
             </select>
             <div class="subjectMark mb-3 me-auto">
+                <div id="displayMarkMessage"></div>
                     <h2>Bang diem</h2>
-                <div>
+                <!--TODO: add JS-->
+                <div id="markDisplay">
                     Chon mon de xem diem
                 </div>
                 <!--TODO: fix this-->
-                <!--** main subjects (4 thuong xuyen)-->
-                <!--* get_subjects_mark without 'year' parameters will return the marks of this year -->
-                {% for subject in student.get_subjects_mark.main %}
-                    <div id="{{ subject.first_term.name }}" style="display: none;" class="subjectMarkDisplay">
-                        <div class="subject_name_container">
-                            <!--TODO: fix this-->
-                            <p class="subject_name">{{ subject.first_term.name }}</p>
-                        </div>
-                        <div>
-                            <p class="term_headers">Kì 1</p>
-                        </div>
-
-                        <div class="mark_table_headers">
-                            <p>Điểm thường xuyên 1 </p>
-                            <p>Điểm thường xuyên 2</p>
-                            <p>Điểm thường xuyên 3</p>
-                            <p>Điểm thường xuyên 4</p>
-                            <p>Điểm giữa kì</p>
-                            <p>Điểm cuối kì</p>
-                        </div>
-
-                        <!--* Hiển thị điểm-->
-                        <!--TODO: Replace by JS API calling to display the latest value-->
-                        <div class="marks">
-                            <div class="thuong_xuyen diem"> 
-                                {% if subject.first_term.diem_thuong_xuyen1 %}
-                                {{ subject.first_term.diem_thuong_xuyen1 }}
-                                {% else %}
-                                Chưa có điểm
-                                {% endif %}
-                            </div>
-
-                            <div class="thuong_xuyen diem"> 
-                                {% if subject.first_term.diem_thuong_xuyen2 %}
-                                {{ subject.first_term.diem_thuong_xuyen2 }}
-                                {% else %}
-                                Chưa có điểm
-                                {% endif %}
-                            </div>
-
-                            <div class="thuong_xuyen diem"> 
-                                {% if subject.first_term.diem_thuong_xuyen3 %}
-                                {{ subject.first_term.diem_thuong_xuyen3 }}
-                                {% else %}
-                                Chưa có điểm
-                                {% endif %}
-                            </div>
-
-                            <div class="thuong_xuyen diem"> 
-                                {% if subject.first_term.diem_thuong_xuyen4 %}
-                                {{ subject.first_term.diem_thuong_xuyen4 }}
-                                {% else %}
-                                Chưa có điểm
-                                {% endif %}
-                            </div>
-
-                            <div class="giua_ki diem"> 
-                                {% if subject.first_term.diem_giua_ki %}
-                                {{ subject.first_term.diem_giua_ki }}
-                                {% else %}
-                                Chưa có điểm
-                                {% endif %}
-                            </div>
-
-                            <div class="cuoi_ki diem"> 
-                                {% if subject.first_term.diem_cuoi_ki %}
-                                {{ subject.first_term.diem_cuoi_ki }} 
-                                {% else %}
-                                Chưa có điểm
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div>
-                            <p class="term_headers">Kì 2</p>
-                        </div>
-
-                        <div class="marks">
-                            <div class="thuong_xuyen diem"> 
-                                {% if subject.second_term.diem_thuong_xuyen1 %}
-                                {{ subject.second_term.diem_thuong_xuyen1 }}
-                                {% else %}
-                                Chưa có điểm
-                                {% endif %}
-                            </div>
-
-                            <div class="thuong_xuyen diem"> 
-                                {% if subject.second_term.diem_thuong_xuyen2 %}
-                                {{ subject.second_term.diem_thuong_xuyen2 }}
-                                {% else %}
-                                Chưa có điểm
-                                {% endif %}
-                            </div>
-
-                            <div class="thuong_xuyen diem"> 
-                                {% if subject.second_term.diem_thuong_xuyen3 %}
-                                {{ subject.second_term.diem_thuong_xuyen3 }}
-                                {% else %}
-                                Chưa có điểm
-                                {% endif %}
-                            </div>
-
-                            <div class="thuong_xuyen diem"> 
-                                {% if subject.second_term.diem_thuong_xuyen4 %}
-                                {{ subject.second_term.diem_thuong_xuyen4 }}
-                                {% else %}
-                                Chưa có điểm
-                                {% endif %}
-                            </div>
-
-                            <div class="giua_ki diem"> 
-                                {% if subject.second_term.diem_giua_ki %}
-                                {{ subject.second_term.diem_giua_ki }}
-                                {% else %}
-                                Chưa có điểm
-                                {% endif %}
-                            </div>
-
-                            <div class="cuoi_ki diem"> 
-                                {% if subject.second_term.diem_cuoi_ki %}
-                                {{ subject.second_term.diem_cuoi_ki }}
-                                {% else %}
-                                Chưa có điểm
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                {% empty %}
-                Error while loading page
-                {% endfor %}
-                <!--** second subjects (2 thuong xuyen) -->
-                {% for second_subject in student.get_subjects_mark.second %}
-                    <div id="{{ second_subject.first_term.name }}" style="display: none;" class="subjectMark">
-                        <div class="subject_name_container">
-                            <p class="subject_name"> {{ second_subject.name }} </p>
-                        </div>
-                        <div>
-                            <p class="term_headers">Kì 1</p>
-                        </div>
-                        <div class="mark_table_headers">
-                            <p>Điểm thường xuyên 1 </p>
-                            <p>Điểm thường xuyên 2</p>
-                            <p>Điểm giữa kì</p>
-                            <p>Điểm cuối kì</p>
-                        </div>
-                        <div class="marks">
-                            <div class="thuong_xuyen diem">
-                                {% if second_subject.second_term.thuong_xuyen1 %}
-                                    {{ second_subject.second_term.thuong_xuyen1 }}
-                                {% else %}
-                                    Chua co diem 
-                                {% endif %}
-                            </div>
-                            <div class="thuong_xuyen diem">
-                                {% if second_subject.second_term.thuong_xuyen2 %}
-                                    {{ second_subject.second_term.thuong_xuyen2 }}
-                                {% else %}
-                                    Chua co diem 
-                                {% endif %}
-                            </div>
-                            <div class="giua_ki diem">
-                                {% if second_subject.second_term.giua_ki %}
-                                    {{ second_subject.second_term.giua_ki }}
-                                {% else %}
-                                    Chua co diem 
-                                {% endif %}
-                            </div>
-                            <div class="cuoi_ki diem">
-                                {% if second_subject.second_term.cuoi_ki %}
-                                    {{ second_subject.second_term.cuoi_ki }}
-                                {% else %}
-                                    Chua co diem 
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div>
-                            <p class="term_headers">Kì 2</p>
-                        </div>
-
-                        <div class="marks">
-                            <div class="thuong_xuyen diem"></div>
-                                {% if second_subject.second_term.thuong_xuyen1 %}
-                                    {{ second_subject.second_term.thuong_xuyen1 }}
-                                {% else %}
-                                    Chua co diem 
-                                {% endif %}
-                            </div>
-
-                            <div class="thuong_xuyen diem">
-                                {% if second_subject.second_term.thuong_xuyen2 %}
-                                    {{ second_subject.second_term.thuong_xuyen2 }}
-                                {% else %}
-                                    Chua co diem 
-                                {% endif %}
-                            </div>
-
-                            <div class="giua_ki diem">
-                                {% if second_subject.second_term.giua_ki %}
-                                    {{ second_subject.second_term.giua_ki }}
-                                {% else %}
-                                    Chua co diem 
-                                {% endif %}
-                            </div>
-                            
-                            <div class="cuoi_ki diem">
-                                {% if second_subject.second_term.cuoi_ki %}
-                                    {{ second_subject.second_term.cuoi_ki }}
-                                {% else %}
-                                    Chua co diem 
-                                {% endif %}
-                            </div>
-                    </div>
-                {% empty %}
-                Error while loading page
-                {% endfor %}
-                <!--* Display comment subjects-->
-                <!--TODO: FIX-->
-                {% for comment_subject in student.get_subjects_mark.comment %}
-                    <div id="{{ comment_subject.first_term.name }}" style="display: none;">
-                        <p>{% if comment_subject.is_passed == True %} Đạt {% elif comment_subject.is_passed == False %} Chưa đạt {% else %} Chưa có kết quả {% endif %} </p>
-                        <p> {{ comment_subject.comment }} </p>
-                    </div>
-                {% endfor %}
-            </div>
             {% if user.teacher in student.get_profile.classroom.get_teachers %}
                 <div class="updateMarkDiv">
                     <div id="updateMarkMessage"></div>
 
-                    <form id="updateMarkForm" data-student-id="{{ student.id }}">
+                    <form id="updateMarkForm">
                         <!--* teacher will select the subject that they want to update-->
                         <select id="updateMarkSubjectSelect">
                             <!-- TODO: update this so it still working in case the teacher teach mor ethan 1 subject -->

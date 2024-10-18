@@ -348,18 +348,21 @@ def get_marks(request: HttpRequest, id):
     
     try:
         student = Student.objects.get(pk=id)
-        year = request.GET.get("year") if request.GET.get("year") else this_year
+        year = request.GET.get("year", this_year)
         student_profile = student.profiles.get(year=year)
         subject_id = request.GET.get("subject_id")
         subject = Subject.objects.get(pk=subject_id)
 
 
         if subject.name in MAIN_SUBJECTS:
-            student_subject = {"first_term": student_profile.main_subjects.get(name=subject.name), "second_term": student_profile.second_main_subjects.get(name=subject.name)}
+            student_subject = {"first_term": student_profile.main_subjects.get(name=subject.name).serialize(),
+                                "second_term": student_profile.second_term_main_subjects.get(name=subject.name).serialize()}
         elif subject.name in SECOND_SUBJECTS:
-            student_subject = {"first_term": student_profile.second_subjects.get(name=subject.name), "second_term": student_profile.second_term_second_subjects.get(name=subject.name)}
+            student_subject = {"first_term": student_profile.second_subjects.get(name=subject.name).serialize(),
+                                "second_term": student_profile.second_term_second_subjects.get(name=subject.name).serialize()}
         elif subject.name in COMMENT_SUBJECTS:
-            student_subject = {"first_term": student_profile.comment_subjects.get(name=subject.name), "second_term": student_profile.second_term_comment_subjects.get(name=subject.name)}
+            student_subject = {"first_term": student_profile.comment_subjects.get(name=subject.name).serialize(),
+                                "second_term": student_profile.second_term_comment_subjects.get(name=subject.name).serialize()}
         else:
             return JsonResponse({"message": "Unknow subject"}, status=400)
         

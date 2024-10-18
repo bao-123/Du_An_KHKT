@@ -1,27 +1,49 @@
-import { displayMessage, updateMark } from "./utils.js";
+import { displayMessage, getSubjectMarks, updateMark } from "./utils.js";
 //* Page's constants
 const displayMessageDivId = "updateMarkMessage";
+const displayMarkMessageDivId = "displayMarkMessage";
 
 document.addEventListener("DOMContentLoaded", () => {
     const subjectsSelect = document.getElementById("subjects_select");
     const updateMarkForm = document.getElementById("updateMarkForm");
+    const markDisplayDiv = document.getElementById("markDisplay");
+    const studentProfile = document.getElementById("studentProfile");
+    
+    const studentId = Number(studentProfile.dataset.studentId);
 
-    subjectsSelect.addEventListener("change", () => {
+    subjectsSelect.addEventListener("change", async () => {
+        try {
+            const subjectData = await getSubjectMarks(studentId, Number(subjectsSelect.value)); //TODO: Add year has been selected in 'yearSelect'
+            //*Display marks
+            //* if this is true, the subject is a main subject
+            if(subjectData.thuong_xuyen4 !== undefined)
+            {
+                
+            }
+            else if (subjectData.thuong_xuyen2 !== undefined) //* If this is true, the subject is a second subject
+            {}
+            else if (subjectData.is_passed !== undefined) //* If this is true, the subject is a comment subject
+            {}
+            else return;
+        } catch (error) {
+            displayMessage(displayMarkMessageDivId,
+                error.message,
+                "Please try again",
+                "error",
+                "lg"
+            );
+            console.error(error);
 
-        //* clear the marks display
-        for(let child of document.querySelector(".subjectMark").children)
-        {
-            child.style.display = "none";
         }
-
-        document.getElementById(subjectsSelect.value).style.display = "block";
     });
+
+    //*Don't code bellow this line!
+    if(!updateMarkForm) return;
 
     updateMarkForm.addEventListener("submit", async event => {
         //* Keep the page from reloading
         event.preventDefault()
 
-        const studentId = Number(updateMarkForm.dataset.studentId);
         const subjectId = Number(updateMarkForm.querySelector("#updateMarkSubjectSelect").value);
         const newMark = Number(document.getElementById("new_mark").value);
         const markType = document.getElementById("markType").value;
@@ -57,5 +79,4 @@ document.addEventListener("DOMContentLoaded", () => {
             "medium"
         ); 
     });
-
 });
