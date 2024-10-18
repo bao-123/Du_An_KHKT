@@ -2,7 +2,7 @@
 {% load static %}
 {% load tags %}
 
-{% block style %} <link href="{% static 'Du_An/css/dashboard.css' %}" rel="stylesheet">
+{% block style %} <link href="{% static 'Du_An/css/dashboard.css' %}" rel="stylesheet"> 
 {% endblock %}
 {% block title %}VnAdu{% endblock %}
 
@@ -16,20 +16,20 @@
             {% if user.teacher.form_class %}
             <div class="formClass">
                 <p class="className"> {{ user.teacher.form_class.name }}</p>
-                <p class="classStudentCount">Si so: {{ user.teacher.form_class.get_profile.students.count }}</p>
+                <p class="classStudentCount">Si so: {{ user.teacher.form_class.students.count }}</p> <!---i user.teacher.form_class is a 'ClassYearTeacher' instance-->
                 <div class="classStaffs">
                     <h2>Ban cán sự lớp</h2>
-                    {% for staff in user.teacher.form_class.get_profile.get_class_staff_committee %}
+                    {% for staff in user.teacher.form_class.get_class_staff_committee %}
                         {% if staff %}
-                        <!--** staff here is a Student object -->
-                        <p class="classStaffName">Tên: <a href="{% url 'view_student' staff.id %}" class="link-info link-offset-2 link-opacity-75-hover"> {{ staff.full_name }} </a> </p>
-                        <p class="classStaffRole">{% get_role_name staff.get_profile.role %}</p>
+                        <!--** staff here is a 'StudentYearProfile' object -->
+                        <p class="classStaffName">Tên: <a href="{% url 'view_student' staff.student.id %}" class="link-info link-offset-2 link-opacity-75-hover"> {{ staff.student.full_name }} </a> </p>
+                        <p class="classStaffRole">{% get_role_name staff.role %}</p>
                         {% endif %}
                     {% empty %}
                     Lớp  chưa có ban cán sự
                     {% endfor %}
                 </div>
-                <a href="{% url 'view_class' user.teacher.form_class.id %}" class="btn btn-outline-primary"> Details </a>
+                <a href="{% url 'view_class' user.teacher.form_class.classroom.id %}" class="btn btn-outline-primary"> Details </a>
             </div>
             {% else %}
             Chưa có lớp chủ nhiệm. <a href="{% url 'classes' %}" class="link-info link-offset-2 link-opacity-75-hover">Xem danh sách các lớp</a>
