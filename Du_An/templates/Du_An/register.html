@@ -65,7 +65,7 @@
                 <h3>Chọn con của bạn (chỉ dành cho phụ huynh)</h3>
                 <select name="children[]" class="form-select" multiple>
                     {% for child in children %}
-                    <option value="{{ child.id }}"> {{ child.name }} | {{ child.classroom.name }} </option>
+                    <option value="{{ child.id }}"> {{ child.full_name }} | {{ child.get_profile.classroom.classroom.name }} </option>
                     {% endfor %}
                 </select>
             </div>

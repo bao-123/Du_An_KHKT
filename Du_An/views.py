@@ -356,13 +356,13 @@ def get_marks(request: HttpRequest, id):
 
         if subject.name in MAIN_SUBJECTS:
             student_subject = {"first_term": student_profile.main_subjects.get(name=subject.name).serialize(),
-                                "second_term": student_profile.second_term_main_subjects.get(name=subject.name).serialize()}
+                                "second_term": student_profile.second_term_main_subjects.get(name=subject.name).serialize(), "subject": subject.name}
         elif subject.name in SECOND_SUBJECTS:
             student_subject = {"first_term": student_profile.second_subjects.get(name=subject.name).serialize(),
-                                "second_term": student_profile.second_term_second_subjects.get(name=subject.name).serialize()}
+                                "second_term": student_profile.second_term_second_subjects.get(name=subject.name).serialize(), "subject": subject.name}
         elif subject.name in COMMENT_SUBJECTS:
             student_subject = {"first_term": student_profile.comment_subjects.get(name=subject.name).serialize(),
-                                "second_term": student_profile.second_term_comment_subjects.get(name=subject.name).serialize()}
+                                "second_term": student_profile.second_term_comment_subjects.get(name=subject.name).serialize(), "subject": subject.name}
         else:
             return JsonResponse({"message": "Unknow subject"}, status=400)
         
@@ -517,7 +517,7 @@ def update_class(request: HttpRequest):
 def render_register(request: HttpRequest, error: dict | None = None):
     DEFAULT_DICT: dict = {
         "subjects": [ subject.serialize() for subject in Subject.objects.all() ],
-        "children": [ student.serialize() for student in Student.objects.all() ],
+        "children": Student.objects.all(),
         "classes":  [ classroom.serialize() for classroom in Class.objects.all() ]
     }
 

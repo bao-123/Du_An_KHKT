@@ -107,7 +107,7 @@ export function displayMessage(divId, header, content, type, size)
         const messageContent = tag("p", content, ["content"]);
 
     try {
-        
+        clear(divId);
         const messageDiv = document.getElementById(divId);
         messageDiv.classList.add(type, size)
         messageDiv.appendChild(messageHeader);
@@ -124,16 +124,15 @@ export function clear(divId) {
     const div = document.getElementById(divId);
     if(!div)
     {
-        throw new Error(`Not found any element with this id (${divId})`);
+        return;
     }
 
     div.innerHTML = '';
 }
 
 
-
 //-I simple function to get csrf token
 function getCSRF() {
     const parts = document.cookie.split("csrftoken=");
     return parts.length == 2 ? parts.pop().split(";").shift() : '';
-}
+} 

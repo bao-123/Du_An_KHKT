@@ -1,5 +1,6 @@
 from .models import *
 from datetime import date
+from typing import Iterable
 
 #Utils functions for views
 class ViewUtils():
@@ -11,7 +12,8 @@ class ViewUtils():
         except Teacher.form_class.RelatedObjectDoesNotExist:
             return None
         
-    
+
+#TODO:!
 #** functions for testing purpose
 class TestUtils():
 
@@ -24,13 +26,17 @@ class TestUtils():
         return subjects
     
     @staticmethod
-    def create_classes(names: list[str]) -> list[Class]:
-        classes_count = len(names)
-        class_list = [None]*classes_count
-        for i in range(classes_count):
-            classroom = Class.objects.create(name=names[i])
-            class_list[i] = classroom
-        return class_list
+    def create_classroom(name: str, form_teacher: Teacher | None = None, subject_teachers: Iterable[Teacher] = [], year: int = this_year ):
+        classroom = Class.objects.create(name=name)
+        profile = ClassYearProfile.objects.create(classroom=classroom, form_teacher=form_teacher, year=year)
+
+        for teacher in subject_teachers:
+            #*Subject of teachers should be different, this just for testing purpose!
+            class_subject_teacher = ClassSubjectTeacher.objects.create(subject=teacher.subject.first(), teacher=teacher) 
+            profile.subject_teachers.add(class_subject_teacher)
+        
+        profile.save(force_update=True)
+        return {"classroom": classroom, "profile": profile}
     
 
     @staticmethod
@@ -38,16 +44,11 @@ class TestUtils():
                        role: str | None = None, is_boy: bool | None = None,
                        birthday: date | None = None
                        ) -> Student:
-        student = Student.objects.create(full_name=name, classroom=classroom, role=role, is_boy=is_boy, birthday=birthday)
+        student = Student.objects.create(full_name=name, is_boy=is_boy, birthday=birthday)
 
-        student.main_subjects.set(MainSubject.generate_main_subjects())
-        student.second_term_main_subjects.set(MainSubject.generate_main_subjects())
-        student.second_subjects.set(SecondSubject.generate_second_subjects())
-        student.second_term_second_subjects.set(SecondSubject.generate_second_subjects())
-        student.comment_subjects.set(EvaluateByCommentSubject.generate_comment_subject())
-        student.second_term_comment_subjects.set(EvaluateByCommentSubject.generate_comment_subject())
+        student_profile = StudentYearProfile.create_profile(student, role, classroom)
 
-        return student
+        return {"student": student, "profile": student_profile}
 
 
     @staticmethod

@@ -25,7 +25,7 @@
                     <!--TODO: fix the display of class's monitor-->
                     {% if class.class %}
                         {% autoescape off %}
-                            {% get_student_page_link class.class 'monitor' 'link-info link-offset-2 link-opacity-hover-75'  %}
+                            Lớp trưởng: {% get_student_page_link class.class 'monitor' 'link-info link-offset-2 link-opacity-hover-75'  %}
                         {% endautoescape %}
                     {% endif %}
                 </p>

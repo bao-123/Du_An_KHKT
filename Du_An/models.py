@@ -310,7 +310,7 @@ class ClassYearProfile(models.Model):
 
     def get_class_staff_committee(self):
         try:
-            return self.students.filter(role__in=STUDENT_ROLE)
+            return self.students.exclude(role="student").all()
         except:
             return None
     

@@ -63,6 +63,7 @@
                     <div class="child-div">
                         <h2>Name: {{ child.full_name }}</h2>
                         <h3>Class: {{ child.get_profile.classroom.classroom.name }}</h3>
+                        <a href="{% url 'view_student' child.id %}" class="btn btn-outline-primary">Thông tin chi tiết</a>
                     </div>
                 {% endfor %}
             </div>
