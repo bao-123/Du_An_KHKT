@@ -33,7 +33,7 @@ def login_view(request):
         email: str = request.POST["email"]
         password = request.POST["password"]
 
-        if "role" not in list(request.POST.keys()):
+        if "role" not in request.POST:
             #replace this
             return HttpResponseBadRequest("please choose either teacher or parent")
         
@@ -73,7 +73,7 @@ def login_view(request):
         return HttpResponseRedirect(reverse("dashboard"))
     
     else:
-        return HttpResponseNotAllowed("method not allowed.")
+        return HttpResponseNotAllowed(request.method)
             
 
 def logout_view(request):

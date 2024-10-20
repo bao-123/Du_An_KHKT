@@ -1,5 +1,8 @@
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth import authenticate
+from django.contrib.auth.hashers import make_password
 from .utils import TestUtils
 from .models import *
 from datetime import date
@@ -29,19 +32,30 @@ class ProjectTest(TestCase):
                                               subjects=[self.subjects[1], self.subjects[2]])
         
         self.classroom1 = TestUtils.create_classroom("6a1", form_teacher=self.teacher1, subject_teachers=[self.teacher2,])
-        self.classroom2 = TestUtils.create_classroom("6a2", form_teacher=self.teacher3, subject_teachers=[self.teacher1, self.teacher2])
-
+        self.classroom2 = TestUtils.create_classroom("6a2", form_teacher=self.teacher3, subject_teachers=[self.teacher1, self.teacher3])
+        self.classroom3 = TestUtils.create_classroom("6a3", subject_teachers=[self.teacher2, ]) #* This class don't have a form teacher
         
         #* create some students to test register page
         self.student1 = TestUtils.create_student(name="Nguyen Thien Bao", role="monitor",
-                                                  is_boy=True, classroom=self.classes[0],
+                                                  is_boy=True, classroom=self.classroom1["classroom"],
                                                   birthday=date.today())
         self.student2 = TestUtils.create_student(name="Tran Hoang Loc", role="art",
-                                                  is_boy=True, classroom=self.classes[0],
+                                                  is_boy=True, classroom=self.classroom1["classroom"],
                                                   birthday=date.today())
         self.student3 = TestUtils.create_student(name="Vo Trong Tin", is_boy=False,
-                                                  role="monitor", classroom=self.classes[1],
+                                                  role="monitor", classroom=self.classroom2["classroom"],
                                                   birthday=date.today())
+        
+        #* Create some parents
+        self.parent1 = TestUtils.create_user(type="parent", email="parent1@parent.com",
+                                             password="parent1", full_name="Nguyễn Văn C",
+                                             children=[self.student1["student"], self.student2["student"]],
+                                             contact_info="abc")
+        
+        self.parent2 = TestUtils.create_user(type="parent", email="parent2@parent.com",
+                                             password="parent2", full_name="Nguyễn Văn D", 
+                                             children=[self.student3["student"], ],
+                                             contact_info="xyz")
 
 
 
@@ -51,13 +65,44 @@ class ProjectTest(TestCase):
         self.assertEqual(response.status_code, 200)
         print("Test welcome page finished. ✔")
 
-    def test_login_page(self):
+    def test_view_login(self):
         response = self.client.get(reverse("login"))
 
         self.assertEqual(response.status_code, 200)
-        print("test login page finished. ✔")
-    
-    def test_register_page(self):
+        print("test login view finished. ✔")
+
+    #! email of a teacher or a parent is stored in 'username' field
+    def test_login_teacher(self):
+        #* Shouldn't use self.client.teacher2.password because it's hashed.
+        response = self.client.post(reverse("login"), {"email": self.teacher2.username, "password": "teacher2", "role": "teacher"}) #* Try to log client to teacher2
+
+        self.assertEqual(response.status_code, 302) #* User should be redirected
+        self.assertIs(response.wsgi_request.user.__class__, Teacher) #* User should be log in as a teacher
+        self.assertEqual(response.wsgi_request.user.teacher, self.teacher2)
+
+        print("Test login functionalities for teachers! ✔")
+        self.client.logout()
+
+    def test_login_parent(self):
+        response = self.client.post(reverse("login"), {"email": self.parent1.username, "password": "parent1", "role": "parent"})
+
+        self.assertEqual(response.status_code, 302) #* Redirected
+        self.assertIs(response.wsgi_request.user.__class__, Parent)
+        self.assertEqual(response.wsgi_request.user.parent, self.parent1)
+
+        print("Test login for parents finished! ✔")
+        self.client.logout()
+
+    def test_logout(self):
+        self.client.login(username=self.teacher1.username)
+
+        response = self.client.get(reverse("logout"))
+
+        self.assertEqual(response.status_code, 302) #* User should be redirected.
+        self.assertIs(response.wsgi_request.user.__class__, AnonymousUser)
+        print("test login finished. ✔")
+
+    def test_view_register(self):
         response = self.client.get(reverse("register"))
 
         self.assertEqual(response.status_code, 200)
@@ -65,4 +110,25 @@ class ProjectTest(TestCase):
         self.assertEqual(len(response.context["classes"]), 3)
         self.assertEqual(len(response.context["children"]), 3)
         print("Test register page finished. ✔")
+
+    def test_register_teacher(self):
+        response = self.client.post(reverse("register"), {"full_name": "testUser", "email": "test@test.com",
+                                                           "password": "test", "contact_info": "mnp",
+                                                           "user_type": "teacher", "subjects[]": [ self.subjects[0].id, self.subjects[1].id ],
+                                                           "form_class": self.classroom3["classroom"].id }) #* Only 6a3 don't have a form teacher yet
+        
+        self.assertEqual(response.status_code, 302) #*User should be redirected
+        self.assertIs(response.wsgi_request.user.__class__, Teacher)
+        test_user = Teacher.objects.get(username="test@test.com") #* Ensure that the new user is created
+        self.assertEqual(response.wsgi_request.user, test_user)
+        self.assertEqual(test_user.full_name, "testUser")
+        self.assertTrue(test_user.check_password("test"))
+        self.assertEqual(test_user.contact_information, "mnp")
+        self.assertQuerySetEqual(test_user.subject.all(), Subject.objects.filter(pk__in=[self.subjects[0].id, self.subjects[1].id]), ordered=False)
+        self.assertEqual(test_user.form_class, self.classroom3["profile"])
+
+        print("Test register for teachers finished!. ✔")
+
+        self.client.logout()
+
     

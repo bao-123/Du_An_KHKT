@@ -57,21 +57,21 @@ class TestUtils():
                     password: str | None = None, 
                     full_name: str | None = None,
                     children: list[Student] | None = None,
-                    subjects: list[Subject] | None = None
+                    subjects: list[Subject] | None = None,
+                    contact_info : str = ''
                     ) -> Parent | Teacher | None:
         try:
             if type == "teacher":
-                #** We not user 'make_password' just for testing purpose
-                teacher = Teacher.objects.create(username=email, children=children, full_name=full_name)
-
+                teacher = Teacher.objects.create(username=email, full_name=full_name, contact_information=contact_info)
+                teacher.set_password(password)
                 if subjects:
                     teacher.subject.set(subjects)
                 
                 teacher.save(force_update=True)
                 return teacher
             elif type == "parent":
-                parent = Parent.objects.create(username=email, full_name=full_name, password=password)
-
+                parent = Parent.objects.create(username=email, full_name=full_name, contact_information=contact_info)
+                parent.set_password(password)
                 if children:
                     parent.children.set(children)
 
