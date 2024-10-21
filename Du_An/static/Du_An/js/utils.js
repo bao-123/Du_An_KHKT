@@ -1,4 +1,4 @@
-import {updateMarkURL, addClassSubjectTeacherURL, getStudentMarksURL} from "./document.js"
+import {updateMarkURL, addClassSubjectTeacherURL, getStudentMarksURL, searchStudentURL} from "./document.js"
 //utils
 
 //* function to create HTML tags
@@ -90,6 +90,20 @@ export async function getSubjectMarks(studentId, subjectId, year=null) {
         return data;
     } catch (error) {
         console.error(error)
+    }
+}
+
+export async function searchStudent(query, classroom_id='') {
+    try {
+        const response = await fetch(`${searchStudentURL}?name=${query}${ classroom_id? `&classroom_id=${classroom_id}` : '' }`);
+        const data = await response.json();        
+        if (response.status !== 200) {
+            return data.message;
+        } else {
+            return data.search_result;
+        }
+    } catch (error) {
+        console.error(error);
     }
 }
 

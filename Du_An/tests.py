@@ -132,3 +132,33 @@ class ProjectTest(TestCase):
         self.client.logout()
 
     
+    def test_dashboard(self):
+        #*Test with teacher
+        self.client.login(username=self.teacher1.username)
+
+        response = self.client.get(reverse("dashboard"))
+
+        self.assertEqual(response.status_code, 200)
+        self.client.logout()
+
+        self.client.login(username=self.parent1.username)
+
+        response = self.client.get(reverse("dashboard"))
+
+        self.assertEqual(response.status_code, 200)
+
+        print("test dashboard finished.✔")
+        self.client.logout()
+    
+    def test_view_student(self):
+        self.client.force_login(self.teacher1)
+
+        response = self.client.get(reverse("view_student", args=(self.student1["student"].id, )))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["student"], self.student1["student"])
+        self.assertEqual(response.context["student_profile"], self.student1["profile"])
+        self.assertEqual(response.context["subjects"].count(), len(self.subjects))
+
+        print("Test student profile page view finished.✔")
+    

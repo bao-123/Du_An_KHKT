@@ -15,5 +15,6 @@ urlpatterns = [
     path("new_student", views.create_student, name="create_student"),
     #* this use for update the form teacher of a particular class
     path("class", views.update_class, name="update_class"),
-    path("student/marks/<int:id>", views.get_marks, name="student_mark")
+    path("student/marks/<int:id>", views.get_marks, name="student_mark"),
+    path("search_student", views.search_student, name="search_student")
 ]

@@ -43,7 +43,7 @@ class TestUtils():
     def create_student(name: str, classroom: Class,
                        role: str | None = None, is_boy: bool | None = None,
                        birthday: date | None = None
-                       ) -> Student:
+                       ) -> dict[Student, StudentYearProfile]:
         student = Student.objects.create(full_name=name, is_boy=is_boy, birthday=birthday)
 
         student_profile = StudentYearProfile.create_profile(student, role, classroom)
