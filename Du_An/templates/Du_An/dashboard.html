@@ -37,21 +37,18 @@
             <hr>
             <h3>Lớp bộ môn</h3>
             <div class="classes">
-                {% for classroom in user.teacher.teaching_classes.all %} <!--* classroom here is a 'ClassSubjectTeacher' instance -->
-                <!--* classroom.classroom is a 'ClassYearProfile' instance and classroom.classroom.classroom is it's classroom -->
-                <div class="mb-3"> <!--** margin bottom 3-->
-                    <p class="className"> {{ classroom.classroom.classroom.name }} </p>
-                    <p class="classStudentCount"> {{ classroom.classroom.students.count }}</p>
-                    {% if classroom.classroom.form_teacher %}
-                    <p class="classFormTeacher">Form teacher: <a href="{% url 'view_teacher' classroom.classroom.form_teacher.id %}" class="link-info link-offset-2 link-underline-light link-opacity-75-hover"> {{ classroom.classroom.form_teacher.full_name }}</a></p>
-                    {% else %}
-                    Lớp chưa có Giáo viên chủ nhiệm
-                    {% endif %}
-                    <p class="classMonitor">Lớp Trưởng: {% autoescape off %} {% get_student_page_link classroom.classroom 'monitor' 'link-info link-offset-2 link-opacity-75-hover' %} {% endautoescape %} </p>
-                    <!--TODO: Add more role for classes-->
-                </div>
+                {% for classroom in user.teacher.get_teaching_classes %}
+                    <!--* classroom here is a dict contains 'classroom' id 'Class' instance and 'profile' is a 'ClassYearProfile' instance-->
+                    <div class="subjectClass">
+                        <h3> {{ classroom.classroom.name }} </h3>
+                        <p>Sĩ số: {{ classroom.profile.students.count }} </p>
+                        {% if classroom.profile.form_teacher %}
+                        <p>GVCN: <a class="link-info link-offset-2 link-opacity-75-hover" href="{% url 'view_teacher' classroom.profile.form_teacher.id %}"> {{ classroom.profile.form_teacher.full_name }} </a> </p>
+                        {% endif %}
+                        <a class="btn btn-outline-primary" href="{% url 'view_class' classroom.classroom.id %}">Thông tin chi tiết</a>
+                    </div>
                 {% empty %}
-                Chưa có lớp bộ môn
+                    Chưa có lớp bộ môn
                 {% endfor %}
             </div>
         {% elif user.parent %}

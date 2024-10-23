@@ -18,6 +18,13 @@ def check_subjects(modeladmin, request, query_set):
         if obj.name not in (MAIN_SUBJECTS + SECOND_SUBJECTS + COMMENT_SUBJECTS):
             print(obj.name)
             raise Exception("Invalid subject!!!")
+        
+@admin.action(description="Create default subject")
+def create_subjects(modeladmin, request, query_set):
+    for subject_name in (MAIN_SUBJECTS + SECOND_SUBJECTS + COMMENT_SUBJECTS):
+        if subject_name not in [subject.name for subject in query_set]:
+            Subject.objects.create(name=subject_name)
+    
 
     
 @admin.action(description="create profiles")
@@ -42,7 +49,7 @@ class ClassAdmin(admin.ModelAdmin):
     actions = [create_profiles, ]
 
 class SubjectAdmin(admin.ModelAdmin):
-    actions = [check_subjects, ]
+    actions = [check_subjects, create_subjects]
 
 
 class ClassYearProfileAdmin(admin.ModelAdmin):

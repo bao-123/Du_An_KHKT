@@ -195,7 +195,7 @@ def view_classes(request):
         classes = Class.objects.all()
 
         return render(request, "Du_An/classes.html", {
-            "classes": [ {"class": classroom, "profile": classroom.profiles.filter(year=this_year).first()} for classroom in classes ]
+            "classes": [ {"class": classroom, "profile": classroom.get_profile()} for classroom in classes ]
         })
     
     #** API to add class's subject teacher
@@ -216,11 +216,9 @@ def view_classes(request):
 
             if ClassSubjectTeacher.get_subject_teacher(subject, class_profile):
                 return JsonResponse({"message": f"This class already have a {subject.name} teacher"}, status=400)
-            classroom_subject_teacher = ClassSubjectTeacher(subject=subject, teacher=request.user.teacher)
-            classroom_subject_teacher.save()
-            class_profile.subject_teachers.add(classroom_subject_teacher)
 
-            class_profile.save(force_update=True)
+            classroom_subject_teacher = ClassSubjectTeacher(subject=subject, teacher=request.user.teacher, classroom=class_profile)
+            classroom_subject_teacher.save()
 
             return JsonResponse({"message": "Successfully"}, status=200)
 
@@ -245,6 +243,18 @@ def view_teacher(request, teacher_id):
         return render_error(request, error="Not found", 
                             error_message="Doesn't found any teacher with this id") #* Add error_image (a path to a image in static) if wish.
     
+
+@login_required(login_url="login")
+def view_teachers(request):
+    if request.method != "GET":
+        return HttpResponseNotAllowed(request.method)
+    
+    teachers = Teacher.objects.all()
+
+    return render(request, "Du_An/teachers.html", {
+        "teachers": teachers
+    })
+
 
 @login_required(login_url="login")
 def view_student(request, id):
@@ -398,7 +408,6 @@ def search_student(request: HttpRequest):
     return JsonResponse({"search_result": [ {"student": profile.student.serialize(), "profile": profile} for profile in student_profiles ] }, status=200)
         
          
-
 @login_required(login_url="login")
 def view_class(request, id):
     if request.method != "GET":

@@ -18,7 +18,9 @@
     <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
         <div class="container-fluid">
             
-            <a class="navbar-brand mb-4" href="{% url 'dashboard' %}"><img src="{% static 'Du_An/images/PHLogoWeb.png' %}" alt="dashboard"></a>
+            <a class="navbar-brand mb-4" href="{% url 'dashboard' %}">
+                <img src="{% static 'Du_An/images/PHLogoWeb.png' %}" alt="dashboard" id="PHLogoWeb" style="height: 80px; width: 70px; margin-top: 10px;">
+            </a>
 
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto mb-3">
@@ -28,6 +30,9 @@
                     </li>
                     <li class="nav-item">
                         <a href="{% url 'classes' %}" class="nav-link">Danh sách lớp</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'view_teachers' %}" class="nav-link">Danh sách giáo viên</a>
                     </li>
                     {% if user.teacher %}
                     <li class="nav-item">

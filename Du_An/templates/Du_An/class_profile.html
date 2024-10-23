@@ -71,8 +71,8 @@
                 <div id="subjectTeachersDisplay" style="display: none;">
                     {% for teacher in class_profile.get_teachers %}
                     <div class="teacher">
-                        <p class="teacherName">Ten: <a href="{% url 'view_teacher' teacher.teacher.id %}" class="nav-link"> {{ teacher.teacher.full_name}} </a></p>
-                        <p class="teacherSubject">Day mon: {{ teacher.subject.name }} </p>
+                        <p class="teacherName">Tên: <a href="{% url 'view_teacher' teacher.id %}" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover"> {{ teacher.full_name}} </a></p>
+                        <p class="teacherSubject">Dạy môn: {% get_teaching_subjects class_profile teacher%} </p>
                     </div>
                     {% empty %}
                     Chua co giao vien

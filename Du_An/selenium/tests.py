@@ -7,6 +7,7 @@ options = Options()
 options.add_argument("--no-sandbox")
 options.add_argument('--ignore-certificate-errors')
 
+BASE_URL = "http://127.0.0.1:8000/"
 #! Remember to run the server before run the test!
 class ProjectTest(TestCase):
     @classmethod
@@ -20,10 +21,11 @@ class ProjectTest(TestCase):
         print("All test finished!")
         super().tearDownClass()
 
-    def test_test(self):
-        self.driver.get("http://127.0.0.1:8000/")
+    def test_welcome(self):
+        self.driver.get(BASE_URL)
 
         print("setup finish!")
+    
 
 
 if __name__ == "__main__":

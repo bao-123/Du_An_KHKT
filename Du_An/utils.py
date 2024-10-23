@@ -32,10 +32,8 @@ class TestUtils():
 
         for teacher in subject_teachers:
             #*Subject of teachers should be different, this just for testing purpose!
-            class_subject_teacher = ClassSubjectTeacher.objects.create(subject=teacher.subject.first(), teacher=teacher) 
-            profile.subject_teachers.add(class_subject_teacher)
+            ClassSubjectTeacher.objects.create(subject=teacher.subject.first(), teacher=teacher, classroom=profile) 
         
-        profile.save(force_update=True)
         return {"classroom": classroom, "profile": profile}
     
 

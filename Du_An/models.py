@@ -45,6 +45,15 @@ class Teacher(User):
     subject = models.ManyToManyField(Subject, related_name="teachers")
     contact_information = models.TextField(default="")
 
+
+    def get_teaching_classes(self):
+        teaching_classes = [ subject_class.classroom.classroom for subject_class in self.teaching_classes.all() ]
+        teaching_classes = set(teaching_classes) #*Remove duplicates
+        return [{"classroom": classroom, "profile": classroom.get_profile()} for classroom in teaching_classes]
+    
+            
+            
+
     def serialize(self):
         return {
             "id": self.id,
@@ -302,7 +311,6 @@ class ClassYearProfile(models.Model):
     classroom = models.ForeignKey(Class, on_delete=models.CASCADE, related_name="profiles") #-W profile with 's'
     year = models.PositiveSmallIntegerField(blank=False, default=date.today().year)
     form_teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, null=True, blank=True, default=None, related_name="form_class")
-    subject_teachers = models.ManyToManyField("ClassSubjectTeacher", blank=True, related_name="classroom")
 
 
     def __str__(self):
@@ -338,6 +346,7 @@ class ClassYearProfile(models.Model):
 class ClassSubjectTeacher(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name="classes")
     teacher = models.ForeignKey(Teacher, on_delete=models.PROTECT, related_name="teaching_classes")
+    classroom = models.ForeignKey(ClassYearProfile, on_delete=models.CASCADE, related_name="subject_teachers")
 
     @staticmethod
     def get_subject_teacher(subject: Subject, classProfile: ClassYearProfile) -> Teacher | None:

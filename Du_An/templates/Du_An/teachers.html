@@ -1,0 +1,30 @@
+{% extends 'Du_An/layout.html' %}
+{% load static %}
+
+
+{% block title %} Danh sách giáo viên {% endblock %}
+
+
+{% block body %}
+    <div class="teachers">
+        {% for teacher in teachers %}
+            <div class="teacher">
+                <h3> {{ teacher.full_name }} </h3>
+                <div class="teacherSubjects">
+                    <h4>Các môn đang dạy</h4>
+                    {% for subject in teacher.subject.all %} {{ subject.name }} {% endfor %}
+                </div>
+                <p>
+                    {% if teacher.form_class %}
+                        Lớp chủ nhiệm: <a href="{% url 'view_class' teacher.form_class.classroom.id %}" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover"> {{ teacher.form_class.classroom.name }} </a>
+                    {% else %}
+                    Giáo viên không có lớp chủ nhiệm 
+                    {% endif %}
+                </p>
+                <a href="{% url 'view_teacher' teacher.id %}" class="btn btn-outline-primary">Thông tin chi tiết</a>
+            </div>
+        {% empty %}
+        Chưa có giáo viên
+        {% endfor %}
+    </div>
+{% endblock %}

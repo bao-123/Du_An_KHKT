@@ -24,7 +24,7 @@
                     {% endfor %}
                 </div>
                 <!--* hien thi thong tin lien lac -->
-                <p class="teacherContactInfo"> {{ teacher.contact_information }}</p>
+                <textarea class="teacherContactInfo" class="form-control" readonly> {{ teacher.contact_information }}</textarea>
                 <!--* hien thi lop chu nhiem -->
                 {% if teacher.form_class %}
                     <!--* teacher.form_class is a 'ClassYearProfile' instance -->
@@ -34,11 +34,10 @@
                 {% endif %}
                 <!--* hien thi danh sách các lớp đang dạy (bộ môn) -->
                 <div class="teacherTeachingClass">
-                    {% for classroom in teacher.teaching_classes.all %}
+                    <!---i classroom here is a dict contains 'classroom' is the 'Class' and 'profile' is the 'ClassYearProfile'-->
+                    {% for classroom in teacher.get_teaching_classes %}
                         <!--TODO: replace the href (to the class's profile )-->
-                        <a class="nav-link" href="{% url 'view_class' classroom.id %}">
-                            <p class="teacherFormClass"> {{classroom.classroom.name }} </p>
-                        </a>
+                        <a class="link-secondary link-offset-2 link-opacity-75-hover" href="{% url 'view_class' classroom.classroom.id %}"> {{ classroom.classroom.name }}</a>
                     {% empty %}
                     This teacher doesn't teach any class.
                     {% endfor %}
