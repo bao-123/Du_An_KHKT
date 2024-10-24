@@ -2,7 +2,7 @@ import {updateMarkURL, addClassSubjectTeacherURL, getStudentMarksURL, searchStud
 //utils
 
 //* function to create HTML tags
-export function tag(name, content, classes, id='') {
+export function tag(name, content, classes=[], id='') {
     //@@classes should be an Array
 
     const element = document.createElement(name);

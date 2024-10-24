@@ -7,6 +7,7 @@
 
 {% block body %}
     <div class="classes">
+        <h1 class="classeslist">Danh Sách Lớp</h1>
         {% for class in classes %}
         {% if class %}
             <div class="class">
@@ -26,11 +27,11 @@
                     <!--TODO: fix the display of class's monitor-->
                     {% if class.class %}
                         {% autoescape off %}
-                            Lớp trưởng: {% get_student_page_link class.class 'monitor' 'link-info link-offset-2 link-opacity-hover-75'  %}
+                            Lớp trưởng: {% get_student_page_link class.class 'monitor' 'link-dark link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover'  %}
                         {% endautoescape %}
                     {% endif %}
                 </p>
-                <a href="{% url 'view_class' class.class.id %}" class="btn btn-outline-info">Details</a>
+                <a href="{% url 'view_class' class.class.id %}" class="btn btn-outline-primary">Details</a>
             </div>
         {% else %}
             None

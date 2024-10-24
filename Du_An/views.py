@@ -20,11 +20,19 @@ def index(request):
     else:
         return HttpResponseNotAllowed("method not allowed.")
 
+
 def dashboard(request):
     if request.method == "GET":
         return render(request, "Du_An/dashboard.html")
     else:
         return HttpResponseNotAllowed("method not allowed")
+
+
+def about(request):
+    if request.method != "GET":
+        return HttpResponseNotAllowed(request.method)
+    return render(request, "Du_An/about.html")
+    
 
 def login_view(request):
     if request.method == "GET":
@@ -188,7 +196,6 @@ def register(request: HttpRequest):
     else:
         return HttpResponseNotAllowed("method not allowed.")
     
-
 
 def view_classes(request):
     if request.method == "GET":
@@ -392,20 +399,24 @@ def search_student(request: HttpRequest):
     
     student_name = request.GET.get("name", '')
     classroom_id = request.GET.get("classroom_id", None)
-    
-    students = Student.objects.filter(full_name__icontains=student_name)
-    student_profiles = [ student.get_profile() for student in students ]
+
     if classroom_id:
         try:
             classroom = Class.objects.get(pk=classroom_id)
         except Class.DoesNotExist:
             return JsonResponse({"message": "Invalid classroom id"}, status=400)
-        
-        for profile in student_profiles:
-            if profile.classroom.classroom != classroom: #*profile.classroom is a 'ClassYearProfile' instance
-                student_profiles.remove(profile)
+    else:
+        classroom = None
 
-    return JsonResponse({"search_result": [ {"student": profile.student.serialize(), "profile": profile} for profile in student_profiles ] }, status=200)
+    if classroom:
+        students = [profile.student for profile in classroom.get_profile().students.all() if student_name.lower() in profile.student.full_name.lower()]
+    else:
+        students = Student.objects.filter(full_name__icontains=student_name)
+        
+    student_profiles = [ student.get_profile() for student in students ]
+
+
+    return JsonResponse({"search_result": [ {"student": profile.student.serialize(), "profile": profile.serialize()} for profile in student_profiles ] }, status=200)
         
          
 @login_required(login_url="login")

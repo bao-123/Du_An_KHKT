@@ -216,11 +216,11 @@ class Student(models.Model):
             "id": self.id,
             "name": self.full_name,
             "birthday": self.birthday.strftime("%d/%m/%Y"),
-            "profiles": [ profile.serialize() for profile in self.profiles.all() ]
+            #"profiles": [ profile.serialize() for profile in self.profiles.all() ]
         }
     
 
-#TODO: Finish
+
 #-I Implement to store student data (mark) by years (năm học)
 class StudentYearProfile(models.Model):
 
@@ -242,7 +242,6 @@ class StudentYearProfile(models.Model):
             "year": self.year,
             "classroom": self.classroom.serialize(),
             "role": self.role,
-            "subjects": self.student.get_subjects_mark()
         }
     
 

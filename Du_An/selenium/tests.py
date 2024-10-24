@@ -2,7 +2,11 @@ from unittest import TestCase, main
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from subprocess import run
+from subprocess import Popen
+import signal
+import time
+import os
+
 
 options = Options()
 options.add_argument("--no-sandbox")
@@ -13,15 +17,24 @@ BASE_URL = "http://127.0.0.1:8000/"
 class ProjectTest(TestCase):
     @classmethod
     def setUpClass(cls):
+        cls.server_process = Popen(["python", "manage.py", "runserver", "127.0.0.1:8000"])
+        time.sleep(3) #* Ensure that the server will be started before the test run.
+
         cls.driver = webdriver.Chrome(options=options)
         super().setUpClass()
-        run("python manage.py runserver")
         print("set up finished.")
     
     @classmethod
     def tearDownClass(cls):
         cls.driver.quit()
-        run("^C")
+
+        if os.name == "nt": #* If the os is Window
+            cls.server_process.terminate()
+        else: #* For unix-like
+            cls.server_process.send_signal(signal.SIGINT)
+
+        cls.server_process.wait()
+
         print("clearing...")
         super().tearDownClass()
 

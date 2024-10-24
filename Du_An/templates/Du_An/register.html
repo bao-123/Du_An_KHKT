@@ -3,7 +3,7 @@
 
 {% block title %}Đăng kí {% endblock %}
 {% block style %} <link rel="stylesheet" href="{% static 'Du_An/css/index.css' %}"> {% endblock %}
-{% block script %} <script src="{% static 'Du_An/js/register.js' %}"></script>{% endblock %}
+{% block script %} <script src="{% static 'Du_An/js/register.js' %}" type="module"></script>{% endblock %}
 
 {% block body %}
     <!--Add JS so teacher or parent can choose their children or classes -->
@@ -62,12 +62,28 @@
 
             <div id="for_parent" class="mb-3">
                 <!--TODO-->
+
                 <h3>Chọn con của bạn (chỉ dành cho phụ huynh)</h3>
-                <select name="children[]" class="form-select" multiple>
-                    {% for child in children %}
-                    <option value="{{ child.id }}"> {{ child.full_name }} | {{ child.get_profile.classroom.classroom.name }} </option>
-                    {% endfor %}
+                <div id="childrenSearch" class="mb-3">
+                    <div id="searchFormMessage"></div>
+
+                    <h3>Tìm con</h3>
+                    <input type="text" class="form-control mx-auto mb-3" id="childrenName" placeholder="Nhập tên con để tìm">
+
+                    <select id="childrenClassroom" class="form-select mb-3" size="5">
+                        <option selected disabled value="">Chọn lớp của con (Không bắt buộc)</option>
+                        {% for classroom in classes %}
+                            <option value="{{ classroom.id }}"> {{ classroom.name }} </option>
+                        {% endfor %}
+                    </select>
+
+                    <button id="childrenSearchSubmit" type="button" class="btn btn-primary">Tìm kiếm</button> <!---i type="button" to avoid keep the form from submitting when this button is clicked-->
+                </div>
+
+                <select name="children[]" id="childrenSelect" class="form-select" multiple>
+                    <option disabled>Tìm kiếm con để chọn</option>
                 </select>
+
             </div>
 
             <label for="contact_info" class="form-label">Thông tin liên lạc (Không bắt buộc) </label>

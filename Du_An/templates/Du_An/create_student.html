@@ -14,7 +14,7 @@
             <p class="error_message"> {{ error_message }} </p>
         </div>
         {% endif %}
-        <form action="{% url 'create_student' %}" method="post">
+        <form action="{% url 'create_student' %}" method="post" class="text-center">
             {% csrf_token %}
             <h1 class="form_header">Thêm hồ sơ học sinh mới</h1>
             <input type="text" name="full_name" placeholder="Họ và tên" class="form-control w-auto mx-auto mb-3" autocomplete="off" autofocus>
@@ -27,20 +27,24 @@
                 {% endfor %}
             </select>
             <h4 class="form_header">Ngày sinh</h4>
-            <input type="date" class="form-control w-auto mx-auto" name="birthday" placeholder="YYYY/MM/DD" min="1920-01-01" max="2120-12-31">
-            <input type="radio" value="boy" name="gender" id="boy">
-            <label for="boy">Nam</label>
-            <input type="radio" value="girl" name="gender" id="girl">
+            <input type="date" class="form-control w-auto mx-auto mb-3" name="birthday" placeholder="YYYY/MM/DD" min="1920-01-01" max="2120-12-31">
+            <div class="mb-3">
+                <input type="radio" value="boy" name="gender" id="boy">
+                <label for="boy">Nam</label>
+                <input type="radio" value="girl" name="gender" id="girl">
             <label for="girl">Nữ</label>
-            <label for="role">Chức vụ</label>
-            <select name="role" id="role">
-                <option value="monitor">Lớp trưởng</option>
-                <option value="academic">Lớp phó học tập</option>
-                <option value="art">Lớp phó văn thể mỹ</option>
-                <option value="labor">Lớp phó lao động</option>
-                <option value="student">Học sinh</option>
-            </select>
-            <button type="submit" class="btn btn-outline-primary">Create</button>
+            </div>
+            <div class="mb-3">
+                <label for="role" class="form-label">Chức vụ</label>
+                <select name="role" id="role" class="form-select w-auto mx-auto">
+                    <option value="monitor">Lớp trưởng</option>
+                    <option value="academic">Lớp phó học tập</option>
+                    <option value="art">Lớp phó văn thể mỹ</option>
+                    <option value="labor">Lớp phó lao động</option>
+                    <option value="student">Học sinh</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-outline-primary mx-auto">Create</button>
         </form>
     </div>
 {% endblock %}

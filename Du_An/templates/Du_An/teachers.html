@@ -3,11 +3,12 @@
 
 
 {% block title %} Danh sách giáo viên {% endblock %}
+{% block style %} <link href="{% static 'Du_An/css/index.css' %}" rel="stylesheet"> {% endblock %}
 
 
 {% block body %}
     <div class="teachers">
-        <h1>Danh sách giáo viên trong trường</h1>
+        <h1 class="teacherslist">Danh sách giáo viên trong trường</h1>
         <hr>
         {% for teacher in teachers %}
             <div class="teacher">
@@ -23,7 +24,7 @@
                     Giáo viên không có lớp chủ nhiệm 
                     {% endif %}
                 </p>
-                <a href="{% url 'view_teacher' teacher.id %}" class="btn btn-outline-primary">Thông tin chi tiết</a>
+                <a href="{% url 'view_teacher' teacher.id %}" class="btn detailsBtn">Thông tin chi tiết</a>
             </div>
         {% empty %}
         Chưa có giáo viên
