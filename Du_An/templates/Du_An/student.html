@@ -57,8 +57,10 @@
                     <form id="updateMarkForm">
                         <!--* teacher will select the subject that they want to update-->
                         <select id="updateMarkSubjectSelect">
-                            <!-- TODO: update this so it still working in case the teacher teach mor ethan 1 subject -->
-                            <option value="{% get_subject student_profile.classroom user.teacher 'id' %}" selected>{% get_subject student_profile.classroom user.teacher 'name' %}</option>
+                            <option selected disabled>Chọn môn muốn nhập điểm</option>
+                            {% autoescape off %}
+                            {% get_teacher_subject_options student.get_profile.classroom user.teacher %}
+                            {% endautoescape %}
                         </select>
                         <!--*Select semester -->
                         <select id="semester">

@@ -24,7 +24,8 @@
                     {% endfor %}
                 </div>
                 <!--* hien thi thong tin lien lac -->
-                <textarea class="teacherContactInfo" class="form-control" readonly> {{ teacher.contact_information }}</textarea>
+                <label for="contactInfo" class="form-label">Thông tin liên lạc</label>
+                <textarea class="teacherContactInfo" class="form-control" id="contactInfo" readonly> {{ teacher.contact_information }}</textarea>
                 <!--* hien thi lop chu nhiem -->
                 {% if teacher.form_class %}
                     <!--* teacher.form_class is a 'ClassYearProfile' instance -->

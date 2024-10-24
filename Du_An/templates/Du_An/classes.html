@@ -11,18 +11,18 @@
         {% if class %}
             <div class="class">
                 <p class="class_name"> {{ class.class.name }} </p>
-                <p class="class_student_count">Si so: {{ class.profile.students.count }} </p>
+                <p class="class_student_count">Sĩ số: {{ class.profile.students.count }} </p>
                 <!--TODO: Replace the href (to the teacher's profile page)-->
                 {% if class.profile.form_teacher %}
-                <p>
-                    Form teacher: <a class="link-primary link-offset-2 link-opacity-75-hover link-underline-info" href="{% url 'view_teacher' class.profile.form_teacher.id %}">{{ class.profile.form_teacher.full_name }} </a>
+                <p class="formTeacher">
+                    Form teacher: <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover" href="{% url 'view_teacher' class.profile.form_teacher.id %}">{{ class.profile.form_teacher.full_name }} </a>
                 </p>
                 {% else %}
-                <p>Chưa có giáo viên chủ nhiệm</p>
+                <p class="formTeacher">Chưa có giáo viên chủ nhiệm</p>
                 {% endif %}
                 
                 <!--TODO: Replace the href (to the monitor's profile page)-->
-                <p>
+                <p class="monitor">
                     <!--TODO: fix the display of class's monitor-->
                     {% if class.class %}
                         {% autoescape off %}

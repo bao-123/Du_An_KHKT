@@ -2,6 +2,7 @@ body
 {
     margin: 0;
     background-image: url(../images/BGRegister.jpg);
+    font-family: 'Open Sans', sans-serif;
 }
 
 form
@@ -65,4 +66,46 @@ form > textarea
 .error_message{
     font-size: 25px;
     font-style: italic;
+}
+
+.classes
+{
+    margin-top: 3rem;
+    margin-left: 3rem;
+    margin-right: 3rem;
+}
+.class
+{
+    border: 3px solid;
+    border-radius: 8px;
+    margin-bottom: 3rem;
+    text-align: center;
+    padding: 10px 20px;
+    backdrop-filter: blur(5px);
+}
+
+.class_student_count
+{
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.class_name
+{
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+
+.formTeacher
+{
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+
+.monitor
+{
+    font-weight: bold;
+    font-size: 1rem;
 }

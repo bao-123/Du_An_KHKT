@@ -42,6 +42,14 @@ def get_subject(classroom: ClassYearProfile, teacher: Teacher, attribute: str ):
         return None #TODO
 
 @register.simple_tag
+def get_teacher_subject_options(profile: ClassYearProfile, teacher: Teacher):
+    teaching_subjects = [teacher_subject.subject for teacher_subject in profile.subject_teachers.filter(teacher=teacher)]
+
+    html_options = [format_html(tag("option", attribute='value={}', content=subject.name), subject.id) for subject in teaching_subjects]
+
+    return '\n'.join(html_options)
+
+@register.simple_tag
 def get_teaching_subjects(class_profile: ClassYearProfile, teacher: Teacher) -> str:
     return ', '.join([subject_teacher.subject.name for subject_teacher in class_profile.subject_teachers.filter(teacher=teacher)])
 

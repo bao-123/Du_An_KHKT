@@ -10,7 +10,7 @@
     <link rel="icon" href="{% static 'Du_An/images/PHLogoWeb.png' %}">
 </head>
 <body>
-    <img src="{% static 'Du_An/images/welcome(3).png' %}" alt="background-image" id="background-image">
+    <img src="{% static 'Du_An/images/Welcome.jpg' %}" alt="background-image" id="background-image">
     <div id="welcome-content">
         <div class="main-description">
             <p class="description">Nhanh Chóng, </p>
@@ -18,10 +18,10 @@
             <p class="description">Tiện Lợi </p>
         </div>
         <div class="links">
-            <a href="{% url 'register' %}" class="btn btn-primary">Dang ky</a>
-            <a href="{% url 'login' %}" class="btn btn-primary">Dang Nhap</a>
+            <a href="{% url 'register' %}" class="btn btn-primary">Dang ký</a>
+            <a href="{% url 'login' %}" class="btn btn-primary">Dang Nhập</a>
             {% if user.is_authenticated %}
-            <a href="{% url 'dashboard' %}" class="btn btn-primary">Trang chu</a>
+            <a href="{% url 'dashboard' %}" class="btn btn-primary">Trang chủ</a>
             {% endif %}
         </div>
     </div>

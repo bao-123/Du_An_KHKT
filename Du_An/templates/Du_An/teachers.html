@@ -7,9 +7,11 @@
 
 {% block body %}
     <div class="teachers">
+        <h1>Danh sách giáo viên trong trường</h1>
+        <hr>
         {% for teacher in teachers %}
             <div class="teacher">
-                <h3> {{ teacher.full_name }} </h3>
+                <h3> {{ teacher.full_name }}</h3>
                 <div class="teacherSubjects">
                     <h4>Các môn đang dạy</h4>
                     {% for subject in teacher.subject.all %} {{ subject.name }} {% endfor %}
