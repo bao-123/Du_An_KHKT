@@ -323,7 +323,7 @@ class ClassYearProfile(models.Model):
     
 
     def get_teachers(self):
-        return [subject_teacher.teacher for subject_teacher in self.subject_teachers.all()]
+        return set([subject_teacher.teacher for subject_teacher in self.subject_teachers.all() ]) #*Remove duplicates
     
 
     def get_student_by_role(self, role: str) -> StudentYearProfile | None:
