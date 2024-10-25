@@ -4,13 +4,19 @@
 
 {% block title %}Vnadu: Classes {% endblock %}
 {% block style %} <link href="{% static 'Du_An/css/index.css' %}" rel="stylesheet"> {% endblock %}
+{% block script %} <script src="{% static 'Du_An/js/list.js' %}"></script> {% endblock %}
 
 {% block body %}
     <div class="classes">
         <h1 class="classeslist">Danh Sách Lớp</h1>
+        <form id="classSearchBox">
+            <label for="className" class="form-label">Tìm kiếm lớp</label>
+            <input type="text" id="className" class="form-control mb-3" placeholder="Nhập tên lớp để tìm kiếm">
+            <button type="submit" class="btn btn-outline-primary">Tìm</button>
+        </form>
         {% for class in classes %}
         {% if class %}
-            <div class="class">
+            <div class="class" data-name="{{ class.class.name }}">
                 <p class="class_name"> {{ class.class.name }} </p>
                 <p class="class_student_count">Sĩ số: {{ class.profile.students.count }} </p>
                 <!--TODO: Replace the href (to the teacher's profile page)-->
@@ -33,8 +39,6 @@
                 </p>
                 <a href="{% url 'view_class' class.class.id %}" class="btn btn-outline-primary">Details</a>
             </div>
-        {% else %}
-            None
         {% endif %}
 
         {% endfor %}

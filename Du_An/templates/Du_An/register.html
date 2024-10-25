@@ -45,7 +45,7 @@
             <div id="for_teacher" class="mb-3">
                 <h3>Chọn môn học đang dạy (chỉ dành cho giáo viên)</h3>
                 <!--TODO-->
-                <select name="subjects[]" class="form-select mb-3" size="4" multiple>
+                <select name="subjects[]" class="form-select mb-3" size="5" multiple>
                     {% for subject in subjects %}
                         <option value="{{ subject.id }}">{{ subject.name }}</option>
                     {% endfor %}
@@ -88,7 +88,7 @@
 
             <label for="contact_info" class="form-label">Thông tin liên lạc (Không bắt buộc) </label>
             <textarea name="contact_info" id="contact_info" class="form-control mb-3" cols="5" rows="10" placeholder="Thông tin liên lạc của bạn (sđt, facebook, zalo,...)"></textarea>
-            <button type="submit" class="btn btn-primary mx-auto me-auto mb-4">Đăng kí</button>
+            <button type="submit" class="btn btn-danger mx-auto me-auto mb-4">Đăng kí</button>
         </form>
     </div>
 {% endblock %}
