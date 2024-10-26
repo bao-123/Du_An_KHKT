@@ -1,4 +1,10 @@
 /*-i Class for error message*/
+body
+{
+    background-image: url(../images/BGRegister.jpg);
+}
+
+
 .error 
 {
     background-color: rgba(243, 94, 94, 0.856);
@@ -21,6 +27,7 @@
 .form_header
 {
     text-align: center;
+    margin-top: 1rem;
 }
 
 
@@ -88,6 +95,21 @@
     padding: 2rem;
 }
 
+
+#createStudentForm
+{
+    background-color: rgb(98, 190, 252);
+    margin-top: max(3%, 3rem);
+    margin-right: max(25%, 100px);
+    margin-left: max(25%, 100px);
+    padding: 1rem;
+    border: solid;
+    box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+}
+.btn-outline-primary{
+    margin-bottom: 15px;
+}
 
 /** for create student templates*/
 /*

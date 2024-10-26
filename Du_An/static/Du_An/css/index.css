@@ -59,6 +59,7 @@ form > textarea
     box-shadow: 2px 2px 5px rgb(34, 30, 255);
     color: #fff;
     transition: 0.75s ease;
+    margin-bottom: 20px;
 }
 
 

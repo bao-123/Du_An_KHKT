@@ -14,7 +14,7 @@
             <p class="error_message"> {{ error_message }} </p>
         </div>
         {% endif %}
-        <form action="{% url 'create_student' %}" method="post" class="text-center">
+        <form action="{% url 'create_student' %}" method="post" class="text-center" id="createStudentForm">
             {% csrf_token %}
             <h1 class="form_header">Thêm hồ sơ học sinh mới</h1>
             <input type="text" name="full_name" placeholder="Họ và tên" class="form-control w-auto mx-auto mb-3" autocomplete="off" autofocus>
@@ -44,7 +44,7 @@
                     <option value="student">Học sinh</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-outline-primary mx-auto">Create</button>
+            <button type="submit" class="btn btn-outline-primary mx-auto">Tạo</button>
         </form>
     </div>
 {% endblock %}
