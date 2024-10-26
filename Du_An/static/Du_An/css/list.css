@@ -1,0 +1,62 @@
+@import url("./keyframes.css");
+
+.teaching_classes
+{
+    margin: 5px;
+}
+
+.teaching_classes > .classroom
+{
+    margin-bottom: 1rem;
+}
+
+
+.classroom_info
+{
+    display: flex;
+    column-gap: max(70%, 2rem);
+    background-color: rgb(248, 217, 158);
+    padding: 1rem 2rem;
+}
+
+
+.classroomHeaders
+{
+    display: flex;
+    column-gap: 1rem;
+}
+
+
+.classroom_info > a
+{
+    margin-top: auto;
+    margin-bottom: auto;
+    height: fit-content;
+}
+
+.classroom_name
+{
+    font-size: 30px;
+    font-style: oblique;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.student_list
+{
+    
+    display: none; /*-i default for student lists is none*/
+    margin-left: max(20%, 1.5rem);
+    margin-right: max(20%, 1.5rem);
+    background-color: aliceblue;
+    padding: 10px 20px;
+}
+
+.showStudentBtn
+{
+    margin: auto;
+    background-color: transparent;
+    border: none;
+    height: fit-content;
+    padding: 5px;
+}

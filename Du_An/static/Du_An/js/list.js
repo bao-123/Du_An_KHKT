@@ -1,22 +1,26 @@
+//-i JS for 'teaching_classes.html' is the page that shows all of the user's teaching classes
+
 document.addEventListener("DOMContentLoaded", () => {
-    const searchForm = document.getElementById("classSearchBox");
-    const classes = document.querySelectorAll(".class");
+    const classes = document.querySelectorAll(".classroom");
 
-    searchForm.addEventListener("submit", event => {
-        event.preventDefault();
+    classes.forEach(element => {
+        const showStudentBtn = element.querySelector(".showStudentBtn");
+        const btnIcon = showStudentBtn.querySelector("i");
 
-        const className = searchForm.querySelector("#className").value;
+        showStudentBtn.addEventListener("click", () =>{
+            const studentsDiv = element.querySelector(".student_list");
 
-        classes.forEach(element => {
-            if( element.dataset.name.split(className).length > 1 ) //*Check if the class's name contains the query
-            {
-                element.style.display = "block";
+            if(studentsDiv.style.display === "none")
+            { //TODO: add animation
+                studentsDiv.style.display = "block";
+                btnIcon.className = "fa-solid fa-angle-down";
             }
             else
             {
-                element.style.display = "none";
+                studentsDiv.style.display = "none";
+                btnIcon.className = "fa-solid fa-angle-up";
             }
         });
-
     });
+    
 });

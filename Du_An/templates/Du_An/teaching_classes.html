@@ -1,0 +1,39 @@
+{% extends 'Du_An/layout.html' %}
+{% load static %}
+
+{% block title %} lớp đang dạy {% endblock %}
+{% block style %} <link href="{% static 'Du_An/css/list.css' %}" rel="stylesheet"> {% endblock %}
+{% block script %} <script src="{% static 'Du_An/js/list.js' %}"></script> {% endblock %}
+
+{% block body %}
+<!--TODO-->
+    <div class="teaching_classes">
+        <!---i classroom should be a dict with 'classroom' is the 'Class' and 'profile' is the 'ClassYearProfile'-->
+        {% for classroom in classes %}
+            <div class="classroom">
+                <div class="classroom_info">
+                    <div class="classroomHeaders">
+                        <button class="showStudentBtn"><i class="fa-solid fa-angle-up"></i></button>
+                        <p class="classroom_name">{{ classroom.classroom.name }}</p>
+                    </div>
+                    <a href="{% url 'view_class' classroom.classroom.id %}" class="btn btn-outline-primary">Thông tin chi tiết</a>
+                </div>
+                <div class="student_list">
+                    <!--*student here is a 'StudentYearProfile' instance -->
+                    {% for studentProfile in classroom.profile.students.all %}
+                    <div class="student_info">
+                        <p class="student">{{ studentProfile.student.full_name }}</p>
+                        <!--TODO: Add JS-->
+                        <button class="updateMarkBtn btn btn-primary">Nhập điểm</button>
+                        <a href="{% url 'view_student' studentProfile.student.id %}" class="btn btn-outline-primary">Hồ sơ</a>
+                    </div>
+                    {% empty %}
+                    <h3>Lớp chưa có học sinh</h3>
+                    {% endfor %}
+                </div>
+            </div>
+        {% empty %}
+            <h3>Bạn chưa dạy lớp nào cả!</h3>
+        {% endfor %}
+    </div>
+{% endblock %}

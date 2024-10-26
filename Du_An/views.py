@@ -235,6 +235,20 @@ def view_classes(request):
             return JsonResponse({"message": "Lỗi, không tìm thấy môn học này"}, status=400)
 
 
+def view_teaching_classes(request):
+    if request.method != "GET":
+        return HttpResponseNotAllowed(request.method)
+    
+    if not hasattr(request.user, "teacher"):
+        return HttpResponseBadRequest("Only teachers can access this page")
+    
+    classes = request.user.teacher.get_teaching_classes()
+
+    return render(request, "Du_An/teaching_classes.html", {
+        "classes": classes
+    })
+
+    
 @login_required(login_url="login")
 def view_teacher(request, teacher_id):
     if request.method != "GET":
