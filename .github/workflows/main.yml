@@ -10,4 +10,5 @@ jobs:
       run: |
         pip install --user django
         python manage.py test Du_An
+        python Du_An/selenium/test.py
         

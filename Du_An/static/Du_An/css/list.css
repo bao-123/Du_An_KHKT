@@ -45,11 +45,13 @@
 .student_list
 {
     
-    display: none; /*-i default for student lists is none*/
+    /*-i default for student lists is none (in HTML)*/
+    height: fit-content;
     margin-left: max(20%, 1.5rem);
     margin-right: max(20%, 1.5rem);
     background-color: aliceblue;
     padding: 10px 20px;
+    overflow: hidden;
 }
 
 .showStudentBtn
