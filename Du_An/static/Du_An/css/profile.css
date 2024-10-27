@@ -141,6 +141,28 @@ body
     font-size: 28px;
     font-weight: bold;
 }
+.classStaffName
+{
+    font-size: 20px;
+    font-weight: bold;
+}
+.classStaffRole
+{
+    font-weight: bold;
+    font-size: 20px;
+}
+.classFormTeacher
+{
+    font-weight: bold;
+    font-size: 20px;
+}
+.studentDisplay
+{
+    font-weight: bold;
+    font-size: 20px;
+}
+
+
 /** for create student templates*/
 /*
 .display > form

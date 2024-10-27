@@ -53,7 +53,7 @@ jobs:
     - name: Run Django unit tests
       run: |
         python manage.py test Du_An
-      working-directory: Du_An_KHKT/
+      working-directory: Du_An_KHKT
 
   Selenium_test:
 
