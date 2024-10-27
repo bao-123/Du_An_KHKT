@@ -12,7 +12,7 @@
         <form id="classSearchBox">
             <label for="className" class="form-label">Tìm kiếm lớp</label>
             <input type="text" id="className" class="form-control mb-3" placeholder="Nhập tên lớp để tìm kiếm">
-            <button type="submit" class="btn btn-outline-primary">Tìm</button>
+            <button type="submit" class="btn btn-danger">Tìm</button>
         </form>
         {% for class in classes %}
         {% if class %}
@@ -37,7 +37,7 @@
                         {% endautoescape %}
                     {% endif %}
                 </p>
-                <a href="{% url 'view_class' class.class.id %}" class="btn btn-outline-primary">Details</a>
+                <a href="{% url 'view_class' class.class.id %}" class="btn btn-danger">Details</a>
             </div>
         {% endif %}
 

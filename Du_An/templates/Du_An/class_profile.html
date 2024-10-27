@@ -62,7 +62,7 @@
                         <p>{{ profile.student.full_name }}</p>
                         <p>Birthday: {{ profile.student.birthday }} </p>
                         <p>Role: {% get_role_name profile.role %} </p>
-                        <a href="{% url 'view_student' profile.student.id %}" class="btn btn-outline-primary">Details</a>
+                        <a href="{% url 'view_student' profile.student.id %}" class="btn btn-danger">Details</a>
                     </div>
                     {% empty %}
                     Chua co hoc sinh

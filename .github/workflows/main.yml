@@ -49,21 +49,30 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with: 
+        path: Du_An_KHKT
 
     - name: Run Django unit tests
       run: |
         python manage.py test Du_An
-      working-directory: Du_An_KHKT
+      
 
   Selenium_test:
 
     runs-on: ubuntu-latest
     needs: setup
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        path: Du_An_KHKT
+
     - name: run Selenium tests
       run: |
         python tests.py
-      working-directory: Du_An_KHKT/Du_An/selenium/
+      working-directory: Du_An/selenium/
 
     
     
