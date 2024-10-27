@@ -111,6 +111,36 @@ body
     margin-bottom: 15px;
 }
 
+.basicInfo
+{
+    margin-left: 10px;
+}
+
+.className
+{
+    margin-top: 25px;
+}
+
+.nav-classes
+{
+    margin-right: 10px;
+    border: solid rgb(238, 114, 143);
+    border-radius: 15px;
+}
+
+.otherInfo
+{
+    margin-left: 10px;
+}
+.nav-item
+{
+    border-radius: 20px;
+    border: solid;
+}
+.classSiSo{
+    font-size: 28px;
+    font-weight: bold;
+}
 /** for create student templates*/
 /*
 .display > form

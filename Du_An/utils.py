@@ -1,6 +1,8 @@
 from .models import *
 from datetime import date
+from django.core.files import File
 from typing import Iterable
+import pandas as pd
 
 #Utils functions for views
 class ViewUtils():
@@ -11,6 +13,10 @@ class ViewUtils():
             return teacher.form_class
         except Teacher.form_class.RelatedObjectDoesNotExist:
             return None
+        
+    def read_excel_data(file: File) -> list[dict[str, str]]:
+        with open(file) as f:
+            pass #TODO
         
 
 #TODO:!
