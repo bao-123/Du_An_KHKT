@@ -1,2 +1,5 @@
 django
 selenium
+xlrd
+pandas
+openpyxl

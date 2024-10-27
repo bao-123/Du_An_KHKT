@@ -2,7 +2,9 @@ from .models import *
 from datetime import date
 from django.core.files import File
 from typing import Iterable
+import os
 import pandas as pd
+
 
 #Utils functions for views
 class ViewUtils():
@@ -14,9 +16,14 @@ class ViewUtils():
         except Teacher.form_class.RelatedObjectDoesNotExist:
             return None
         
-    def read_excel_data(file: File) -> list[dict[str, str]]:
-        with open(file) as f:
-            pass #TODO
+    def read_excel_data(file_path):
+        try:
+            if not os.path.exists(file_path):
+                raise FileNotFoundError(f"File {file_path} not found.")
+            return pd.read_excel(file_path)
+        except Exception as e:
+            print(e)
+    
         
 
 #TODO:!
@@ -87,3 +94,11 @@ class TestUtils():
         except Exception as e:
             print(e)
             return None
+        
+
+#TODO: Complete reading Excel file function
+df = ViewUtils.read_excel_data(r"E:\BaoBao\vscodeProject\Du_An_KHKT\Du_An\Schedule.xlsx")
+
+print(df.head(len(df.columns)))
+for i in df.index:
+    print(df.at[i, df.columns[2]])
