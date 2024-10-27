@@ -95,10 +95,10 @@ class TestUtils():
             print(e)
             return None
         
-
+"""
 #TODO: Complete reading Excel file function
 df = ViewUtils.read_excel_data(r"E:\BaoBao\vscodeProject\Du_An_KHKT\Du_An\Schedule.xlsx")
 
 print(df.head(len(df.columns)))
 for i in df.index:
-    print(df.at[i, df.columns[2]])
+    print(df.at[i, df.columns[2]]) """
