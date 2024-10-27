@@ -52,6 +52,7 @@ jobs:
 
     - name: Run Django unit tests
       run: |
+        ls
         python manage.py test Du_An
 
   Selenium_test:
@@ -61,6 +62,7 @@ jobs:
     steps:
     - name: run Selenium tests
       run: |
+        ls
         python Du_An/selenium/tests.py
 
     
