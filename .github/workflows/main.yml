@@ -6,9 +6,10 @@ jobs:
     name: Set up environment
     runs-on: ubuntu-latest
     outputs:
-    python-location: ${{ steps.python-setup.outputs.python-location }}
+      python-location: ${{ steps.python-setup.outputs.python-location }}
     steps:
     - name: Set up Python 3.12
+      id: python-setup
       uses: actions/setup-python@v4
       with:
         python-version: '3.12'
