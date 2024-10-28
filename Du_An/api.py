@@ -1,5 +1,22 @@
 from openai import OpenAI
 from .models import *
+from django.http import JsonResponse, HttpResponseNotAllowed
+
+#-i APIs
+def get_class_marks(request, id):
+    if request.method != "GET":
+        return HttpResponseNotAllowed(request.method)
+    
+    try:
+        classroom = Class.objects.get(pk=id)
+        profile = classroom.get_profile()
+
+        result = []
+        for student_profile in profile.students.all():
+            student = student_profile.student
+            marks = student.get_marks()
+            result.append({"student": student.serialize(), "marks": ['' for subject in marks["main"]]})
+
 
 def get_advice(student: Student):
     student_marks = student.get_subjects_mark()

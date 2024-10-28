@@ -86,7 +86,7 @@ export async function getSubjectMarks(studentId, subjectId, year=null) {
         {
             throw new Error((await response.json()).message);
         }
-        const data = await response.json()
+        const data = await response.json();
         return data;
     } catch (error) {
         console.error(error)

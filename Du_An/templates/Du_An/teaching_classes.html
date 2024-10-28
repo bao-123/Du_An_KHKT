@@ -8,6 +8,14 @@
 {% block body %}
 <!--TODO-->
     <div class="teaching_classes">
+        <div class="subjectSelectDiv">
+            <select id="subjectSelect">
+                <option value="">Chọn môn học</option>
+                {% for subject in subjects %}
+                <option value="{{ subject.id }}">{{ subject.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
         <!---i classroom should be a dict with 'classroom' is the 'Class' and 'profile' is the 'ClassYearProfile'-->
         {% for classroom in classes %}
             <div class="classroom">
