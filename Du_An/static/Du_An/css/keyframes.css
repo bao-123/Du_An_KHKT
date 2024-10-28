@@ -21,6 +21,7 @@
 }
 
 
+
 @keyframes appear {
     0%
     {
@@ -59,31 +60,3 @@
         line-height: 0;
     }
 }
-
-
-@keyframes height-appear {
-    from
-    {
-        height: 0;
-        line-height: 0;
-    }
-    to
-    {
-        height: 100%;
-        line-height: auto;
-    }
-}
-
-
-@keyframes height-disappear {
-    from{
-        height: 100%;
-        line-height: auto;
-    }
-    to
-    {
-        height: 0;
-        line-height: 0;
-    }
-}
-

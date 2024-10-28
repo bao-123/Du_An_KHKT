@@ -3,3 +3,4 @@ selenium
 xlrd
 pandas
 openpyxl
+openai

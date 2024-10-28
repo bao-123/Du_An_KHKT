@@ -5,9 +5,12 @@
     margin: 5px;
 }
 
+
 .teaching_classes > .classroom
 {
+    position: relative;
     margin-bottom: 1rem;
+    z-index: 1;
 }
 
 
@@ -17,6 +20,13 @@
     column-gap: max(70%, 2rem);
     background-color: rgb(248, 217, 158);
     padding: 1rem 2rem;
+    transition: 0.5s box-shadow ease-in-out;
+}
+
+
+.classroom_info.show-shadow
+{
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4);
 }
 
 
@@ -34,6 +44,7 @@
     height: fit-content;
 }
 
+
 .classroom_name
 {
     font-size: 30px;
@@ -46,12 +57,23 @@
 {
     
     /*-i default for student lists is none (in HTML)*/
-    height: fit-content;
-    margin-left: max(20%, 1.5rem);
-    margin-right: max(20%, 1.5rem);
+    position: relative;
+    max-height: 0;
+    opacity: 0;
+    margin-left: max(10%, 2rem);
+    margin-right: max(10%, 2rem);
     background-color: aliceblue;
     padding: 10px 20px;
     overflow: hidden;
+    transition: 800ms max-height ease-in-out, 0.5s opacity ease-in-out;
+    z-index: -1;
+}
+
+
+.student_list.show
+{
+    opacity: 1;
+    max-height: 100rem; 
 }
 
 .showStudentBtn
