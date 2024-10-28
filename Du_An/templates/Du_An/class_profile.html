@@ -14,7 +14,7 @@
 
             <!--* display class's staff committee -->
             <div class="classStaffs">
-                <h2>Ban can su lop</h2>
+                <h2 class="classRole">Ban can su lop</h2>
             {% for staff_profile in class_profile.get_class_staff_committee %}
             {% if staff_profile %}
 
@@ -59,9 +59,9 @@
                 <div id="students">
                     {% for profile in class_profile.students.all %}
                     <div class="studentDisplay">
-                        <p>{{ profile.student.full_name }}</p>
-                        <p>Birthday: {{ profile.student.birthday }} </p>
-                        <p>Role: {% get_role_name profile.role %} </p>
+                        <p class="classNBRD">{{ profile.student.full_name }}</p>
+                        <p class="classNBRD">Birthday>: {{ profile.student.birthday }} </p>
+                        <p class="classNBRD">Role: {% get_role_name profile.role %} </p>
                         <a href="{% url 'view_student' profile.student.id %}" class="btn btn-danger">Details</a>
                     </div>
                     {% empty %}
@@ -91,7 +91,7 @@
                                 <option value="{{ subject.id }}"> {{ subject.name }} </option>
                             {% endfor %}
                         </select>
-                        <button id="teachClass" class="btn btn-outline-info">Trở thành giáo viên bộ môn của lớp này</button>
+                        <button id="teachClass" class="btn btn-danger">Trở Thành Giáo Viên Bộ Môn Của Lớp Này</button>
                     {% endif %}
                 </div>
                 <!--TODO: Them thong tin thi dua(neu co)-->

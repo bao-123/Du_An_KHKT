@@ -51,6 +51,10 @@ class ClassAdmin(admin.ModelAdmin):
 class SubjectAdmin(admin.ModelAdmin):
     actions = [check_subjects, create_subjects]
 
+    list_display = ("id", "name")
+
+class StudentSubjectAdmin(admin.ModelAdmin):
+    list_display = ("id", "name")
 
 class ClassYearProfileAdmin(admin.ModelAdmin):
     list_display = ("id", "classroom", "year")
@@ -59,9 +63,9 @@ admin.site.register(Student, StudentAdminModel)
 admin.site.register(Class, ClassAdmin)
 admin.site.register(Teacher)
 admin.site.register(Parent, ParentAdmin)
-admin.site.register(MainSubject, SubjectAdmin)
-admin.site.register(SecondSubject, SubjectAdmin)
-admin.site.register(EvaluateByCommentSubject, SubjectAdmin)
+admin.site.register(MainSubject, StudentSubjectAdmin)
+admin.site.register(SecondSubject, StudentSubjectAdmin)
+admin.site.register(EvaluateByCommentSubject, StudentSubjectAdmin)
 admin.site.register(ClassSubjectTeacher)
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(ClassYearProfile, ClassYearProfileAdmin)

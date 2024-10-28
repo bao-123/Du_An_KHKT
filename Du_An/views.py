@@ -123,6 +123,23 @@ def register(request: HttpRequest):
 
         if user_type == "teacher":
             subjects_id = request.POST.getlist("subjects[]")
+            form_class_id = request.POST.get("form_class", default=None)
+
+            if form_class_id:
+                try:
+                    form_class = Class.objects.get(pk=int(form_class_id))
+                    class_profile = form_class.get_profile()
+                    if class_profile.form_teacher:
+                        return render_register(request, error={
+                            "error": f"{form_class.name} already have a form teacher!",
+                            "error_message": "Check if you choose the wrong class or if you are not a form teacher you don't have to choose a form class."
+                        })
+                
+                except (Class.DoesNotExist, ClassYearProfile.DoesNotExist):
+                    return HttpResponseRedirect(reverse("register"))
+            else:
+                class_profile = None
+                
 
             if not subjects_id:
                 return render_register(request, error={
@@ -138,7 +155,6 @@ def register(request: HttpRequest):
                 teacher = Teacher.objects.create(
                     full_name=full_name, #** Use full_name instead of username
                     username=email,
-                    password = make_password(raw_password),
                     contact_information=contact_info
                     #is_boy=is_boy
                     #TODO: add some needed information.       
@@ -149,22 +165,12 @@ def register(request: HttpRequest):
                     "error_message": "Your email already registered as a teacher, please choose another email."
                 })
             
+            teacher.set_password(raw_password)
             teacher.subject.set(subjects)
-            form_class_id = request.POST.get("form_class", default=None)
-            if form_class_id:
-                try:
-                    form_class = Class.objects.get(pk=int(form_class_id))
-                    class_profile = form_class.get_profile()
-                    if class_profile.form_teacher:
-                        return render_register(request, error={
-                            "error": f"{form_class.name} already have a form teacher!",
-                            "error_message": "Check if you choose the wrong class or if you are not a form teacher you don't have to choose a form class."
-                        })
-                    
-                    class_profile.form_teacher = teacher
-                    class_profile.save(force_update=True)
-                except (Class.DoesNotExist, ClassYearProfile.DoesNotExist):
-                    return HttpResponseRedirect(reverse("register"))
+
+            if class_profile:
+                class_profile.form_teacher = teacher
+                class_profile.save()
 
             teacher.save(force_update=True)
             login(request, teacher)
@@ -177,7 +183,6 @@ def register(request: HttpRequest):
                 parent = Parent.objects.create(
                     full_name=full_name,
                     username=email,
-                    password = make_password(raw_password),
                     contact_information=contact_info
                 )
             except IntegrityError:
@@ -185,9 +190,10 @@ def register(request: HttpRequest):
                     "error": "Email already register as a parent, please choose another email"
                 })
             
+            parent.set_password(raw_password)
             parent.children.set(children)
 
-            parent.save()
+            parent.save(force_update=True)
 
             login(request, parent)
         else:
@@ -570,6 +576,59 @@ def update_class(request: HttpRequest):
         return render_error(request, error="Not found", error_message="Doesn't found any class with this id")
     except ClassYearProfile.DoesNotExist:
         return render_error(request, error="Invalid year", error_message="Doesn't found any profile of this class in this year")
+
+
+#-i This API only use for changing informations that are not important
+@login_required(login_url="login")
+def change_info(request):
+    if request.method != "PUT":
+        return HttpResponseNotAllowed(request.method)
+    
+    data = json.loads(request.body)
+
+    porperty = data.get("property", None) #-i Should be some porperties that is not importain like full_name, contact_infomation,...
+    value = data.get("value")
+    if porperty in ["password"]:
+        return JsonResponse({"message": "Porperty not allowed for this api"}, status=400)
+    
+    if not porperty or not value:
+        return JsonResponse({"message": "Missing arguments"}, status=400)
+    
+    if hasattr(request.user, "teacher"):
+        try:
+            setattr(request.user.teacher, porperty, value)
+        except:
+            return JsonResponse({"message": "Invalid porperty or value"}, status=400)
+        
+        request.user.teacher.save(force_update=True)
+
+    elif hasattr(request.user, "parent"):
+        try:
+            setattr(request.user.parent, porperty, value)
+        except:
+            return JsonResponse({"message": "Invalid porperty or value"}, status=400)
+        
+        request.user.parent.save(force_update=True)
+    else:
+        return JsonResponse({"message": "Invalid user type"}, status=400)
+    
+    return JsonResponse({"message": "Update user data successfully"}, status=200)
+
+
+@login_required(login_url="login")
+def change_password(request):
+    if request.method != "PUT":
+        return HttpResponseNotAllowed(request.method)
+    
+    data = json.loads(request.body)
+    raw_password = data.get("raw_password", None)
+    if not raw_password:
+        return JsonResponse({"message": "Missing raw password"}, status=400)
+    
+    request.user.set_password(raw_password)
+    request.user.save()
+
+    return JsonResponse({"message": "Update password successfully"}, status=200)
 
 
 def render_register(request: HttpRequest, error: dict | None = None):

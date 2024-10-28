@@ -19,5 +19,8 @@ urlpatterns = [
     #* this use for update the form teacher of a particular class
     path("class", views.update_class, name="update_class"),
     path("student/marks/<int:id>", views.get_marks, name="student_mark"),
-    path("search_student", views.search_student, name="search_student")
+    path("search_student", views.search_student, name="search_student"),
+    #-i API for update user data
+    path("update_data", views.change_info, name="update_user_data"),
+    path("change_password", views.change_password, name="change_password")
 ]
