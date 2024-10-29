@@ -23,6 +23,45 @@ class ViewUtils():
             return pd.read_excel(file_path)
         except Exception as e:
             print(e)
+
+    #-i ChatGPT API
+    def get_advice(student: Student):
+        student_marks = student.get_subjects_mark()
+        prompt = f"""
+        Please give some advice for this Vietnamese student, this is {"his" if student.is_boy else "her"} marks:
+        main subjects:
+            {"\n".join([f"""{subject["first_term"].name}:
+                        first term:
+                            {"\n".join([f"Regular mark {i}: {getattr(subject["first_term"], f"diem_thuong_xuyen{i}")}" for i in range(4)])}
+                            Mid term mark: {subject["first_term"].diem_giua_ki}
+                            Final mark: {subject["first_term"].diem_cuoi_ki}
+                            teacher comment: {subject["first_term"].comment} 
+                        second term:
+                            {"\n".join([f"Regular mark {i}: {getattr(subject["second_term"], f"diem_thuong_xuyen{i}")}" for i in range(4)])}
+                            Mid term mark: {subject["second_term"].diem_giua_ki}
+                            Final mark: {subject["second_term"].diem_cuoi_ki}
+                            teacher comment: {subject["second_term"].comment}""" for subject in student_marks["main"]])}
+
+        second subjects:
+            {"\n".join([f"""{subject["name"]}:
+                        first term:
+                                {"\n".join([f"Regular mark {i}: {getattr(subject["first_term"], f'diem_thuong_xuyen{i}')}" for i in range(2)])}
+                                Mid term mark: {subject["first_term"].diem_giua_ki}
+                                Final mark: {subject["first_term"].diem_cuoi_ki}
+                                teacher comment: {subject["first_term"].comment}
+                        second term: 
+                                {"\n".join([f"Regular mark {i}: {getattr(subject["second_term"], f"diem_thuong_xuyen{i}")}" for i in range(2)])}
+                                Mid term mark: {subject["second_term"].diem_giua_ki}
+                                Final mark: {subject["second_term"].diem_cuoi_ki}
+                                teacher comment: {subject["second_term"].comment}""" for subject in student_marks["second"]])}
+        Evaluate by comment subjects:
+            {"\n".join([f"""{subject["first_term"].name}:
+                        first term: {"passed" if subject["first_term"].is_passed else "not passed"}
+                        teacher comment: {subject["first_term"].comment}
+                        second term: {"passed" if subject["second_term"].is_passed else "not passed"}
+                        teacher comment: {subject["second_term"].comment}""" for subject in student_marks["comment"]])} """
+        return prompt #*TODO: Tam thoi
+
     
         
 
@@ -95,6 +134,7 @@ class TestUtils():
             print(e)
             return None
         
+        
 """
 #TODO: Complete reading Excel file function
 df = ViewUtils.read_excel_data(r"E:\BaoBao\vscodeProject\Du_An_KHKT\Du_An\Schedule.xlsx")
@@ -102,3 +142,4 @@ df = ViewUtils.read_excel_data(r"E:\BaoBao\vscodeProject\Du_An_KHKT\Du_An\Schedu
 print(df.head(len(df.columns)))
 for i in df.index:
     print(df.at[i, df.columns[2]]) """
+

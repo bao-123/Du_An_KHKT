@@ -11,7 +11,12 @@
     <script src="https://kit.fontawesome.com/42c4b72ce4.js" crossorigin="anonymous"></script>
 
     <!---I Favicon for the web page -->
-    <link href="{% static 'Du_An/images/PHLogoWeb.png'  %}" rel="icon">
+    <link href="{% static 'Du_An/images/webIcon.png'  %}" rel="icon">
+
+    <!---I Include Google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap" rel="stylesheet">
 
     <title>{% block title %}Vn adu{% endblock %}</title>
     {% block style %}{% endblock %}
@@ -23,7 +28,7 @@
         <div class="container-fluid">
             
             <a class="navbar-brand mb-4" href="{% url 'dashboard' %}">
-                <img src="{% static 'Du_An/images/PHLogoWeb.png' %}" alt="dashboard" id="PHLogoWeb" style="height: 80px; width: 70px; margin-top: 10px;">
+                <img src="{% static 'Du_An/images/webIcon.png' %}" alt="dashboard" id="PHLogoWeb" style="height: 80px; width: 70px; margin-top: 10px;">
             </a>
 
             <div class="collapse navbar-collapse">

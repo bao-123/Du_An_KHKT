@@ -187,25 +187,30 @@ class Student(models.Model):
         
 
     #*get marks of subjects
-    def get_subjects_mark(self, year: int = this_year):
-        try:
-            profile = self.profiles.get(year=year)
-        except Student.DoesNotExist:
+    def get_subjects_mark(self, year: int = this_year, serialize: bool=False):
+        profile = self.get_profile(year=year)
+        if not profile:
             return None
         
+        def get_subject_mark(name, subjects, serialize: bool = serialize): #* serialize in the outer function
+            subject = subjects.filter(name=name).first()
+            return subject.serialize() if serialize and subject else subject #-i return None if 'subject' is None
+
         return {
             "main": [
-                #** Rewrite this
-                {"first_term": profile.main_subjects.filter(name=name).first(), "second_term": profile.second_term_main_subjects.filter(name=name).first()}
+                {"first_term": get_subject_mark(name, profile.main_subjects),
+                  "second_term": get_subject_mark(name, profile.second_term_main_subjects)}
                 for name in MAIN_SUBJECTS
             ],
             "second": [
-                {"first_term": profile.second_subjects.filter(name=name).first(), "second_term": profile.second_term_second_subjects.filter(name=name).first()}
+                {"first_term": get_subject_mark(name, profile.second_subjects),
+                  "second_term": get_subject_mark(name, profile.second_term_second_subjects)}
                 for name in SECOND_SUBJECTS
             ],
             #TODO:
             "comment": [
-                {"first_term": profile.comment_subjects.filter(name=name).first(), "second_term": profile.second_term_comment_subjects.filter(name=name).first()}
+                {"first_term": get_subject_mark(name, profile.comment_subjects),
+                 "second_term": get_subject_mark(name, profile.second_term_comment_subjects) }
                 for name in COMMENT_SUBJECTS
             ]
         }

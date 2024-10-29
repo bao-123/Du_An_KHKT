@@ -9,8 +9,8 @@
 <!--TODO-->
     <div class="teaching_classes">
         <div class="subjectSelectDiv">
-            <select id="subjectSelect">
-                <option value="">Chọn môn học</option>
+            <select id="subjectSelect" class="form-select mb-3 w-50 me-auto">
+                <option value="">Chọn Môn Học</option>
                 {% for subject in subjects %}
                 <option value="{{ subject.id }}">{{ subject.name }}</option>
                 {% endfor %}
@@ -32,16 +32,16 @@
                     <div class="student_info">
                         <p class="student">{{ studentProfile.student.full_name }}</p>
                         <!--TODO: Add JS-->
-                        <button class="updateMarkBtn btn btn-primary">Nhập điểm</button>
+                        <button class="updateMarkBtn btn btn-primary">Nhập Điểm</button>
                         <a href="{% url 'view_student' studentProfile.student.id %}" class="btn btn-outline-primary">Hồ sơ</a>
                     </div>
                     {% empty %}
-                    <h3>Lớp chưa có học sinh</h3>
+                    <h3>Lớp Chưa Có Học Sinh</h3>
                     {% endfor %}
                 </div>
             </div>
         {% empty %}
-            <h3>Bạn chưa dạy lớp nào cả!</h3>
+            <h3>Bạn Chưa Dạy Lớp Nào Cả!</h3>
         {% endfor %}
     </div>
 {% endblock %}

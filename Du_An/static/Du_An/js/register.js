@@ -5,6 +5,10 @@ const searchFormDivId = "searchFormMessage";
 document.addEventListener("DOMContentLoaded", () => {
     const childrenSelect = document.getElementById("childrenSelect"); //* The select element
     const childrenSearchSubmit = document.getElementById("childrenSearchSubmit");
+    const teacherRadio = document.getElementById("teacher");
+    const parentRadio = document.getElementById("parent");   
+    const teacherInputDiv = document.getElementById("for_teacher");
+    const parentInputDiv = document.getElementById("for_parent")
 
     childrenSearchSubmit.addEventListener("click", async () => {
 
@@ -33,4 +37,21 @@ document.addEventListener("DOMContentLoaded", () => {
             childrenSelect.appendChild(childOption);
         });
     });
-})
+
+    teacherRadio.addEventListener("click", () => {
+        if(teacherRadio.checked)
+        {
+            teacherInputDiv.style.display = "block";
+            parentInputDiv.style.display = "none";
+        }
+    });
+
+    parentRadio.addEventListener("click", () => {
+        if(parentRadio.checked)
+        {
+            teacherInputDiv.style.display = "none";
+            parentInputDiv.style.display = "block";
+        }
+    });
+    
+});

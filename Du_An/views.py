@@ -239,6 +239,8 @@ def view_classes(request):
             return JsonResponse({"message": "Lỗi, Không tìm thấy lớp học này"}, status=400)
         except Subject.DoesNotExist:
             return JsonResponse({"message": "Lỗi, không tìm thấy môn học này"}, status=400)
+    else:
+        return HttpResponseNotAllowed(request.method)
 
 
 def view_teaching_classes(request):

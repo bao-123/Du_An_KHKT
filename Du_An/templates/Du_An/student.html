@@ -32,10 +32,10 @@
         <!--* show student's marks -->
         <div class="studentMark">
             <!--TODO: Do this-->
-            <select id="yearSelect">
+            <select id="yearSelect" class="form-select w-auto mb-3 mt-3">
                 <option value="2024">2024-2025</option>
             </select>
-            <select id="subjects_select" class="form-condivol mx-2 me-auto">
+            <select id="subjects_select" class="form-select me-auto w-auto">
                 <!--** Default subject is Toán -->
                 <option selected disabled>Môn học</option>
                 {% for subject in subjects %}
@@ -56,29 +56,36 @@
 
                     <form id="updateMarkForm">
                         <!--* teacher will select the subject that they want to update-->
-                        <select id="updateMarkSubjectSelect">
-                            <option selected disabled>Chọn môn muốn nhập điểm</option>
-                            {% autoescape off %}
-                            {% get_teacher_subject_options student.get_profile.classroom user.teacher %}
-                            {% endautoescape %}
-                        </select>
-                        <!--*Select semester -->
-                        <select id="semester">
-                            <option value="1" selected>Kì 1</option>
-                            <option value="2"> Kì 2</option>
-                        </select>
-                        <!--* Select mark type-->
-                        <select id="markType">
-                            <!--TODO: Update so only display possible type-->
-                            <option selected disabled value="">Chọn cột điểm</option>
-                            <option value="tx1">Thường xuyên 1</option>
-                            <option value="tx2">Thường xuyên 2</option>
-                            <option value="tx3">Thường xuyên 3</option>
-                            <option value="tx4">Thường xuyên 4</option>
-                            <option value="gk">Giữa Kì</option>
-                            <option value="ck">Cuối kì</option>
-                        </select>
-                        <input type="number" id="new_mark" class="form-control mx-auto mb-2" placeholder="Điểm" step="0.01" max="10" min="0">
+                        <div class="selectors mb-3">
+                            <select id="updateMarkSubjectSelect" class="form-select mb-3 w-50 me-auto">
+                                <option selected disabled>Chọn môn muốn nhập điểm</option>
+                                {% autoescape off %}
+                                {% get_teacher_subject_options student.get_profile.classroom user.teacher %}
+                                {% endautoescape %}
+                            </select>
+                            <!--*Select semester -->
+                            <select id="semester">
+                                <option value="1" selected>Kì 1</option>
+                                <option value="2"> Kì 2</option>
+                            </select>
+                            <!--* Select mark type-->
+                            <select id="markType">
+                                <!--TODO: Update so only display possible type-->
+                                <option selected disabled value="">Chọn cột điểm</option>
+                                <option value="tx1">Thường xuyên 1</option>
+                                <option value="tx2">Thường xuyên 2</option>
+                                <option value="tx3">Thường xuyên 3</option>
+                                <option value="tx4">Thường xuyên 4</option>
+                                <option value="gk">Giữa Kì</option>
+                                <option value="ck">Cuối kì</option>
+                            </select>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="number" id="new_mark" class="form-control me-auto w-50" placeholder="Điểm" step="0.01" max="10" min="0">
+                            <label for="new_mark">Điểm</label>
+                        </div>
+
                         <button type="submit" class="btn btn-primary">Cập nhập điểm cho học sinh</button>
                     </form>
                 </div>
