@@ -4,13 +4,25 @@
 
 {% block style %} <link href="{% static 'Du_An/css/dashboard.css' %}" rel="stylesheet"> 
 {% endblock %}
+{% block script %} <script src="{% static 'Du_An/js/index.js' %}" type="module"></script> {% endblock %}
 {% block title %}VnAdu{% endblock %}
 
 {% block body %}
-    
+    <h1>Trang chủ</h1>
     {% if user.is_authenticated %}
-        {% if user.teacher %}
-            <h1> Hello {{ user.teacher.full_name }}</h1>
+
+        <div id="fullNameDiv" class="userInfo"> <!--* 'userInfo' here is only for convenient in JS for now, add styles later-->
+            <h2> Chào {% if user.teacher %} {{ user.teacher.full_name }} {% elif user.parent %} {{ user.parent.full_name }} {% endif %} </h2>
+            <form id="changeFullNameForm" class="changeInfoForm">
+                <div class="form-floating me-2">
+                    <input type="text" id="fullNameInput" class="form-control w-auto" placeholder="Nhập tên mới" autocomplete="off" autocapitalize="on">
+                    <label for="fullNameInput">Tên mới</label>
+                </div>
+                <button type="submit" class="btn btn-success mb-1">Thay đổi</button>
+            </form>     
+        </div> 
+
+        {% if user.teacher %} 
             <hr>
             <h3>Lớp chủ nhiệm</h3>
             {% if user.teacher.form_class %}

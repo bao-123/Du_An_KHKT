@@ -1,5 +1,3 @@
-@import url("./keyframes.css");
-
 .teaching_classes
 {
     margin: 5px;
@@ -75,6 +73,7 @@
     opacity: 1;
     max-height: 100rem; 
 }
+
 
 .showStudentBtn
 {

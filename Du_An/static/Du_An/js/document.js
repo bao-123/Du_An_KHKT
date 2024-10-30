@@ -1,13 +1,12 @@
 /* Tài liệu ở đây
-
-    SKIBIDI
     
     ! danger
     ? ???
-    ** alo alo
+    * alo alo
     TODO: TODO ae
     -I Importain notes
     -W Warning notes
+
 */
 
 const baseURL = "http://127.0.0.1:8000/"
@@ -38,4 +37,18 @@ export const searchStudentURL = baseURL + "search_student";
     -i If there are errors occur (e.g classroom's id is not valid), API will return a object will 'message' porperty contains error message
 */
 
+
+// -i  Gửi PUT request đến đây để thay đổi info của user (info ko quan trọng và ko phải khóa ngoại)
+export const changeInfoURL = baseURL + "change_info"; 
+/*
+    -I API parameters
+    @@request.body: 
+        @@property is the porperty that needs to change
+        @@value: new value
+    
+    -i return status 200 if sucessful, otherwise return status 400
+*/
+
+
+export const changePasswordURL = baseURL + "change_password"; 
 

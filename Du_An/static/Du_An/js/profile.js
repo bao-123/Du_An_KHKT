@@ -5,7 +5,7 @@ const displayMarkMessageDivId = "displayMarkMessage";
 const markDisplayDivId = "markDisplay";
 
 //
-const markHeaderClass = "markHeader"
+const markHeaderClass = "markHeader";
 
 document.addEventListener("DOMContentLoaded", () => {
     const subjectsSelect = document.getElementById("subjects_select");

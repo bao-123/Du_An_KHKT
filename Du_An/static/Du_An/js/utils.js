@@ -1,4 +1,4 @@
-import {updateMarkURL, addClassSubjectTeacherURL, getStudentMarksURL, searchStudentURL} from "./document.js"
+import {updateMarkURL, addClassSubjectTeacherURL, getStudentMarksURL, searchStudentURL, changeInfoURL, changePasswordURL} from "./document.js"
 //utils
 
 //* function to create HTML tags
@@ -50,6 +50,51 @@ export async function updateMark(id, subjectId, semester, new_mark, mark_type)
     }
 }
 
+
+//! only use this for change not important info
+export async function changeUserInfo(property, value)
+{
+    try {
+        const response = await fetch(changeInfoURL, {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": getCSRF()
+            },
+            body: JSON.stringify({
+                property: property,
+                value: value
+            })
+        });
+
+        return {status: response.status, message: (await response.json()).message};
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+
+
+export async function changeUserPassword(oldPassword, newPassword) {
+    if(!newPassword) throw new Error("Missing arguments");
+
+    if(oldPassword === newPassword) throw new Error("Old password and new password cannot be the same.");
+
+    try {
+        const response = await fetch(changePasswordURL, {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": getCSRF()
+            },
+            body: JSON.stringify({
+                new_password: newPassword
+            })
+        });
+        return {status: response.status, message: (await response.json()).message};
+    } catch (error) {
+        console.error();
+    }
+}
 
 //* a function to set a teacher to be a subject teacher of a particular class
 export async function teachClass(subject_id, classroom_id, year=null) {

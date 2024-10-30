@@ -1,0 +1,25 @@
+body
+{
+    margin: 0;
+}
+
+
+.changeInfoForm
+{
+    max-height: 0;
+    opacity: 0;
+    transition: 0.5s max-height ease-in-out, 0.25s opacity ease-in-out;
+}
+
+
+.changeInfoForm.show
+{
+    opacity: 1;
+    /** max-height must be a specified value so it will appear with animation smoothly*/
+    max-height: 100rem; 
+}
+
+.changeInfoForm > .form-floating /** for the form-floating div (boostrap) */
+{
+    display: inline-block;
+}

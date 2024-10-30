@@ -580,7 +580,7 @@ def update_class(request: HttpRequest):
         return render_error(request, error="Invalid year", error_message="Doesn't found any profile of this class in this year")
 
 
-#-i This API only use for changing informations that are not important
+#-i This API only use for changing informations that are not important (and not foreign key)
 @login_required(login_url="login")
 def change_info(request):
     if request.method != "PUT":
@@ -588,27 +588,27 @@ def change_info(request):
     
     data = json.loads(request.body)
 
-    porperty = data.get("property", None) #-i Should be some porperties that is not importain like full_name, contact_infomation,...
+    property = data.get("property", None) #-i Should be some porperties that is not importain like full_name, contact_infomation,...
     value = data.get("value")
-    if porperty in ["password"]:
-        return JsonResponse({"message": "Porperty not allowed for this api"}, status=400)
+    if property in ["password"]:
+        return JsonResponse({"message": "property not allowed for this api"}, status=400)
     
-    if not porperty or not value:
+    if not property or not value:
         return JsonResponse({"message": "Missing arguments"}, status=400)
     
     if hasattr(request.user, "teacher"):
         try:
-            setattr(request.user.teacher, porperty, value)
+            setattr(request.user.teacher, property, value)
         except:
-            return JsonResponse({"message": "Invalid porperty or value"}, status=400)
+            return JsonResponse({"message": "Invalid property or value"}, status=400)
         
         request.user.teacher.save(force_update=True)
 
     elif hasattr(request.user, "parent"):
         try:
-            setattr(request.user.parent, porperty, value)
+            setattr(request.user.parent, property, value)
         except:
-            return JsonResponse({"message": "Invalid porperty or value"}, status=400)
+            return JsonResponse({"message": "Invalid property or value"}, status=400)
         
         request.user.parent.save(force_update=True)
     else:
@@ -623,9 +623,12 @@ def change_password(request):
         return HttpResponseNotAllowed(request.method)
     
     data = json.loads(request.body)
-    raw_password = data.get("raw_password", None)
+    raw_password = data.get("new_password", None)
     if not raw_password:
         return JsonResponse({"message": "Missing raw password"}, status=400)
+    
+    if request.user.check_password(raw_password):
+        return JsonResponse({"message": "new password and old password cannot be the same."}, status=400)
     
     request.user.set_password(raw_password)
     request.user.save()

@@ -21,6 +21,6 @@ urlpatterns = [
     path("student/marks/<int:id>", views.get_marks, name="student_mark"),
     path("search_student", views.search_student, name="search_student"),
     #-i API for update user data
-    path("update_data", views.change_info, name="update_user_data"),
+    path("change_info", views.change_info, name="change_user_info"),
     path("change_password", views.change_password, name="change_password")
 ]
