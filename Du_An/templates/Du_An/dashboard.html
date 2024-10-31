@@ -9,10 +9,11 @@
 
 {% block body %}
     <h1>Trang chủ</h1>
+    <div id="displayMessage"></div> <!--* Div for displaying messages-->
     {% if user.is_authenticated %}
 
         <div id="fullNameDiv" class="userInfo"> <!--* 'userInfo' here is only for convenient in JS for now, add styles later-->
-            <h2> Chào {% if user.teacher %} {{ user.teacher.full_name }} {% elif user.parent %} {{ user.parent.full_name }} {% endif %} </h2>
+            <h2 id="userFullName"> Chào {% if user.teacher %} {{ user.teacher.full_name }} {% elif user.parent %} {{ user.parent.full_name }} {% endif %} </h2>
             <form id="changeFullNameForm" class="changeInfoForm">
                 <div class="form-floating me-2">
                     <input type="text" id="fullNameInput" class="form-control w-auto" placeholder="Nhập tên mới" autocomplete="off" autocapitalize="on">
