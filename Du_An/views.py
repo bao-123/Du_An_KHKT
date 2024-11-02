@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, HttpResponseNotAllowed, HttpRequest, JsonResponse
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.hashers import make_password
+#from django.contrib.auth.hashers import make_password
 from django.contrib.auth import login, authenticate, logout
 from django.urls import reverse
 from datetime import date

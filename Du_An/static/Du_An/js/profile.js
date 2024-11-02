@@ -135,7 +135,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 "lg"
             );
             console.error(error);
-
         }
     });
 

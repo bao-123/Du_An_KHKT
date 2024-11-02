@@ -2,13 +2,18 @@ import {updateMarkURL, addClassSubjectTeacherURL, getStudentMarksURL, searchStud
 //utils
 
 //* function to create HTML tags
-export function tag(name, content, classes=[], id='') {
+export function tag(name, content, classes=[], id='', attr={}) {
     //@@classes should be an Array
 
     const element = document.createElement(name);
 
     for (let CSSClass of classes) { 
         element.classList.add(CSSClass);
+    }
+
+    if(attr)
+    {
+        Object.entries(attr).forEach(([key, value]) => element.setAttribute(key, value));
     }
 
     element.textContent = content;

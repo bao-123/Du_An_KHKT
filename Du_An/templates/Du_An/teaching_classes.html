@@ -3,7 +3,7 @@
 
 {% block title %} lớp đang dạy {% endblock %}
 {% block style %} <link href="{% static 'Du_An/css/list.css' %}" rel="stylesheet"> {% endblock %}
-{% block script %} <script src="{% static 'Du_An/js/list.js' %}"></script> {% endblock %}
+{% block script %} <script src="{% static 'Du_An/js/list.js' %}" type="module"></script> {% endblock %}
 
 {% block body %}
 <!--TODO-->
@@ -29,7 +29,7 @@
                 <div class="student_list">
                     <!--*student here is a 'StudentYearProfile' instance -->
                     {% for studentProfile in classroom.profile.students.all %}
-                    <div class="student_info">
+                    <div class="student_info" data-id="{{ studentProfile.student.id }}"> 
                         <p class="student">{{ studentProfile.student.full_name }}</p>
                         <!--TODO: Add JS-->
                         <button class="updateMarkBtn btn btn-primary">Nhập Điểm</button>

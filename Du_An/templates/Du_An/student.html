@@ -11,7 +11,7 @@
 {% block body %}
     <div id="studentProfile" data-student-id="{{ student.id }}">
         <!--* Display the basic information -->
-        <div class="basicInfo">
+        <div class="basicInfo">          
             <!---I student is a 'Student' instance -->
             <!---I student_profile is a 'studentYearProfile' instance -->
             <!---I student_profile.classroom is a 'ClassYearProfile' instance -->
@@ -32,9 +32,13 @@
         <!--* show student's marks -->
         <div class="studentMark">
             <!--TODO: Do this-->
+
             <select id="yearSelect" class="form-select w-auto mb-3 mt-3">
-                <option value="2024">2024-2025</option>
+                {% for year in student.get_years %}
+                    <option value="{{ year.id}}"> {{ year.year }}</option> <!--* 'year.id' is the id of the profile-->
+                {% endfor %}
             </select>
+
             <select id="subjects_select" class="form-select me-auto w-auto">
                 <!--** Default subject is Toán -->
                 <option selected disabled>Môn học</option>

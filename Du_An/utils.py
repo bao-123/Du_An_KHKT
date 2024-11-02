@@ -15,7 +15,14 @@ class ViewUtils():
             return teacher.form_class
         except Teacher.form_class.RelatedObjectDoesNotExist:
             return None
-        
+    
+    def create_class_profile(classroom: Class, year, form_teacher: Teacher | None = None):
+        try:
+            class_profile = ClassYearProfile.objects.create(classroom=classroom, year=year, form_teacher=form_teacher)
+        except:
+            return None
+        return class_profile
+    
     def read_excel_data(file_path):
         try:
             if not os.path.exists(file_path):

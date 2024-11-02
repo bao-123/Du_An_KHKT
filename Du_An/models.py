@@ -184,7 +184,9 @@ class Student(models.Model):
             return self.profiles.get(year=year)
         except StudentYearProfile.DoesNotExist:
             return None
-        
+    
+    def get_years(self):
+        return [{"year": f"{profile.year}-{profile.year+1}" , "id": profile.id} for profile in self.profiles.all()]
 
     #*get marks of subjects
     def get_subjects_mark(self, year: int = this_year, serialize: bool=False):
@@ -265,7 +267,8 @@ class StudentYearProfile(models.Model):
             classroom=classroom.profiles.get(year=year), #-I The year of the profile must be equal to the year of the classroom's profile
             role=role,
         )
-        profile.full_clean()
+
+        profile.full_clean() #! Can raise ValidationError if data is invalid
         profile.save()
 
         profile.main_subjects.set(MainSubject.generate_main_subjects())

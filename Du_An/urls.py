@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .import api
 
 urlpatterns = [
     path("dashboard", views.dashboard, name="dashboard"),
@@ -18,8 +19,13 @@ urlpatterns = [
     path("new_student", views.create_student, name="create_student"),
     #* this use for update the form teacher of a particular class
     path("class", views.update_class, name="update_class"),
+    #*APIs for getting student info
     path("student/marks/<int:id>", views.get_marks, name="student_mark"),
     path("search_student", views.search_student, name="search_student"),
+    #*This API is for create student's profile
+    path("new_profile/<int:student_id>", api.create_profile, name="create_profile"),
+    #* get marks of whole class
+    path("marks/<int:id>", api.get_class_marks, name="class_marks"),
     #-i API for update user data
     path("change_info", views.change_info, name="change_user_info"),
     path("change_password", views.change_password, name="change_password")

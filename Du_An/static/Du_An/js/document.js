@@ -9,6 +9,12 @@
 
 */
 
+//-i Cần đồng bộ hóa với back-end
+export const mainSubjects = ["Toán", "Tiếng Anh", "Ngữ Văn", "Lịch Sử & Địa Lí", "KHTN"];
+export const secondSubjects = ["Tin Học", "GDCD", "Công Nghệ"];
+export const commentSubjects = ["GDĐP", "GDTC", "HĐTN-HN", "Mĩ Thuật", "Âm Nhạc"];
+
+
 const baseURL = "http://127.0.0.1:8000/"
 
 // -I Gửi PUT request đến đây để cập nhập điểm của học sinh

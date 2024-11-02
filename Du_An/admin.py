@@ -12,6 +12,15 @@ def correct_name(modeladmin, request, query_set):
             obj.save(force_update=True)
 
 """
+
+@admin.action(description="Create profiles for students")
+def create_profiles(modeladmin, request, query_set):
+    for student in query_set:
+        student_profiles = student.profiles.all()     
+        for i in range(2015, 2024):
+            #profile = StudentYearProfile(year=i, student=student, clas)
+            pass #TODO:
+
 @admin.action(description="Check subjects")
 def check_subjects(modeladmin, request, query_set):
     for obj in query_set:

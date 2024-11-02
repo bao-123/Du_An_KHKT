@@ -8,7 +8,7 @@
 {% block title %}VnAdu{% endblock %}
 
 {% block body %}
-    <h1>Trang chủ</h1>
+    <h1 class="home">Trang Chủ</h1>
     <div id="displayMessage"></div> <!--* Div for displaying messages-->
     {% if user.is_authenticated %}
 
@@ -17,21 +17,21 @@
             <form id="changeFullNameForm" class="changeInfoForm">
                 <div class="form-floating me-2">
                     <input type="text" id="fullNameInput" class="form-control w-auto" placeholder="Nhập tên mới" autocomplete="off" autocapitalize="on">
-                    <label for="fullNameInput">Tên mới</label>
+                    <label for="fullNameInput">Tên Mới</label>
                 </div>
-                <button type="submit" class="btn btn-success mb-1">Thay đổi</button>
+                <button type="submit" class="btn btn-success mb-1">Thay Đổi</button>
             </form>     
         </div> 
 
         {% if user.teacher %} 
             <hr>
-            <h3>Lớp chủ nhiệm</h3>
+            <h3 class="mainClass">Lớp Chủ Nhiệm</h3>
             {% if user.teacher.form_class %}
             <div class="formClass">
-                <p class="className"> {{ user.teacher.form_class.name }}</p>
+                <p class="className"> {{ user.teacher.form_class.classroom.name }}</p>
                 <p class="classStudentCount">Si so: {{ user.teacher.form_class.students.count }}</p> <!---i user.teacher.form_class is a 'ClassYearTeacher' instance-->
                 <div class="classStaffs">
-                    <h2>Ban cán sự lớp</h2>
+                    <h2>Ban Cán Sự Lớp</h2>
                     {% for staff in user.teacher.form_class.get_class_staff_committee %}
                         {% if staff %}
                         <!--** staff here is a 'StudentYearProfile' object -->
@@ -39,41 +39,45 @@
                         <p class="classStaffRole">{% get_role_name staff.role %}</p>
                         {% endif %}
                     {% empty %}
-                    Lớp  chưa có ban cán sự
+                    Lớp  Chưa Có Ban Cán Sự
                     {% endfor %}
                 </div>
                 <a href="{% url 'view_class' user.teacher.form_class.classroom.id %}" class="btn btn-outline-primary"> Details </a>
             </div>
             {% else %}
-            Chưa có lớp chủ nhiệm. <a href="{% url 'classes' %}" class="link-info link-offset-2 link-opacity-75-hover">Xem danh sách các lớp</a>
+            Chưa Có Lớp Chủ Nhiệm. <a href="{% url 'classes' %}" class="link-info link-offset-2 link-opacity-75-hover">Xem danh sách các lớp</a>
             {% endif %}
             <hr>
-            <h3>Lớp bộ môn</h3>
-            <div class="classes">
-                {% for classroom in user.teacher.get_teaching_classes %}
-                    <!--* classroom here is a dict contains 'classroom' id 'Class' instance and 'profile' is a 'ClassYearProfile' instance-->
-                    <div class="subjectClass">
-                        <h3> {{ classroom.classroom.name }} </h3>
-                        <p>Sĩ số: {{ classroom.profile.students.count }} </p>
-                        {% if classroom.profile.form_teacher %}
-                        <p>GVCN: <a class="link-info link-offset-2 link-opacity-75-hover" href="{% url 'view_teacher' classroom.profile.form_teacher.id %}"> {{ classroom.profile.form_teacher.full_name }} </a> </p>
-                        {% endif %}
-                        <a class="btn btn-outline-primary" href="{% url 'view_class' classroom.classroom.id %}">Thông tin chi tiết</a>
-                    </div>
-                {% empty %}
-                    Chưa có lớp bộ môn
-                {% endfor %}
+            <h3>Lớp Bộ Môn</h3>
+            <div class="teaching_classes">
+                <h3 style="display: inline;">Các Lớp Đang Dạy</h3>
+                <i class="fa-solid fa-angle-up" id="showClassesIcon"></i>
+                <div class="classes">
+                    {% for classroom in user.teacher.get_teaching_classes %}
+                        <!--* classroom here is a dict contains 'classroom' id 'Class' instance and 'profile' is a 'ClassYearProfile' instance-->
+                        <div class="subjectClass">
+                            <h3> {{ classroom.classroom.name }} </h3>
+                            <p>Sĩ Số: {{ classroom.profile.students.count }} </p>
+                            {% if classroom.profile.form_teacher %}
+                            <p>GVCN: <a class="link-info link-offset-2 link-opacity-75-hover" href="{% url 'view_teacher' classroom.profile.form_teacher.id %}"> {{ classroom.profile.form_teacher.full_name }} </a> </p>
+                            {% endif %}
+                            <a class="btn btn-outline-primary" href="{% url 'view_class' classroom.classroom.id %}">Thông Tin Chi Tiết</a>
+                        </div>
+                    {% empty %}
+                        Chưa Có Lớp Bộ Môn
+                    {% endfor %}
+                </div>
             </div>
         {% elif user.parent %}
             <h1> Hello {{ user.parent.full_name }} </h1>
-            <h2>children</h2>
+            <h2 >children</h2>
             <hr>
             <div class="children-view"></div>
                 {% for child in user.parent.children.all %}
                     <div class="child-div">
                         <h2>Name: {{ child.full_name }}</h2>
                         <h3>Class: {{ child.get_profile.classroom.classroom.name }}</h3>
-                        <a href="{% url 'view_student' child.id %}" class="btn btn-outline-primary">Thông tin chi tiết</a>
+                        <a href="{% url 'view_student' child.id %}" class="btn btn-outline-primary">Thông Tin Chi Tiết</a>
                     </div>
                 {% endfor %}
             </div>
@@ -81,8 +85,8 @@
             You're not either teacher or parent
         {% endif %}
     {% else %}
-    <a class="btn btn-outline-primary" href="{% url 'login' %}">Đăng nhập</a>
-    <a class="btn btn-outline-primary" href="{% url 'register' %}">Đăng kí</a>
+    <a class="btn btn-outline-primary" href="{% url 'login' %}">Đăng Nhập</a>
+    <a class="btn btn-outline-primary" href="{% url 'register' %}">Đăng Kí</a>
     {% endif %}
 
 {% endblock %}

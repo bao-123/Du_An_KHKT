@@ -1,6 +1,9 @@
 body
 {
     margin: 0;
+    background-color: rgb(33, 37, 41);
+    color: rgb(154, 195, 235);
+    --bs-body-bg: rgb(33, 37, 41);
 }
 
 
@@ -8,6 +11,7 @@ body
 {
     max-height: 0;
     opacity: 0;
+    text-align: center;
     transition: 0.5s max-height ease-in-out, 0.25s opacity ease-in-out;
 }
 
@@ -22,4 +26,54 @@ body
 .changeInfoForm > .form-floating /** for the form-floating div (boostrap) */
 {
     display: inline-block;
+}
+
+
+.teaching_classes
+{
+    margin-bottom: 1rem;
+    background-color: rgb(55, 55, 87);
+    padding: 1rem;
+    margin-bottom: 0;
+}
+
+
+.classes
+{
+    max-height: 0;
+    opacity: 0;
+    background-color: rgb(17, 54, 75);
+    transition: 0.5s, 0.75s max-height ease-in-out, 1s opacity ease-in-out;
+    overflow: hidden;
+}
+
+
+.classes.show
+{
+    max-height: 100rem;
+    opacity: 1;
+    border-left: 5px solid goldenrod;
+    margin-top: 1rem;
+    margin-left: 0.5rem;
+    padding: 1.5rem;
+    border-radius: 20px;
+}
+
+.home
+{
+    text-align: center;
+    font-size: 45px;
+}
+
+.userInfo
+{
+    text-align: center;
+}
+.formClass
+{
+    margin-left: 1rem;
+}
+.mainClass
+{
+    margin-left: 16px;
 }

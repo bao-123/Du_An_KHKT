@@ -7,16 +7,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const userInfoDivs = document.querySelectorAll(".userInfo");
     const changeUsernameForm = document.getElementById("changeFullNameForm");
     const userFullName = document.getElementById("userFullName");
+    const showClassesIcon = document.getElementById("showClassesIcon");
+    const classes = document.querySelector(".classes");
 
     userInfoDivs.forEach(element => {
+        let timeOutId = null;
         element.addEventListener("mouseenter", () => {
-            element.querySelector(".changeInfoForm").classList.add("show");
+            timeOutId = setTimeout(() => {element.querySelector(".changeInfoForm").classList.add("show"), timeOutId = null},
+                             350); //* timeout for showing change info form when hovering over the user info div.
         });
 
         element.addEventListener("mouseleave", () => {
-            element.querySelector(".changeInfoForm").classList.remove("show");
+            if(timeOutId)
+            {
+                clearTimeout(timeOutId);
+                timeOutId = null;
+                return;
+            }
+            setTimeout(() => element.querySelector(".changeInfoForm").classList.remove("show"), 400);
         }); 
     });
+
+    showClassesIcon.onclick = () => {
+        showClassesIcon.className = classes.classList.contains("show") ? "fa-solid fa-angle-up" : "fa-solid fa-angle-down";
+        classes.classList.toggle("show");
+        void classes.offsetWidth; // Trigger a reflow or repaint
+    };
+
 
     changeUsernameForm.addEventListener("submit", async event => {
         event.preventDefault();
@@ -42,7 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if(response.status === 200)
         {
-            document.getElementById("userFullName").textContent = `Chào ${newFullName}`;
+            userFullName.textContent = `Chào ${newFullName}`;
         }
+
     });
 });

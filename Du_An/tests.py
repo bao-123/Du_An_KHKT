@@ -4,6 +4,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from .utils import TestUtils
+from .utils import ViewUtils
 from .models import *
 from datetime import date
 
@@ -35,6 +36,9 @@ class ProjectTest(TestCase):
         self.classroom1 = TestUtils.create_classroom("6a1", form_teacher=self.teacher1, subject_teachers=[self.teacher2,])
         self.classroom2 = TestUtils.create_classroom("6a2", form_teacher=self.teacher3, subject_teachers=[self.teacher1, self.teacher3])
         self.classroom3 = TestUtils.create_classroom("6a3", subject_teachers=[self.teacher2, ]) #* This class don't have a form teacher
+        self.classroom4 = TestUtils.create_classroom("5a1", subject_teachers=[self.teacher3, ])
+        #* For testing create student's profile API
+        self.profile4 = ViewUtils.create_class_profile(classroom=self.classroom4["classroom"], year=2023) #*this profile didn't have a form_teacher
         
         #* create some students to test register page
         self.student1 = TestUtils.create_student(name="Nguyen Thien Bao", role="monitor",
@@ -59,7 +63,7 @@ class ProjectTest(TestCase):
                                              contact_info="xyz")
 
 
-
+    
     def test_welcome_page(self):
         response = self.client.get(reverse("index"))
 
@@ -108,7 +112,7 @@ class ProjectTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context["subjects"]), 3)
-        self.assertEqual(len(response.context["classes"]), 3)
+        self.assertEqual(len(response.context["classes"]), 4)
         self.assertEqual(len(response.context["children"]), 3)
         print("Test register page finished. ✔")
 
@@ -162,4 +166,19 @@ class ProjectTest(TestCase):
         self.assertEqual(response.context["subjects"].count(), len(self.subjects))
 
         print("Test student profile page view finished.✔")
-    
+
+
+    def test_create_profile(self):
+        self.client.force_login(self.teacher1)
+
+        response = self.client.post(reverse("create_profile", args=(self.student1["student"].id, )), {"year": 2023,
+                                                                                     "classroom_id": self.classroom4["classroom"].id,
+                                                                                     "role": "monitor"})
+        data = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(StudentYearProfile.objects.get(student=self.student1["student"], year=2023))
+        self.assertEqual(data["profile"]["classroom"]["id"], self.classroom4["classroom"].get_profile(year=2023).id)
+
+        print("test create student profile finished. ✔")
+        
