@@ -1,4 +1,4 @@
-import {updateMarkURL, addClassSubjectTeacherURL, getStudentMarksURL, searchStudentURL, changeInfoURL, changePasswordURL} from "./document.js"
+import {updateMarkURL, addClassSubjectTeacherURL, getStudentMarksURL, searchStudentURL, changeInfoURL, changePasswordURL, newStudentYearProfileURL} from "./document.js"
 //utils
 
 //* function to create HTML tags
@@ -20,6 +20,20 @@ export function tag(name, content, classes=[], id='', attr={}) {
     element.id = id;
 
     return element;
+}
+
+
+//* For bootstrap form validtion
+export function configFormValidtion() {
+    document.querySelectorAll(".needs-validation").forEach(form => {
+        form.addEventListener("submit", event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add("was-validated");
+        });
+    });
 }
 
 
@@ -130,7 +144,7 @@ export async function teachClass(subject_id, classroom_id, year=null) {
 
 export async function getSubjectMarks(studentId, subjectId, year=null) {
     try {
-        const fetchURL = `${getStudentMarksURL}${studentId}?subject_id=${subjectId}` + (year ? `&${year}` : '');
+        const fetchURL = `${getStudentMarksURL}${studentId}?subject_id=${subjectId}` + (year ? `&year=${year}` : '');
         const response = await fetch(fetchURL);
         if(response.status !== 200)
         {
@@ -143,6 +157,22 @@ export async function getSubjectMarks(studentId, subjectId, year=null) {
     }
 }
 
+
+export async function createStudentYearProfile(studentId, form) { 
+    //@@form should be a HTML form element
+
+    try {
+        const response = await fetch(`${newStudentYearProfileURL}${studentId}`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCSRF()
+            },
+            body: new FormData(form)
+        });
+    } catch (error) {
+        console.error(error);
+    }
+}
 export async function searchStudent(query, classroom_id='') {
     try {
         const response = await fetch(`${searchStudentURL}?name=${query}${ classroom_id? `&classroom_id=${classroom_id}` : '' }`);
@@ -173,7 +203,7 @@ export function displayMessage(divId, header, content, type, size)
     try {
         clear(divId);
         const messageDiv = document.getElementById(divId);
-        messageDiv.classList.add(type, size)
+        messageDiv.className = `${type} ${size}`;
         messageDiv.appendChild(messageHeader);
         messageDiv.appendChild(messageContent);
 

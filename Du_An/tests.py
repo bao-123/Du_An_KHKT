@@ -172,7 +172,7 @@ class ProjectTest(TestCase):
         self.client.force_login(self.teacher1)
 
         response = self.client.post(reverse("create_profile", args=(self.student1["student"].id, )), {"year": 2023,
-                                                                                     "classroom_id": self.classroom4["classroom"].id,
+                                                                                     "classroom_name": self.classroom4["classroom"].name,
                                                                                      "role": "monitor"})
         data = response.json()
 

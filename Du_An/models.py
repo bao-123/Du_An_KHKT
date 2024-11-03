@@ -186,7 +186,8 @@ class Student(models.Model):
             return None
     
     def get_years(self):
-        return [{"year": f"{profile.year}-{profile.year+1}" , "id": profile.id} for profile in self.profiles.all()]
+        #* 'display_year' is for display purpose
+        return [{"display_year": f"{profile.year}-{profile.year+1}" , "year": profile.year} for profile in self.profiles.all()]
 
     #*get marks of subjects
     def get_subjects_mark(self, year: int = this_year, serialize: bool=False):

@@ -1,4 +1,4 @@
-import { displayMessage, getSubjectMarks, tag, updateMark, clear } from "./utils.js";
+import { displayMessage, getSubjectMarks, tag, updateMark, clear, configFormValidtion, createStudentYearProfile } from "./utils.js";
 //* Page's constants
 const displayMessageDivId = "updateMarkMessage";
 const displayMarkMessageDivId = "displayMarkMessage";
@@ -8,17 +8,22 @@ const markDisplayDivId = "markDisplay";
 const markHeaderClass = "markHeader";
 
 document.addEventListener("DOMContentLoaded", () => {
+    //*Configuring bootstrap form validation
+    configFormValidtion();
+    //* Constants
     const subjectsSelect = document.getElementById("subjects_select");
     const updateMarkForm = document.getElementById("updateMarkForm");
     const markDisplayDiv = document.getElementById(markDisplayDivId);
     const studentProfile = document.getElementById("studentProfile");
-    const createStudentYearProfile = document.getElementById("createStudentYearProfile");
+    const showFormBtn = document.getElementById("showFormBtn");
+    const createStudentYearProfileForm = document.getElementById("createProfileForm");
+    const yearSelect = document.getElementById("yearSelect");
     
     const studentId = Number(studentProfile.dataset.studentId);
 
     subjectsSelect.addEventListener("change", async () => {
         try {
-            const subjectData = await getSubjectMarks(studentId, Number(subjectsSelect.value)); //TODO: Add year has been selected in 'yearSelect'
+            const subjectData = await getSubjectMarks(studentId, Number(subjectsSelect.value), Number(yearSelect.value)); //TODO: Add year has been selected in 'yearSelect'
             //*Display marks
             //* if this is true, the subject is a main subject
             clear(markDisplayDivId);
@@ -139,9 +144,24 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    createStudentYearProfile.addEventListener("click", () => {
-        
-    });
+    //* for create new student year profile
+    if(createStudentYearProfileForm) {
+        showFormBtn.addEventListener("click", () => {
+            createStudentYearProfileForm.classList.toggle("show");
+        });
+
+        createStudentYearProfileForm.addEventListener("submit", async event => {
+            event.preventDefault();
+            const response = await createStudentYearProfile(studentId, createStudentYearProfileForm);
+            if(response.status === 200)
+            {
+                displayMessage(displayMessageDivId, "Đã thêm hồ sơ năm học", "Thêm hồ sơ năm học mới thành công", "alert alert-success", "lg");
+                return;
+            }
+            displayMessage(displayMarkMessageDivId, "Lỗi", "Đã xảy ra lỗi, vui lòng thử lại sau", "alert alert-danger", "lg");
+        });
+    }
+    
 
     //*Don't code bellow this line!
     if(!updateMarkForm) return;

@@ -55,6 +55,17 @@ export const changeInfoURL = baseURL + "change_info";
     -i return status 200 if sucessful, otherwise return status 400
 */
 
-
+//-i Gửi PUT request đến đây để đổi mật khẩu của user
 export const changePasswordURL = baseURL + "change_password"; 
+
+
+//-i Gửi POST request đến đây để thêm hồ sơ năm học mới cho học sinh
+export const newStudentYearProfileURL = baseURL + "new_profile/"; //-w Thêm id của học sinh ở phía sau và ko cần '/'
+
+/*
+    *parameters
+    @@classroom_id is the id of the classroom
+    @@year for the year of the new profile
+    @@role is the role of the student in the classroom (e.g. monitor, student) default is student
+*/
 

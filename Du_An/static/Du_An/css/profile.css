@@ -230,7 +230,37 @@ body
 
 #createStudentYearProfile
 {
+    padding: 1rem;
+    border-radius: 20px;
+    margin-left: 1rem;
+}
+
+/** button for showing the form*/
+#showFormBtn
+{
     max-height: fit-content;
+}
+
+#createProfileForm
+{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    row-gap: 1.5rem;
+    border-radius: 20px;
+    max-height: 0;
+    max-width: 0;
+    overflow: hidden;
+    border-bottom: 4px solid cyan;
+    transition: 0.5s ease-in-out;
+}
+
+#createProfileForm.show
+{
+    background-color: rgb(247, 228, 247);
+    max-height: 100%;
+    max-width: 100%;
+    padding: 1rem;
 }
 
 /** for create student templates*/

@@ -18,7 +18,7 @@ def get_class_marks(request, id):
 
 
 
-#*For create student profile
+#-i For create student profile
 @login_required(login_url='login')
 def create_profile(request, student_id: int):
     if request.method != "POST":
@@ -27,6 +27,7 @@ def create_profile(request, student_id: int):
     try:
         student = Student.objects.get(pk=student_id)
     except Student.DoesNotExist:
+        print("student not found")
         return JsonResponse({"message": "student not found"}, status=404)
     
     #* Authorization
@@ -36,11 +37,12 @@ def create_profile(request, student_id: int):
         return JsonResponse({"message": "only form teacher of this student can do this!"}, status=403)
     
     year = request.POST.get('year')
-    classroom_id = request.POST.get('classroom_id')
+    classroom_name = request.POST.get('classroom_name')#* classroom name is unique
 
     try:
-        classroom = Class.objects.get(pk=classroom_id)
+        classroom = Class.objects.get(name=classroom_name)
     except Class.DoesNotExist:
+        print("classroom not found")
         return JsonResponse({"message": "classroom not found"}, status=404)
     
     role = request.POST.get("role", "student") #* default is student
