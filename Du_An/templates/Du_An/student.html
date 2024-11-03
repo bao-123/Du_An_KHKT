@@ -32,13 +32,26 @@
         <!--* show student's marks -->
         <div class="studentMark">
             <!--TODO: Do this-->
-
-            <select id="yearSelect" class="form-select w-auto mb-3 mt-3">
-                {% for year in student.get_years %}
-                    <option value="{{ year.id}}"> {{ year.year }}</option> <!--* 'year.id' is the id of the profile-->
-                {% endfor %}
-            </select>
-
+            <div class="yearsDiv display-flex">
+                <select id="yearSelect" class="form-select w-auto mb-3 mt-3">
+                    {% for year in student.get_years %}
+                        <option value="{{ year.id}}"> {{ year.year }}</option> <!--* 'year.id' is the id of the profile-->
+                    {% endfor %}
+                </select>
+                <!--TODO:-->
+                <button id="createStudentYearProfile" class="btn btn-success">Thêm hồ sơ năm học</button>
+                <form id="createStudentYearProfileForm" class="needs-validation" novalidate>
+                    <div class="form-floating">
+                        <input type="number" id="newProfileYear" class="form-control w-auto" placeholder="Năm học" required>
+                    </div>
+                </form>
+                <!--* For new student's profile class select-->
+                <datalist id="classes">
+                    {% for classroom in classes %} <!--* classroom here is a 'Class' objects-->
+                        <option value="{{ classroom.id }}">{{ classroom.name }}</option>
+                    {% endfor %}
+                </datalist>
+            </div>
             <select id="subjects_select" class="form-select me-auto w-auto">
                 <!--** Default subject is Toán -->
                 <option selected disabled>Môn học</option>

@@ -23,6 +23,7 @@ body
     max-height: 100rem; 
 }
 
+
 .changeInfoForm > .form-floating /** for the form-floating div (boostrap) */
 {
     display: inline-block;
@@ -59,21 +60,33 @@ body
     border-radius: 20px;
 }
 
+
 .home
 {
     text-align: center;
     font-size: 45px;
 }
 
+
 .userInfo
 {
     text-align: center;
 }
+
+
 .formClass
 {
     margin-left: 1rem;
+    font-size: 30px;
 }
+
+
 .mainClass
 {
     margin-left: 16px;
+    font-size: 3rem;
+}
+.subjectClass
+{
+    margin-left: 1rem;
 }

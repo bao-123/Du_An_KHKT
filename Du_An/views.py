@@ -293,8 +293,10 @@ def view_student(request, id):
             return render(request, "Du_An/student.html", {
                 "student": student,
                 "student_profile": student.get_profile(),
-                "subjects": Subject.objects.all()
+                "subjects": Subject.objects.all(),
+                "classes": Class.objects.all()
             })
+        
         except Student.DoesNotExist:
             return render_error(request, error="Not found", error_message="Can't found any student with this id")
         

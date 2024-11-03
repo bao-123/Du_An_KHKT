@@ -74,7 +74,7 @@ body
     height: fit-content;
     max-height: 80vh; /* Chiều cao toàn bộ màn hình */
     column-gap: 20px;
-    padding-bottom: 0;
+    padding-bottom: 1rem;
     padding-top: max(15%, 2rem);
 }
 
@@ -97,22 +97,24 @@ body
 .welcome-footer
 {
     position: absolute;
-    padding: 30px 1rem;
-    height: max(15%, 5rem);
+    padding: 1rem;
+    height: max(14%, 5rem);
     width: 100%;
     color: #fff;
     top: 100%;
     margin: 0;
     background-color: black;
-    transform: translate(0, -82%); 
+    transform: translate(0, -100%); 
     margin-bottom: 15px;
 }
+
 .cre
 {
     display: inline;
     font-size: 2rem;
     font-weight: bold;
 }
+
 .iconbb
 {
     max-height: 100%;

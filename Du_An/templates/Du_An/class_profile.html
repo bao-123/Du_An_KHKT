@@ -60,8 +60,8 @@
                     {% for profile in class_profile.students.all %}
                     <div class="studentDisplay">
                         <p class="classNBRD">{{ profile.student.full_name }}</p>
-                        <p class="classNBRD">Birthday>: {{ profile.student.birthday }} </p>
-                        <p class="classNBRD">Role: {% get_role_name profile.role %} </p>
+                        <p class="classNBRD">Sinh nhật: {{ profile.student.birthday }}</p>
+                        <p class="classNBRD">Chức vụ: {% get_role_name profile.role %}</p>
                         <a href="{% url 'view_student' profile.student.id %}" class="btn btn-danger">Details</a>
                     </div>
                     {% empty %}

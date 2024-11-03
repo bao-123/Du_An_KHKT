@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const updateMarkForm = document.getElementById("updateMarkForm");
     const markDisplayDiv = document.getElementById(markDisplayDivId);
     const studentProfile = document.getElementById("studentProfile");
+    const createStudentYearProfile = document.getElementById("createStudentYearProfile");
     
     const studentId = Number(studentProfile.dataset.studentId);
 
@@ -136,6 +137,10 @@ document.addEventListener("DOMContentLoaded", () => {
             );
             console.error(error);
         }
+    });
+
+    createStudentYearProfile.addEventListener("click", () => {
+        
     });
 
     //*Don't code bellow this line!
