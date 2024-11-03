@@ -4,6 +4,8 @@ body
     background-color: rgb(33, 37, 41);
     color: rgb(154, 195, 235);
     --bs-body-bg: rgb(33, 37, 41);
+    --bs-body-color: rgb(154, 195, 235);
+    --bs-body-color-rgb: 154, 195, 235;
 }
 
 

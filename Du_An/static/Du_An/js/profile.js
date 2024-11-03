@@ -174,6 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const newMark = Number(document.getElementById("new_mark").value);
         const markType = document.getElementById("markType").value;
         const semester = Number(document.getElementById("semester").value);
+        const year = Number(yearSelect.value);
 
         if(!markType) {
             displayMessage(displayMessageDivId,
@@ -196,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         //* Call API
-        const response = await updateMark(studentId, subjectId, semester, newMark, markType);
+        const response = await updateMark(studentId, subjectId, semester, newMark, markType, year);
 
         displayMessage(displayMessageDivId,
             response.status !== 200 ? "Failed to update mark" : "Update mark successfully",

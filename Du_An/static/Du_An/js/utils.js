@@ -38,7 +38,7 @@ export function configFormValidtion() {
 
 
 //** function to update student's mark
-export async function updateMark(id, subjectId, semester, new_mark, mark_type)
+export async function updateMark(id, subjectId, semester, new_mark, mark_type, year=null)
 {
     /*
      @@id is the student's id
@@ -58,7 +58,8 @@ export async function updateMark(id, subjectId, semester, new_mark, mark_type)
                 subject_id: subjectId,
                 semester: semester,
                 new_mark: new_mark,
-                mark_type: mark_type
+                mark_type: mark_type,
+                year: year
             })
         });
         return {message: response.message, status: response.status}

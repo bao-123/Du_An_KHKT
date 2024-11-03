@@ -12,6 +12,8 @@ import json
 from .models import *
 from .utils import ViewUtils
 
+#TODO: Fix update marks for years
+
 # Create your views here. 
 
 def index(request):
@@ -313,17 +315,19 @@ def view_student(request, id):
         mark_type: str = body.get("mark_type")
         #** semester: 1 or 2
         semester: int = body.get("semester")
+        year = body.get("year", this_year)
+        print(year)
         
 
         if not body or not subject_id or \
-           not new_mark or not mark_type:
+           not new_mark or not mark_type or not year:
             print("missing information")
             return JsonResponse({"message": "Missing information"},
                                 status=400)
         
         try:
             subject = Subject.objects.get(pk=subject_id)
-            student_profile = Student.objects.get(pk=id).get_profile() #TODO: Update so we can update marks for other years
+            student_profile = Student.objects.get(pk=id).get_profile(year=year) #TODO: Update so we can update marks for other years
             if not ClassSubjectTeacher.is_teaching(subject, request.user.teacher, student_profile.classroom):
                 return JsonResponse({"message": "Permission denied"}, status=401)
             
@@ -375,7 +379,8 @@ def view_student(request, id):
 
             return JsonResponse({"message": "Update successfully"}, status=200)
 
-        except:
+        except Exception as e:
+            print(e)
             return JsonResponse({"message": "Failed to update student's marks"}, status=400)
 
     else:

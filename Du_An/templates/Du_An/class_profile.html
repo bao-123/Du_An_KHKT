@@ -18,8 +18,8 @@
             {% for staff_profile in class_profile.get_class_staff_committee %}
             {% if staff_profile %}
 
-            <p class="classStaffName">Ten: <a href="{% url 'view_student' staff_profile.student.id %}" class="link-info link-offset-2">{{ staff_profile.student.full_name }} </a> </p>
-            <p class="classStaffRole">Vai tro: {% get_role_name staff_profile.role %} </p>
+            <p class="classStaffName">Tên: <a href="{% url 'view_student' staff_profile.student.id %}" class="link-info link-offset-2">{{ staff_profile.student.full_name }} </a> </p>
+            <p class="classStaffRole">Vai trò: {% get_role_name staff_profile.role %} </p>
 
             {% endif %}
             {% empty %}
@@ -28,11 +28,11 @@
         </div>
 
             <!--TODO: Display other role (lop pho hoc tap, van the my,...)-->
-            <p class="classFormTeacher">Giao vien chu nhiem: 
+            <p class="classFormTeacher">Giáo viên chủ nhiệm: 
                 {% if class_profile.form_teacher %}
                     <a href="{% url 'view_teacher' class_profile.form_teacher.id %}"> {{ class_profile.form_teacher.full_name }} </a>
                 {% else %}
-                    Chua co GVCN
+                    Chưa có giáo viên chủ nhiệm
                     <form action="{% url 'update_class' %}" method="post">
                         {% csrf_token %}
                         <input type="hidden" value=" {{ classroom.id }}" name="classroom_id">
@@ -46,13 +46,13 @@
             <!--TODO: hien thi cac giao vien bo mon -->
             <ul class="nav-classes nav nav-tabs navbar-expand-lg bg-dark pt-3 mt-2">
                 <li class="nav-item">
-                    <button class="nav-link active" id="studentTab">Students</button>
+                    <button class="nav-link active" id="studentTab">Học sinh</button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link link-secondary" id="teacherTab">Teachers</button>
+                    <button class="nav-link link-secondary" id="teacherTab">Giáo viên bộ môn</button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link link-secondary" id="details">Details</button>
+                    <button class="nav-link link-secondary" id="details">Thông tin lớp</button>
                 </li>
             </ul>
             <div id="infoDisplay">
@@ -75,7 +75,7 @@
                         <p class="teacherSubject">Dạy môn: {% get_teaching_subjects class_profile teacher%} </p>
                     </div>
                     {% empty %}
-                    Chua co giao vien
+                    Chưa có giáo viên bộ môn
                     {% endfor %}
                     {% if user.teacher %}
                         {% if user.teacher in class_profile.get_teachers %}
@@ -91,7 +91,7 @@
                                 <option value="{{ subject.id }}"> {{ subject.name }} </option>
                             {% endfor %}
                         </select>
-                        <button id="teachClass" class="btn btn-danger">Trở Thành Giáo Viên Bộ Môn Của Lớp Này</button>
+                        <button id="teachClass" class="btn btn-danger">Trở Thành Giáo Viên Bộ Môn Của lớp {{ classroom.name }} </button>
                     {% endif %}
                 </div>
                 <!--TODO: Them thong tin thi dua(neu co)-->

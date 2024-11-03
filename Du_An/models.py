@@ -365,8 +365,9 @@ class ClassSubjectTeacher(models.Model):
     
     @staticmethod
     def is_teaching(subject: Subject, teacher: Teacher, classroom: ClassYearProfile) -> bool:
-        class_subject = ClassSubjectTeacher.objects.filter(subject=subject, classroom=classroom).first()
-        if not class_subject:
-            raise Exception("Unknow class (or subject)")
+        try:
+            class_subject = classroom.subject_teachers.get(subject=subject, teacher=teacher)
+        except ClassSubjectTeacher.DoesNotExist:
+            raise Exception("Unable to find")
         
         return class_subject.teacher == teacher

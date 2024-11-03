@@ -16,7 +16,7 @@
         {% endif %}
         <form action="{% url 'create_student' %}" method="post" class="text-center" id="createStudentForm">
             {% csrf_token %}
-            <h1 class="form_header">Thêm hồ sơ học sinh mới</h1>
+            <h1 class="form_header">Thêm học sinh mới</h1>
             <input type="text" name="full_name" placeholder="Họ và tên" class="form-control w-auto mx-auto mb-3" autocomplete="off" autofocus>
             <h4 class="form_header">Lớp</h4>
             <select name="class" id="classSelect" class="form-select w-auto mx-auto mb-3">
@@ -27,7 +27,7 @@
                 {% endfor %}
             </select>
             <h4 class="form_header">Ngày sinh</h4>
-            <input type="date" class="form-control w-auto mx-auto mb-3" name="birthday" placeholder="YYYY/MM/DD" min="1920-01-01" max="2120-12-31">
+            <input type="date" class="form-control w-auto mx-auto mb-3" name="birthday" placeholder="DD-MM-YYYY" min="1920-01-01" max="2120-12-31">
             <div class="mb-3">
                 <input type="radio" value="boy" name="gender" id="boy">
                 <label for="boy">Nam</label>
