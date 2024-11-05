@@ -5,8 +5,6 @@ jobs:
   setup:
     name: Set up environment
     runs-on: ubuntu-latest
-    outputs:
-      python-location: ${{ steps.python-setup.outputs.python-location }}
     steps:
     - name: checkout code
       uses: actions/checkout@v3
@@ -72,12 +70,5 @@ jobs:
     - name: run Selenium tests
       run: |
         python tests.py
-      working-directory: Du_An/selenium/
+      working-directory: Du_An_KHKT/Du_An/selenium/
 
-    
-    
-    
-      
-
-    
-        
