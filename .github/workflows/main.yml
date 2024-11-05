@@ -8,6 +8,8 @@ jobs:
     steps:
     - name: checkout code
       uses: actions/checkout@v3
+      with:
+        path: Du_An_KHKT
     
 
     - name: Set up Python 3.12
@@ -61,5 +63,5 @@ jobs:
 
     - name: run Selenium tests
       run: |
-        python tests.py
+        python Du_An/selenium/tests.py
 
