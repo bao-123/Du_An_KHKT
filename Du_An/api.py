@@ -1,4 +1,4 @@
-from openai import OpenAI
+#from openai import OpenAI
 from .models import *
 from django.http import JsonResponse, HttpResponseNotAllowed
 from django.core.exceptions import ValidationError

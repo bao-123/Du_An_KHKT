@@ -3,7 +3,7 @@ from datetime import date
 from django.core.files import File
 from typing import Iterable
 import os
-import pandas as pd
+#import pandas as pd
 
 
 #Utils functions for views
@@ -23,13 +23,13 @@ class ViewUtils():
             return None
         return class_profile
     
-    def read_excel_data(file_path):
+    """def read_excel_data(file_path):
         try:
             if not os.path.exists(file_path):
                 raise FileNotFoundError(f"File {file_path} not found.")
             return pd.read_excel(file_path)
         except Exception as e:
-            print(e)
+            print(e)"""
 
     #-i ChatGPT API
     def get_advice(student: Student):

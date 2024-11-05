@@ -1,6 +1,2 @@
 django
 selenium
-xlrd
-pandas
-openpyxl
-openai
