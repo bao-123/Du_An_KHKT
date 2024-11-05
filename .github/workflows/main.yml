@@ -52,7 +52,7 @@ jobs:
 
     - name: Run Django unit tests
       run: |
-        python manage.py test Du_An
+        python Du_An_KHKT/manage.py test Du_An
       
 
   Selenium_test:
@@ -63,5 +63,5 @@ jobs:
 
     - name: run Selenium tests
       run: |
-        python Du_An/selenium/tests.py
+        python Du_An_KHKT/Du_An/selenium/tests.py
 
