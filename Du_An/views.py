@@ -43,8 +43,8 @@ def login_view(request):
         email: str = request.POST["email"]
         password = request.POST["password"]
 
+        #*Check if user choose a role
         if "role" not in request.POST:
-            #replace this
             return HttpResponseBadRequest("please choose either teacher or parent")
         
 
@@ -55,7 +55,7 @@ def login_view(request):
         if not user_auth:
             return render(request, "Du_An/login.html", {
                 "error": "Invalid password or email",
-                "error_message": "Please re-check your email and password"
+                "error_message": "Please re-check your email and password"  
             })
         
         if user_type == "teacher":
@@ -255,7 +255,8 @@ def view_teaching_classes(request):
     classes = request.user.teacher.get_teaching_classes()
 
     return render(request, "Du_An/teaching_classes.html", {
-        "classes": classes
+        "classes": classes,
+        "subjects": request.user.teacher.subject.all()
     })
 
     
@@ -659,4 +660,3 @@ def render_error(request: HttpRequest, error: str | None = None, error_message: 
         "error_message": error_message,
         "error_image": error_image
     })
-

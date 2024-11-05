@@ -49,9 +49,11 @@ def get_teacher_subject_options(profile: ClassYearProfile, teacher: Teacher):
 
     return '\n'.join(html_options)
 
+
 @register.simple_tag
 def get_teaching_subjects(class_profile: ClassYearProfile, teacher: Teacher) -> str:
     return ', '.join([subject_teacher.subject.name for subject_teacher in class_profile.subject_teachers.filter(teacher=teacher)])
+
 
 @register.simple_tag
 def get_profile(classroom: Class, porperty: str, year: int = this_year): #* 'this_year' Declared in 'models.py'

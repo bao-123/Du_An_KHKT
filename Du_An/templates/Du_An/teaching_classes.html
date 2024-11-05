@@ -1,5 +1,6 @@
 {% extends 'Du_An/layout.html' %}
 {% load static %}
+{% load tags %}
 
 {% block title %} lớp đang dạy {% endblock %}
 {% block style %} <link href="{% static 'Du_An/css/list.css' %}" rel="stylesheet"> {% endblock %}
@@ -23,6 +24,7 @@
                     <div class="classroomHeaders">
                         <button class="showStudentBtn"><i class="fa-solid fa-angle-up"></i></button>
                         <p class="classroom_name">{{ classroom.classroom.name }}</p>
+                        <p class="teaching_subjects">Đang dạy: {% get_teaching_subjects classroom.profile user.teacher %}</p>
                     </div>
                     <a href="{% url 'view_class' classroom.classroom.id %}" class="btn btn-outline-primary">Thông tin chi tiết</a>
                 </div>

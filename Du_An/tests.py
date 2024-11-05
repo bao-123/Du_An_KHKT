@@ -8,6 +8,8 @@ from .utils import ViewUtils
 from .models import *
 from datetime import date
 
+def printGreen(text):
+    print(f"\033[92m {text}")
 
 # Create your tests here.
 #TODO: fix
@@ -33,10 +35,15 @@ class ProjectTest(TestCase):
                                               password="teacher3", full_name="Nguyễn Thiên Bảo",
                                               subjects=[self.subjects[1], self.subjects[2]])
         
+        self.teacher_count = 3
+
+
         self.classroom1 = TestUtils.create_classroom("6a1", form_teacher=self.teacher1, subject_teachers=[self.teacher2,])
         self.classroom2 = TestUtils.create_classroom("6a2", form_teacher=self.teacher3, subject_teachers=[self.teacher1, self.teacher3])
         self.classroom3 = TestUtils.create_classroom("6a3", subject_teachers=[self.teacher2, ]) #* This class don't have a form teacher
         self.classroom4 = TestUtils.create_classroom("5a1", subject_teachers=[self.teacher3, ])
+
+        self.classroom_count = 4
         #* For testing create student's profile API
         self.profile4 = ViewUtils.create_class_profile(classroom=self.classroom4["classroom"], year=2023) #*this profile didn't have a form_teacher
         
@@ -61,9 +68,13 @@ class ProjectTest(TestCase):
                                              password="parent2", full_name="Nguyễn Văn D", 
                                              children=[self.student3["student"], ],
                                              contact_info="xyz")
-
-
     
+    @classmethod
+    def tearDownClass(self):
+        print("Cleaning...")
+        super().tearDownClass()
+        
+
     def test_welcome_page(self):
         response = self.client.get(reverse("index"))
 
@@ -154,18 +165,7 @@ class ProjectTest(TestCase):
 
         print("test dashboard finished.✔")
         self.client.logout()
-    
-    def test_view_student(self):
-        self.client.force_login(self.teacher1)
 
-        response = self.client.get(reverse("view_student", args=(self.student1["student"].id, )))
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["student"], self.student1["student"])
-        self.assertEqual(response.context["student_profile"], self.student1["profile"])
-        self.assertEqual(response.context["subjects"].count(), len(self.subjects))
-
-        print("Test student profile page view finished.✔")
 
 
     def test_create_profile(self):
@@ -180,5 +180,59 @@ class ProjectTest(TestCase):
         self.assertTrue(StudentYearProfile.objects.get(student=self.student1["student"], year=2023))
         self.assertEqual(data["profile"]["classroom"]["id"], self.classroom4["classroom"].get_profile(year=2023).id)
 
-        print("test create student profile finished. ✔")
+        printGreen("test create student profile finished. ✔")
         
+    
+    def test_student_page(self):
+        self.client.force_login(self.teacher1)
+
+        with self.subTest("View student 1"):
+            response = self.client.get(reverse("view_student", args=(self.student1["student"].id, )))
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.context["student"], self.student1["student"])
+            self.assertEqual(response.context["student_profile"], self.student1["profile"])
+            self.assertEqual(response.context["subjects"].count(), len(self.subjects))
+            self.assertEqual(response.context["classes"].count(), self.classroom_count)
+        
+        with self.subTest("View student 2"):
+            response = self.client.get(reverse("view_student", args=(self.student2["student"].id, )))
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.context["student"], self.student2["student"])
+            self.assertEqual(response.context["student_profile"], self.student2["profile"])
+            self.assertEqual(response.context["subjects"].count(), len(self.subjects))
+            self.assertEqual(response.context["classes"].count(), self.classroom_count)
+        
+        print("Test student view page finished ✔")
+
+        self.client.logout()
+            
+
+    def test_teacher_page(self):
+        self.client.force_login(self.parent1)
+
+        with self.subTest("View teacher 1"):
+            response = self.client.get(reverse("view_teacher", args=(self.teacher1.id, )))
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.context["teacher"], self.teacher1)
+        
+        with self.subTest("View teacher 2"):
+            response = self.client.get(reverse("view_teacher", args=(self.teacher2.id, )))
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.context["teacher"], self.teacher2)
+
+        print("Test view teacher page finished.✔")
+        self.client.logout()
+
+
+    def test_teachers(self):
+        response = self.client.get(reverse("view_teachers"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["teachers"].count(), self.teacher_count)
+
+        print("Test view teachers finished.✔")
+

@@ -26,10 +26,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-        updateMarkBtns.forEach(btn => {
+        /*updateMarkBtns.forEach(btn => {
             //*Display a form for teacher can update the mark of the student
             btn.addEventListener("click", event => {
-                const form = tag("form", '', "updateMarkForm", '', )
+                const form = tag("form", '', ["updateMarkForm"]);
+
+                const newMarkInput = tag("input", '', ["form-control", "w-auto"], '', {placeholder: "Nhập điểm mới",
+                                                                                        type: "number",
+                                                                                        min: 0,
+                                                                                        max: 10,
+                                                                                        step: '0.01',
+                                                                                        required: true
+                });
+                
+                //TODO: 
             });
-        });
+        });*/
 });
