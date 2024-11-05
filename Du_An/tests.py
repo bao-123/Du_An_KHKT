@@ -229,10 +229,14 @@ class ProjectTest(TestCase):
 
 
     def test_teachers(self):
+        self.client.force_login(self.parent1)
+
         response = self.client.get(reverse("view_teachers"))
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["teachers"].count(), self.teacher_count)
 
         print("Test view teachers finished.✔")
+
+        self.client.logout()
 
