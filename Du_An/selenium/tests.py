@@ -25,7 +25,7 @@ class ProjectTest(TestCase):
         cls.server_process = Popen(["python", "manage.py", "runserver", "127.0.0.1:8000"])
         time.sleep(3) #* Ensure that the server will be started before the test run.
 
-        cls.driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=options)
+        cls.driver = webdriver.Chrome(service=ChromeDriverManager().install(), options=options)
         super().setUpClass()
         print("set up finished.")
     
