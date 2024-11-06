@@ -39,5 +39,5 @@ jobs:
 
     - name: Run Selenium tests
       run: |
-        python tests.py
-      working-directory: Du_An_KHKT/Du_An/selenium/
+        python Du_An/selenium/tests.py
+      working-directory: Du_An_KHKT
