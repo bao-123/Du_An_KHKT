@@ -2,6 +2,7 @@ from unittest import TestCase, main
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
 from subprocess import Popen
 import signal
 import time
@@ -24,7 +25,7 @@ class ProjectTest(TestCase):
         cls.server_process = Popen(["python", "manage.py", "runserver", "127.0.0.1:8000"])
         time.sleep(3) #* Ensure that the server will be started before the test run.
 
-        cls.driver = webdriver.Chrome(options=options)
+        cls.driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
         super().setUpClass()
         print("set up finished.")
     
