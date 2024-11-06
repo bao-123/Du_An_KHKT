@@ -176,25 +176,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const semester = Number(document.getElementById("semester").value);
         const year = Number(yearSelect.value);
 
-        if(!markType) {
-            displayMessage(displayMessageDivId,
-                "Cannot update mark",
-                "Chon mot cot diem de nhap diem",
-                "warning",
-                "medium"
-            );
-            return;
-        }
-        if(!newMark)
-        {
-            displayMessage(displayMessageDivId, 
-                "Cannot update mark",
-                "Please enter new mark",
-                "warning",
-                "medium"
-            );
-            return;
-        }
+        if(!markType || !newMark || !subjectId || !year ) return;
+        
 
         //* Call API
         const response = await updateMark(studentId, subjectId, semester, newMark, markType, year);

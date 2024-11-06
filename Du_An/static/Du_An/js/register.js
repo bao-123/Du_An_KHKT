@@ -1,8 +1,12 @@
-import { clear, displayMessage, searchStudent, tag } from "./utils.js"
+import { clear, configFormValidtion, displayMessage, searchStudent, tag } from "./utils.js"
 
 const searchFormDivId = "searchFormMessage";
 
 document.addEventListener("DOMContentLoaded", () => {
+    //* Configure Bootstrap form validation.
+    configFormValidtion();
+
+    //*Constants
     const childrenSelect = document.getElementById("childrenSelect"); //* The select element
     const childrenSearchSubmit = document.getElementById("childrenSearchSubmit");
     const teacherRadio = document.getElementById("teacher");
@@ -41,16 +45,33 @@ document.addEventListener("DOMContentLoaded", () => {
     teacherRadio.addEventListener("click", () => {
         if(teacherRadio.checked)
         {
-            teacherInputDiv.style.display = "block";
-            parentInputDiv.style.display = "none";
+            if(!parentInputDiv.classList.contains("show")) {
+                teacherInputDiv.classList.add("show"); 
+                return;
+            }
+
+            parentInputDiv.classList.remove("show");
+            //* Wait for the parent input div disappeared
+            setTimeout(() => {
+                teacherInputDiv.classList.add("show");
+            }, 900);  
         }
     });
 
     parentRadio.addEventListener("click", () => {
         if(parentRadio.checked)
         {
-            teacherInputDiv.style.display = "none";
-            parentInputDiv.style.display = "block";
+            if(!teacherInputDiv.classList.contains("show"))
+            {
+                parentInputDiv.classList.add("show");
+                return;
+            }
+
+            teacherInputDiv.classList.remove("show");
+            //* Wait for the teacher input div disappeared
+            setTimeout(() => {
+                parentInputDiv.classList.add("show");
+            }, 900); 
         }
     });
     

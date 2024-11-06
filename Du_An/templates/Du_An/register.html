@@ -13,56 +13,66 @@
             <p class="error_message"> {{ error_message }} </p>
         </div>
 
-        <form action="{% url 'register' %}" method="post" novalidate>
+        <form action="{% url 'register' %}" method="post" class="needs-validation" novalidate>
             {% csrf_token %}
             <div class="mb-3 inputDiv">
                 <label for="username" class="form-label">Họ và tên</label>
                 <input type="text" name="full_name" autocomplete="off" name="username" class="form-control mx-auto" required>
+
                 <div class="invalid-feedback">
                     Xin hãy nhập họ và tên
                 </div>
+
             </div>
 
             <div class="mb-3 inputDiv">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" id="email" name="email" class="form-control mx-auto" required>
+                
                 <div class="invalid-feedback">
                     Xin hãy nhập email
                 </div>
+
             </div>
 
             <div class="mb-3 inputDiv">
                 <label for="password" class="form-label">Mật Khẩu</label>
                 <input type="password" name="password" id="password" class="form-control mx-auto" required>
+
                 <div class="invalid-feedback">
                     Xin hãy nhập mật khẩu
                 </div>
+
             </div>
 
             <h3 id="type_label">Bạn là?</h3>
             <div class="roleSelect">
                 <div class="mb-3">
-                    <input type="radio" name="user_type" class="form-check-input" value="teacher" id="teacher">
+                    <input type="radio" name="user_type" class="form-check-input" value="teacher" id="teacher" required>
                     <label for="teacher" class="form-check-label">Giáo viên</label>
+
+                    <div class="invalid-feedback">
+                        Xin chọn một trong hai loại người dùng
+                    </div>
+
                 </div>
                 <div class="mb-3">
-                    <input type="radio" name="user_type" value="parent" class="form-check-input" id="parent">
+                    <input type="radio" name="user_type" value="parent" class="form-check-input" id="parent" required>
                     <label for="parent" class="form-check-label">Phụ huynh</label>
                 </div>
             </div>
 
-            <div id="for_teacher" class="mb-3">
+            <div id="for_teacher">
                 <h3>Chọn môn học đang dạy (chỉ dành cho giáo viên)</h3>
                 <!--TODO-->
                 <div>
-                    <select name="subjects[]" class="form-select mb-3" size="5" multiple required>
+
+                    <select name="subjects[]" class="form-select mb-3" size="5" multiple>
                         {% for subject in subjects %}
                             <option value="{{ subject.id }}">{{ subject.name }}</option>
                         {% endfor %}
                     </select>
-                    <div class="invalid-feedback">
-                        Xin chọn ít nhất 1 môn học
-                    </div>
+
                 </div>
 
                 <label for="form_class_select">Chọn lớp chủ nhiệm (nếu có)</label>
@@ -74,7 +84,7 @@
                 </select>
             </div>
 
-            <div id="for_parent" class="mb-3">
+            <div id="for_parent">
                 <!--TODO-->
 
                 <h3>Chọn con của bạn (chỉ dành cho phụ huynh)</h3>

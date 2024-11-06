@@ -28,12 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }); 
     });
 
-    showClassesIcon.onclick = () => {
-        showClassesIcon.className = classes.classList.contains("show") ? "fa-solid fa-angle-up" : "fa-solid fa-angle-down";
-        classes.classList.toggle("show");
-        void classes.offsetWidth; // Trigger a reflow or repaint
-    };
-
 
     changeUsernameForm.addEventListener("submit", async event => {
         event.preventDefault();
@@ -61,6 +55,16 @@ document.addEventListener("DOMContentLoaded", () => {
         {
             userFullName.textContent = `Chào ${newFullName}`;
         }
-
     });
+
+    //*Check if user is a teacher (show classes icon only appear on the page when the user is a teacher)
+    if(showClassesIcon)
+    {
+        showClassesIcon.onclick = () => {
+            showClassesIcon.className = classes.classList.contains("show") ? "fa-solid fa-angle-up" : "fa-solid fa-angle-down";
+            classes.classList.toggle("show");
+            void classes.offsetWidth; // Trigger a reflow or repaint
+        };
+    }
+    
 });

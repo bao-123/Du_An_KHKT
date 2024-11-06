@@ -56,3 +56,4 @@ def create_profile(request, student_id: int):
 
 
 
+   

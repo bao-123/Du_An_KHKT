@@ -1,5 +1,5 @@
 import {updateMarkURL, addClassSubjectTeacherURL, getStudentMarksURL, searchStudentURL, changeInfoURL, changePasswordURL, newStudentYearProfileURL} from "./document.js"
-//utils
+//-i utils
 
 //* function to create HTML tags
 export function tag(name, content, classes=[], id='', attr={}) {
@@ -174,6 +174,8 @@ export async function createStudentYearProfile(studentId, form) {
         console.error(error);
     }
 }
+
+
 export async function searchStudent(query, classroom_id='') {
     try {
         const response = await fetch(`${searchStudentURL}?name=${query}${ classroom_id? `&classroom_id=${classroom_id}` : '' }`);

@@ -317,7 +317,6 @@ def view_student(request, id):
         #** semester: 1 or 2
         semester: int = body.get("semester")
         year = body.get("year", this_year)
-        print(year)
         
 
         if not body or not subject_id or \
@@ -328,8 +327,12 @@ def view_student(request, id):
         
         try:
             subject = Subject.objects.get(pk=subject_id)
-            student_profile = Student.objects.get(pk=id).get_profile(year=year) #TODO: Update so we can update marks for other years
-            if not ClassSubjectTeacher.is_teaching(subject, request.user.teacher, student_profile.classroom):
+            student = Student.objects.get(pk=id)
+            student_profile = student.get_profile(year=year) #TODO: Update so we can update marks for other years
+            current_class_profile = student.get_profile().classroom
+
+            #-i Check f the user.teacher is the subject teacher of the student's current class
+            if not ClassSubjectTeacher.is_teaching(subject, request.user.teacher, current_class_profile):
                 return JsonResponse({"message": "Permission denied"}, status=401)
             
             if semester not in [1, 2]:

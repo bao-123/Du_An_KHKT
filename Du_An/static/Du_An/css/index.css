@@ -5,6 +5,17 @@ body
     font-family: 'Open Sans', sans-serif;
 }
 
+.invalid-feedback
+{
+    background-color: rgba(59, 57, 57, 0.8);
+    width: fit-content;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid red;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 form
 {
     margin: auto;
@@ -174,4 +185,20 @@ form > textarea
     border-radius: 10px;
     margin-bottom: 1rem;
     backdrop-filter: blur(5px);
+}
+
+
+#for_teacher, #for_parent
+{
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none; /* Avoid preventing user interact with other elements when hidden */
+    transition: 0.8s max-height ease-in-out, 500ms opacity ease;
+}
+
+
+#for_teacher.show, #for_parent.show {
+    max-height: 100rem;
+    opacity: 1;
+    pointer-events: auto;
 }

@@ -77,50 +77,67 @@
                 <option value="{{ subject.id }}"> {{ subject.name }} </option>
                 {% endfor %}
             </select>
+            <h2>Bảng điểm</h2>
+            <h4>Chọn môn để xem điểm</h4>
+
             <div class="subjectMark mb-3 me-auto">
                 <div id="displayMarkMessage"></div>
-                    <h2>Bang diem</h2>
-                <!--TODO: add JS-->
                 <div id="markDisplay">
-                    Chon mon de xem diem
                 </div>
                 <!--TODO: fix this-->
             {% if user.teacher in student.get_profile.classroom.get_teachers %}
                 <div class="updateMarkDiv">
                     <div id="updateMarkMessage"></div>
 
-                    <form id="updateMarkForm">
+                    <form id="updateMarkForm" class="needs-validation" novalidate>
+
                         <!--* teacher will select the subject that they want to update-->
-                        <div class="selectors mb-3">
-                            <select id="updateMarkSubjectSelect" class="form-select mb-3 w-50 me-auto">
-                                <option selected disabled>Chọn môn muốn nhập điểm</option>
-                                {% autoescape off %}
-                                {% get_teacher_subject_options student.get_profile.classroom user.teacher %}
-                                {% endautoescape %}
-                            </select>
+                        <div class="inputs mb-3">
+                            <div class="inputDiv">
+                                <select id="updateMarkSubjectSelect" class="form-select w-auto" required>
+                                    <option selected disabled>Chọn môn muốn nhập điểm</option>
+                                    {% autoescape off %}
+                                    {% get_teacher_subject_options student.get_profile.classroom user.teacher %}
+                                    {% endautoescape %}
+                                </select>
+
+                                <div class="invalid-feedback">
+                                    Xin chọn môn học muốn nhập điểm
+                                </div>
+
+                            </div>
+
                             <!--*Select semester -->
-                            <select id="semester">
-                                <option value="1" selected>Kì 1</option>
-                                <option value="2"> Kì 2</option>
-                            </select>
+                            <div class="inputDiv">
+                                <select id="semester" class="form-select w-auto">
+                                    <option value="1" selected>Kì 1</option>
+                                    <option value="2"> Kì 2</option>
+                                </select>
+                            </div>
+
                             <!--* Select mark type-->
-                            <select id="markType">
-                                <!--TODO: Update so only display possible type-->
-                                <option selected disabled value="">Chọn cột điểm</option>
-                                <option value="tx1">Thường xuyên 1</option>
-                                <option value="tx2">Thường xuyên 2</option>
-                                <option value="tx3">Thường xuyên 3</option>
-                                <option value="tx4">Thường xuyên 4</option>
-                                <option value="gk">Giữa Kì</option>
-                                <option value="ck">Cuối kì</option>
-                            </select>
-                        </div>
+                            <div class="inputDiv">
+                                <select id="markType" class="form-select w-auto" required>
+                                    <!--TODO: Update so only display possible type-->
+                                    <option selected disabled value="">Chọn cột điểm</option>
+                                    <option value="tx1">Thường xuyên 1</option>
+                                    <option value="tx2">Thường xuyên 2</option>
+                                    <option value="tx3">Thường xuyên 3</option>
+                                    <option value="tx4">Thường xuyên 4</option>
+                                    <option value="gk">Giữa Kì</option>
+                                    <option value="ck">Cuối kì</option>
+                                </select>
 
-                        <div class="form-floating mb-3">
-                            <input type="number" id="new_mark" class="form-control me-auto w-50" placeholder="Điểm" step="0.01" max="10" min="0">
-                            <label for="new_mark">Điểm</label>
-                        </div>
+                                <div class="invalid-feedback">
+                                    Xin chọn cột điểm muốn nhập điểm.
+                                </div>
+                            </div>
 
+                            <div class="form-floating w-50">
+                                <input type="number" id="new_mark" class="form-control" placeholder="Điểm" step="0.01" max="10" min="0">
+                                <label for="new_mark">Điểm</label>
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-primary">Cập nhập điểm cho học sinh</button>
                     </form>
                 </div>
