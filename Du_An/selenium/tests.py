@@ -44,9 +44,9 @@ class ProjectTest(TestCase):
 
     def test_welcome(self):
         self.driver.get(BASE_URL)
-        background_image = self.driver.find_element(by=By.TAG_NAME, value="img")
+        background_image = self.driver.find_element(by=By.ID, value="background-image")
 
-        self.assertEqual("fixed", background_image.value_of_css_property("position"))
+        self.assertEqual("flex", background_image.value_of_css_property("display"))
         print("test welcome page finished!")
     
 
