@@ -1,0 +1,15 @@
+@import url("./index.css");
+
+body
+{
+    background-image: url(../images/BGRegister.jpg);
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+#type_label
+{
+    color: black;
+}

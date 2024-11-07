@@ -22,7 +22,7 @@
                 <!--TODO: Replace the href (to the teacher's profile page)-->
                 {% if class.profile.form_teacher %}
                 <p class="formTeacher">
-                    Form teacher: <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover" href="{% url 'view_teacher' class.profile.form_teacher.id %}">{{ class.profile.form_teacher.full_name }} </a>
+                    Form teacher: <a class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover" href="{% url 'view_teacher' class.profile.form_teacher.id %}">{{ class.profile.form_teacher.full_name }} </a>
                 </p>
                 {% else %}
                 <p class="formTeacher">Chưa có giáo viên chủ nhiệm</p>
@@ -33,7 +33,7 @@
                     <!--TODO: fix the display of class's monitor-->
                     {% if class.class %}
                         {% autoescape off %}
-                            Lớp trưởng: {% get_student_page_link class.class 'monitor' 'link-dark link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover'  %}
+                            Lớp trưởng: {% get_student_page_link class.class 'monitor' 'link-primary link-offset-2 link-underline-opacity-50 link-underline-opacity-100-hover'  %}
                         {% endautoescape %}
                     {% endif %}
                 </p>

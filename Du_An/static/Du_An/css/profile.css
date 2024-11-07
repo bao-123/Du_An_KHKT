@@ -1,7 +1,7 @@
 /*-i Class for error message*/
 body
 {
-    background-image: url(../images/BGRegister.jpg);
+    background-color: rgb(33, 37, 41);
 }
 
 .invalid-feedback
@@ -110,7 +110,7 @@ body
 
 #createStudentForm
 {
-    background-color: rgb(98, 190, 252);
+    background-color: rgb(83, 188, 249);
     margin-top: max(3%, 3rem);
     margin-right: max(25%, 100px);
     margin-left: max(25%, 100px);
@@ -124,6 +124,7 @@ body
     margin-bottom: 15px;
 }
 
+
 .basicInfo
 {
     margin-left: 10px;
@@ -131,20 +132,27 @@ body
     border-radius: 15px;
     margin-right: 10px;
     margin-top: 10px;
+    color: rgb(154, 195, 235);
+
 }
+
 
 .className
 {
     margin-top: 25px;
     margin-left: 10px;
+    color: rgb(154, 195, 235);
 }
+
 
 .nav-classes
 {
     border: solid rgb(238, 114, 143);
     border-radius: 5px;
     margin-right: 10px;
+
 }
+
 
 .otherInfo
 {
@@ -159,22 +167,27 @@ body
     font-size: 28px;
     font-weight: bold;
     margin-left: 10px;
+    color: rgb(154, 195, 235);
 }
 .classStaffName
 {
     font-size: 20px;
     font-weight: bold;
+    color: rgb(154, 195, 235);
 }
 .classStaffRole
 {
     font-weight: bold;
+    color: rgb(154, 195, 235);
     font-size: 20px;
+
 }
 .classFormTeacher
 {
     font-weight: bold;
     font-size: 20px;
     margin-left: 10px;
+    color: rgb(154, 195, 235);
 }
 .studentDisplay
 {
@@ -184,6 +197,7 @@ body
     margin-right: 10px;
     margin-top: 10px;
     border: solid;
+    color: rgb(154, 195, 235);
 }
 
 .teacherName
@@ -191,27 +205,32 @@ body
     font-weight: bold;
     font-size: 20px;
     margin-left: 10px;
+    color: rgb(154, 195, 235);
 }
 .teacherSubject
 {
     font-weight: bold;
     font-size: 20px;
     margin-left: 10px;
+    color: rgb(154, 195, 235);
 }
 .classStaffs
 {
     font-weight: bold;
     font-size: 20px;
     margin-left: 10px;
+    color: rgb(154, 195, 235);
 }
 .classNBRD
 {
     margin-left: 10px;
+    color: rgb(154, 195, 235);
 }
 .btn-danger
 {
     margin-left: 10px;
     margin-bottom: 10px;
+    color: rgb(154, 195, 235);
 }
 .teacher
 {
@@ -220,6 +239,7 @@ body
     margin-bottom: 15px;
     margin-top: 15px;
     margin-right: 10px;
+    color: rgb(154, 195, 235);
 }
 
 

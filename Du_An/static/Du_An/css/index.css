@@ -1,9 +1,12 @@
 body
 {
     margin: 0;
-    background-image: url(../images/BGRegister.jpg);
     font-family: 'Open Sans', sans-serif;
+    background-color: rgb(33, 37, 41);
+    height: 100%;
+    color: rgb(154, 195, 235);
 }
+
 
 .invalid-feedback
 {
@@ -53,7 +56,7 @@ label
 {
     font-weight: 500;
     font-size: 18px;
-    
+    color: black;
 }
 
 
@@ -112,7 +115,15 @@ form > textarea
     padding: 10px 20px;
     backdrop-filter: blur(3px);
 }
-
+.classeslist
+{
+    border: 3px solid;
+    border-radius: 8px;
+    margin-bottom: 3rem;
+    text-align: center;
+    padding: 10px 20px;
+    backdrop-filter: blur(3px);
+}
 .class_student_count
 {
     font-weight: bold;
@@ -144,6 +155,18 @@ form > textarea
     margin-right: 3rem;
     font-weight: bold;
 }
+.teacherslist
+{
+    border: 3px solid;
+    border-radius: 8px;
+    margin-bottom: 3rem;
+    text-align: center;
+    padding: 10px 20px;
+    font-weight: 700;
+    backdrop-filter: blur(3px);
+
+}
+
 
 .teacher{
     border: 3px solid;
@@ -151,7 +174,7 @@ form > textarea
     margin-bottom: 3rem;
     text-align: center;
     padding: 10px 20px;
-    font-weight: bold;
+    font-weight: 10px bold;
     backdrop-filter: blur(5px);
 }
 
