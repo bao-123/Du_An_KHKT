@@ -1,7 +1,10 @@
+@import url("./keyframes.css");
+
 body
 {
     background-color: rgb(33, 37, 41);
-    color: rgb(255, 255, 255);
+    /*color: rgb(255, 255, 255);*/
+    --bs-secondary-color: #b9b7b7;
 }
 
 .teaching_classes
@@ -102,4 +105,20 @@ body
     border: none;
     height: fit-content;
     padding: 5px;
+}
+
+.updateMarkForm
+{
+    position: absolute;
+    display: flex;
+    background-color: aquamarine;
+    max-height: max-content; /** For the smooth animation*/
+    flex-direction: column;
+    overflow: hidden;
+    row-gap: 10px;
+    z-index: 1;
+    padding: 1rem;
+    border-radius: 20px;
+    border: 2px solid rgb(194, 180, 180);
+    animation: appear 0.5s ease-in-out;
 }

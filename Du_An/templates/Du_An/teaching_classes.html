@@ -8,14 +8,17 @@
 
 {% block body %}
 <!--TODO-->
+    <div id="displayMessage"></div>
     <div class="teaching_classes">
-        <div class="subjectSelectDiv">
-            <select id="subjectSelect" class="form-select mb-3 w-50 me-auto">
+        <div class="subjectSelectDiv mb-3">
+            <select id="subjectSelect" class="form-select w-50 me-auto">
                 <option value="">Chọn Môn Học</option>
+                <!--*The seperator here is ',' if the seperator changes remember to change in JS-->
                 {% for subject in subjects %}
-                <option value="{{ subject.id }}">{{ subject.name }}</option>
+                <option value="{{ subject.id }},{{ subject.name }}">{{ subject.name }}</option>
                 {% endfor %}
             </select>
+            <div class="form-text">Lưu ý: khi nhập điểm cho học sinh, điểm sẽ được nhập vào môn học đang được chọn ở đây</div>
         </div>
         <!---i classroom should be a dict with 'classroom' is the 'Class' and 'profile' is the 'ClassYearProfile'-->
         {% for classroom in classes %}
@@ -33,7 +36,6 @@
                     {% for studentProfile in classroom.profile.students.all %}
                     <div class="student_info" data-id="{{ studentProfile.student.id }}"> 
                         <p class="student">{{ studentProfile.student.full_name }}</p>
-                        <!--TODO: Add JS-->
                         <button class="updateMarkBtn btn btn-primary">Nhập Điểm</button>
                         <a href="{% url 'view_student' studentProfile.student.id %}" class="btn btn-outline-primary">Hồ sơ</a>
                     </div>
