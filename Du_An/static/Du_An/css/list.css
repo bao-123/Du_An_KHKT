@@ -26,7 +26,11 @@ body
     display: flex;
     column-gap: max(60%, 2rem);
     height: fit-content;
+<<<<<<< HEAD
     background-color: rgb(128, 196, 241);
+=======
+    background-color: rgb(131, 235, 34);
+>>>>>>> 9b165e7dcfdc8669b6c6cd613e3ac7a44fc8a383
     padding: 1rem 2rem;
     transition: 0.5s box-shadow ease-in-out;
 }

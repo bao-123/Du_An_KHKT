@@ -30,7 +30,11 @@
     }
     50%
     {
+<<<<<<< HEAD
         height: 50%;
+=======
+        height: 100%;
+>>>>>>> 9b165e7dcfdc8669b6c6cd613e3ac7a44fc8a383
         opacity: 0.4;
     }
     100%

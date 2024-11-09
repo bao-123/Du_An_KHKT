@@ -1,6 +1,12 @@
 /*-i Class for error message*/
+<<<<<<< HEAD
 body {
     background-color: rgb(33, 37, 41); /* Màu nền tối */
+=======
+body
+{
+    background-color: rgb(33, 37, 41);
+>>>>>>> 9b165e7dcfdc8669b6c6cd613e3ac7a44fc8a383
 }
 
 .invalid-feedback
