@@ -238,6 +238,8 @@ body {
     margin-top: 15px;
     margin-right: 10px;
     color: rgb(154, 195, 235);
+    border: solid;
+    border-radius: 15px;
 }
 
 
@@ -379,16 +381,20 @@ body {
     margin-left: 10px;
 }
 
+
 .markTableHeader
 {
     font-size: max(35%, 15px);
     font-weight: 700;
     color: rgb(154, 195, 235);
 }
+
+
 .subjectName
 {
     color: rgb(154, 195, 235);
 }
+
 
 .termHeader
 {
@@ -397,37 +403,11 @@ body {
     background-color: bisque;
 }   
 
+
 .score
 {
     color: rgb(154, 195, 235);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

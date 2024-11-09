@@ -24,12 +24,13 @@ body
 .classroom_info
 {
     display: flex;
-    column-gap: max(60%, 2rem);
+    column-gap: max(calc(65% - 154px), 2.5rem); /** 154px is the width of the button */
     height: fit-content;
     background-color: rgb(128, 196, 241);
     padding: 1rem 2rem;
     transition: 0.5s box-shadow ease-in-out;
 }
+
 
 
 .classroom_info.show-shadow
@@ -49,7 +50,8 @@ body
 
 .classroomHeaders > .teaching_subjects
 {
-    min-width: max-content;
+    width: max-content;
+    text-wrap: wrap;
     margin: 0;
     height: fit-content;
     background-color: rgba(224, 35, 35, 0.7);
@@ -121,4 +123,4 @@ body
     border-radius: 20px;
     border: 2px solid rgb(194, 180, 180);
     animation: appear 0.5s ease-in-out;
-}
+}   

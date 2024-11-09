@@ -316,9 +316,8 @@ def view_student(request, id):
         mark_type: str = body.get("mark_type")
         #** semester: 1 or 2
         semester: int = body.get("semester")
-        year = body.get("year", this_year)
+        year = body.get("year") if body.get("year") else this_year
         
-
         if not body or not subject_id or \
            not new_mark or not mark_type or not year:
             print("missing information")
