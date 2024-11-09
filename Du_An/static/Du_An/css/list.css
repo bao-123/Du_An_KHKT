@@ -1,3 +1,12 @@
+@import url("./keyframes.css");
+
+body
+{
+    background-color: rgb(33, 37, 41);
+    /*color: rgb(255, 255, 255);*/
+    --bs-secondary-color: #b9b7b7;
+}
+
 .teaching_classes
 {
     margin: 5px;
@@ -17,7 +26,7 @@
     display: flex;
     column-gap: max(60%, 2rem);
     height: fit-content;
-    background-color: rgb(248, 217, 158);
+    background-color: rgb(128, 196, 241);
     padding: 1rem 2rem;
     transition: 0.5s box-shadow ease-in-out;
 }
@@ -43,7 +52,7 @@
     min-width: max-content;
     margin: 0;
     height: fit-content;
-    background-color: aliceblue;
+    background-color: rgba(224, 35, 35, 0.7);
     padding: 10px;
     border-radius: 12px;
 }
@@ -68,7 +77,6 @@
 
 .student_list
 {
-    
     /*-i default for student lists is none (in HTML)*/
     position: relative;
     max-height: 0;
@@ -96,4 +104,20 @@
     border: none;
     height: fit-content;
     padding: 5px;
+}
+
+.updateMarkForm
+{
+    position: absolute;
+    display: flex;
+    background-color: aquamarine;
+    max-height: max-content; /** For the smooth animation*/
+    flex-direction: column;
+    overflow: hidden;
+    row-gap: 10px;
+    z-index: 1;
+    padding: 1rem;
+    border-radius: 20px;
+    border: 2px solid rgb(194, 180, 180);
+    animation: appear 0.5s ease-in-out;
 }

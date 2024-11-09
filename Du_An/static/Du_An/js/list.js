@@ -1,10 +1,11 @@
-import {mainSubjects, secondSubjects, commentSubjects} from "./document.js";
-import { tag } from "./utils.js";
+import { displayMessage, getSubjectMarkColumn, removeAll, tag } from "./utils.js";
 
+const displayMessageDivId = "displayMessage"; //the id of the div that we use to display messages
 //-i JS for 'teaching_classes.html' is the page that shows all of the user's teaching classes
 let current_subject;
 document.addEventListener("DOMContentLoaded", () => {
     const classes = document.querySelectorAll(".classroom");
+    const subjectSelect = document.getElementById("subjectSelect");
 
     classes.forEach(element => {
         const showStudentBtn = element.querySelector(".showStudentBtn");
@@ -24,22 +25,70 @@ document.addEventListener("DOMContentLoaded", () => {
 
             void studentsDiv.offsetWidth;
         });
-    });
 
-        /*updateMarkBtns.forEach(btn => {
+        updateMarkBtns.forEach(btn => {
             //*Display a form for teacher can update the mark of the student
             btn.addEventListener("click", event => {
-                const form = tag("form", '', ["updateMarkForm"]);
+                if(!subjectSelect.value)
+                {
+                    displayMessage(displayMessageDivId, "Không thể cập nhập điểm",
+                         "Xin hãy chọn một môn học trước khi nhập điểm", "alert alert-danger", "md");
+                    return;
+                }
+                const subjectName = subjectSelect.value.split(",")[1];
+                const form = tag("form", '', "updateMarkForm needs-validation", '', {novalidate: true});
+                const inputDiv = tag("div", '', "form-floating");
 
-                const newMarkInput = tag("input", '', ["form-control", "w-auto"], '', {placeholder: "Nhập điểm mới",
+                const newMarkInput = tag("input", '', "form-control", 'newMark', {placeholder: "Nhập điểm mới",
                                                                                         type: "number",
                                                                                         min: 0,
                                                                                         max: 10,
                                                                                         step: '0.01',
                                                                                         required: true
                 });
+                const inputLabel = tag("label", "Điểm", [], '', {for: 'newMark'});
+
+                //* Append elements into floating input div
+                inputDiv.appendChild(newMarkInput);
+                inputDiv.appendChild(inputLabel);
                 
-                //TODO: 
+                const markTypeSelector = tag("select", '', "form-select", 'markType', {required: true});
+                //*Default option
+                markTypeSelector.innerHTML = '<option selected disable value="">Chọn cột điểm</option>';
+
+                try {
+
+                    getSubjectMarkColumn(subjectName).forEach(column => markTypeSelector.innerHTML += `\n <option value=${column.value}>${column.display}</option>`);   
+                } catch (error) {
+                    console.error(error);
+                    return;
+                }
+
+                const semesterSelect = tag("select", '', "form-select w-auto", '', {size: 2});
+
+                //*Options
+                semesterSelect.appendChild(new Option("Kì 1", "1", true, true))
+                semesterSelect.appendChild(new Option("Kì 2", "2"));
+                
+                
+                const submitBtn = tag("button", 'Nhập điểm', "btn btn-primary", '', {type: "submit"});
+
+                //* Append elements into form
+                form.appendChild(inputDiv);
+                form.appendChild(markTypeSelector);
+                form.appendChild(semesterSelect);
+                form.appendChild(submitBtn);
+
+                //-i In CSS form's attribute 'position' in CSS should be 'absolute'
+                form.style.top = event.pageY + "px";
+                form.style.left = event.pageX + "px";
+
+                //* Remove all of the update mark forms on screen
+                removeAll("updateMarkForm");
+
+                //* Append form to DOM
+                document.body.appendChild(form);
             });
-        });*/
+        });
+    });
 });

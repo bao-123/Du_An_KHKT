@@ -8,14 +8,17 @@
 
 {% block body %}
 <!--TODO-->
+    <div id="displayMessage"></div>
     <div class="teaching_classes">
-        <div class="subjectSelectDiv">
-            <select id="subjectSelect" class="form-select mb-3 w-50 me-auto">
+        <div class="subjectSelectDiv mb-3">
+            <select id="subjectSelect" class="form-select w-50 me-auto">
                 <option value="">Chọn Môn Học</option>
+                <!--*The seperator here is ',' if the seperator changes remember to change in JS-->
                 {% for subject in subjects %}
-                <option value="{{ subject.id }}">{{ subject.name }}</option>
+                <option value="{{ subject.id }},{{ subject.name }}">{{ subject.name }}</option>
                 {% endfor %}
             </select>
+            <div class="form-text">Lưu ý: Khi Nhập Điểm Cho Học Sinh, Điểm Sẽ Được Nhập Vào Môn Học Đang Được Chọn Ở Đây</div>
         </div>
         <!---i classroom should be a dict with 'classroom' is the 'Class' and 'profile' is the 'ClassYearProfile'-->
         {% for classroom in classes %}
@@ -26,14 +29,13 @@
                         <p class="classroom_name">{{ classroom.classroom.name }}</p>
                         <p class="teaching_subjects">Đang dạy: {% get_teaching_subjects classroom.profile user.teacher %}</p>
                     </div>
-                    <a href="{% url 'view_class' classroom.classroom.id %}" class="btn btn-outline-primary">Thông tin chi tiết</a>
+                    <a href="{% url 'view_class' classroom.classroom.id %}" class="btn btn-outline-primary">Thông Tin Chi Tiết</a>
                 </div>
                 <div class="student_list">
                     <!--*student here is a 'StudentYearProfile' instance -->
                     {% for studentProfile in classroom.profile.students.all %}
                     <div class="student_info" data-id="{{ studentProfile.student.id }}"> 
                         <p class="student">{{ studentProfile.student.full_name }}</p>
-                        <!--TODO: Add JS-->
                         <button class="updateMarkBtn btn btn-primary">Nhập Điểm</button>
                         <a href="{% url 'view_student' studentProfile.student.id %}" class="btn btn-outline-primary">Hồ sơ</a>
                     </div>

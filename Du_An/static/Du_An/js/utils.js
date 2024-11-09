@@ -1,4 +1,4 @@
-import {updateMarkURL, addClassSubjectTeacherURL, getStudentMarksURL, searchStudentURL, changeInfoURL, changePasswordURL, newStudentYearProfileURL} from "./document.js"
+import {updateMarkURL, addClassSubjectTeacherURL, getStudentMarksURL, searchStudentURL, changeInfoURL, changePasswordURL, newStudentYearProfileURL, mainSubjects, secondSubjects, commentSubjects} from "./document.js"
 //-i utils
 
 //* function to create HTML tags
@@ -7,9 +7,15 @@ export function tag(name, content, classes=[], id='', attr={}) {
 
     const element = document.createElement(name);
 
-    for (let CSSClass of classes) { 
-        element.classList.add(CSSClass);
+    if(Array.isArray(classes))
+    {
+        element.className = classes.join(' ');
     }
+    else
+    {
+        element.className = classes;
+    }
+
 
     if(attr)
     {
@@ -42,7 +48,7 @@ export async function updateMark(id, subjectId, semester, new_mark, mark_type, y
 {
     /*
      @@id is the student's id
-     @@subject is the name of the subject ("Toán", "Ngữ Văn", ...)
+     @@subjectId is the id of the subject
      @@mark_type should be one of these "tx1", "tx2", "tx3", "tx4","gk", "ck"
      @@semester should be 1 or 2 (Number)   
     */
@@ -216,6 +222,38 @@ export function displayMessage(divId, header, content, type, size)
 }
 
 
+
+/*
+ -i This function retrieves the list of mark types for a given subject.
+  
+  @@param {string} subjectName - The name of the subject.
+  @@returns {Array} - An array of mark types for the subject.
+  
+  -w throws {Error} - Throws an error if the subject name is invalid.
+  
+  *example
+  * getSubjectMarkColumn("Toán") // ["tx1", "tx2", "tx3", "tx4", "gk", "ck"]
+  * getSubjectMarkColumn("Văn") // ["tx1", "tx2", "gk", "ck"]
+  * getSubjectMarkColumn("Sinh") // ["gk", "ck"]
+  * getSubjectMarkColumn("Lịch Sử") // Throws an error: Invalid subject name: Lịch Sử    
+ */
+export function getSubjectMarkColumn(subjectName) {
+
+    const tx1 = {value: "tx1", display: "Điểm thường xuyên 1"};
+    const tx2 = {value: "tx2", display: "Điểm thường xuyên 2"};
+    const tx3 = {value: "tx3", display: "Điểm thường xuyên 3"};
+    const tx4 = {value: "tx4", display: "Điểm thường xuyên 4"};
+    const gk = {value: "gk", display: "Điểm giữa kì"};
+    const ck = {value: "ck", display: "Điểm cuối kì"};
+
+    if(mainSubjects.includes(subjectName) ) return [tx1, tx2 , tx3,
+                                            tx4, gk, ck];
+    else if(secondSubjects.includes(subjectName)) return [tx1, tx2, gk, ck];
+    else if(commentSubjects.includes(subjectName)) return [ck]; //* elevualate-by-comment subject only have one mark column
+    else throw new Error("Invalid subject name:" + subjectName);
+}
+
+
 //-I Simple function to clear a content of a element
 export function clear(divId) {
     const div = document.getElementById(divId);
@@ -227,6 +265,18 @@ export function clear(divId) {
     div.innerHTML = '';
 }
 
+
+export function removeAll(elemetClass){
+    const elements = document.querySelectorAll("." + elemetClass);
+
+    if(!elements)
+    {
+        return;
+    }
+    elements.forEach(element => element.remove());
+}
+
+//-I simple function to create a element with given tag and content
 
 //-I simple function to get csrf token
 function getCSRF() {

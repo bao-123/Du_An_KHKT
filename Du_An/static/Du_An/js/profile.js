@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
             {
                 //*Display headers
                 [
+                    tag("h2", "Kì 1", ''),
                     tag("h3", "Điểm thường xuyên 1", [markHeaderClass]), //!Classes must be placed in an Array!!!
                     tag("h3", "Điểm thường xuyên 2", [markHeaderClass]),
                     tag("h3", "Điểm thường xuyên 3", [markHeaderClass]),
