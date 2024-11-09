@@ -1,12 +1,6 @@
 /*-i Class for error message*/
-<<<<<<< HEAD
 body {
     background-color: rgb(33, 37, 41); /* Màu nền tối */
-=======
-body
-{
-    background-color: rgb(33, 37, 41);
->>>>>>> 9b165e7dcfdc8669b6c6cd613e3ac7a44fc8a383
 }
 
 .invalid-feedback
@@ -208,7 +202,7 @@ body
 .teacherName
 {
     font-weight: bold;
-    font-size: 20px;
+    font-size: 32px;
     margin-left: 10px;
     color: rgb(154, 195, 235);
 }
@@ -239,8 +233,7 @@ body
 }
 .teacher
 {
-    border-radius: 15px;
-    border: solid;
+
     margin-bottom: 15px;
     margin-top: 15px;
     margin-right: 10px;
@@ -361,30 +354,53 @@ body
     margin-left: 1rem;
 }
 
-.studentMark
+
+.teacherContactInfo
 {
-    margin-left: 1rem;
+    height: 15PX;
+    width: 5rem;
+    padding-left: 25rem;
+    margin-left: 10px;
+}
+
+.form-label
+{
+    font-size: 25px;
+    margin-left: 10px;
+}
+
+.btn-outline-info
+{
+    margin-left: 10px;
+}
+
+.teacherTeachingClass
+{
+    margin-left: 10px;
+}
+
+.markTableHeader
+{
+    font-size: max(35%, 15px);
+    font-weight: 700;
+    color: rgb(154, 195, 235);
+}
+.subjectName
+{
     color: rgb(154, 195, 235);
 }
 
-.headerContainer
+.termHeader
 {
-    width: 100%;
-}
+    text-align: center;
+    font-size: max(3vh, 16px);
+    background-color: bisque;
+}   
 
-.markHeader
+.score
 {
-    display: inline-block;
-    margin-left: 5rem;
+    color: rgb(154, 195, 235);
 }
-
-
-
-
-
-
-
-    
 
 
 

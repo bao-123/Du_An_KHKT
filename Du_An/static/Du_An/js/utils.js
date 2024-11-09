@@ -1,6 +1,40 @@
 import {updateMarkURL, addClassSubjectTeacherURL, getStudentMarksURL, searchStudentURL, changeInfoURL, changePasswordURL, newStudentYearProfileURL, mainSubjects, secondSubjects, commentSubjects} from "./document.js"
 //-i utils
 
+
+/**
+ * Creates an HTML table element with the specified headers and body content.
+ *
+ * @param {Array} thead - An array of strings representing the table headers.
+ * @param {Array} tbody - An array of arrays, where each sub-array represents a row of table cells (elements).
+ * @returns {HTMLElement} - The constructed HTML table element.
+ * 
+ */
+export function createTable(thead, tbody) {
+    const table = tag("table", '', "table");
+    const tHead = tag("thead", '' );
+    const tBodyElement = tag("tbody", '');
+
+    //*Loops through the table's header
+    for (let i = 0; i < thead.length; i++) {
+        tHead.appendChild(tag("th", thead[i], 'markTableHeader', '', {scope: "col"}));
+    }
+    
+    //*Loops through the rows in the table's body
+    for (let i = 0; i < tbody.length; i++) {
+        const tRow =  tag("tr", '', '');
+        tbody[i].forEach(element => tRow.appendChild(element));
+
+        tBodyElement.appendChild(tRow);
+    }
+
+    table.appendChild(tHead);
+    table.appendChild(tBodyElement);
+
+    return table;
+}
+
+
 //* function to create HTML tags
 export function tag(name, content, classes=[], id='', attr={}) {
     //@@classes should be an Array
