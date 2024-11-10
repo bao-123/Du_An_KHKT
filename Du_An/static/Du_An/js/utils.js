@@ -87,6 +87,7 @@ export async function updateMark(id, subjectId, semester, new_mark, mark_type, y
      @@semester should be 1 or 2 (Number)   
     */
     console.log([id, subjectId, semester, new_mark, mark_type]);
+
     try
     {
         const response = await fetch(`${updateMarkURL}${id}`, { //-w the "/" is in the 'updateMarkURL' variable
@@ -102,7 +103,7 @@ export async function updateMark(id, subjectId, semester, new_mark, mark_type, y
                 year: year
             })
         });
-        return {message: response.message, status: response.status}
+        return {message: response.message, status: response.status};
     }
     catch(error)
     {

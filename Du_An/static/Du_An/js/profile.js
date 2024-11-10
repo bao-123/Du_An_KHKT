@@ -152,7 +152,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const semester = Number(document.getElementById("semester").value);
         const year = Number(yearSelect.value);
 
-        if(!markType || !newMark || !subjectId || !year ) return;
+        if(!markType || isNaN(newMark) || !subjectId || !year )
+        {
+            displayMessage(displayMarkMessageDivId, "Lỗi", "Vui lòng nhập đầy đủ thông tin", "alert alert-danger", "md");
+            return;
+        }
         
 
         //* Call API

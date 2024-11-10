@@ -319,11 +319,11 @@ def view_student(request, id):
         year = body.get("year") if body.get("year") else this_year
         
         if not body or not subject_id or \
-           not new_mark or not mark_type or not year:
+           not new_mark is None or not mark_type or not year:
             print("missing information")
             return JsonResponse({"message": "Missing information"},
                                 status=400)
-        
+        print(bool(0.0))
         try:
             subject = Subject.objects.get(pk=subject_id)
             student = Student.objects.get(pk=id)
