@@ -1,4 +1,4 @@
-import { displayMessage, getSubjectMarks, tag, updateMark, clear, configFormValidtion, createStudentYearProfile } from "./utils.js";
+import { displayMessage, getSubjectMarks, tag, updateMark, clear, configFormValidtion, createStudentYearProfile, createTable } from "./utils.js";
 //* Page's constants
 const displayMessageDivId = "updateMarkMessage";
 const displayMarkMessageDivId = "displayMarkMessage";
@@ -28,110 +28,86 @@ document.addEventListener("DOMContentLoaded", () => {
             //* if this is true, the subject is a main subject
             clear(markDisplayDivId);
             const subjectName = tag("h2", subjectData.subject, ["subjectName"]); //@@subjectData.subject is the name of the subject.
-            const headersDiv = tag("div", "", ["headerContainer"]);
-            const firstTermDiv = tag("div", "", ["firstTerm"]);
-            const secondTermHeader = tag("h2", "Kì 2", ["termHeader"]);
-            const secondTermDiv = tag("div", "", ["secondTerm"]);
-            const marksDiv = tag("div", "", ["markContainer"]);
 
+            //*Display headers
+            let tableHeader = [];
+            let tableBody = []
             
             if(subjectData.first_term.thuong_xuyen4 !== undefined)
             {
-                //*Display headers
-                [
-                    tag("h3", "Điểm thường xuyên 1", [markHeaderClass]), //!Classes must be placed in an Array!!!
-                    tag("h3", "Điểm thường xuyên 2", [markHeaderClass]),
-                    tag("h3", "Điểm thường xuyên 3", [markHeaderClass]),
-                    tag("h3", "Điểm thường xuyên 4", [markHeaderClass]),
-                    tag("h3", "Giữa kì", [markHeaderClass]),
-                    tag("h3", "Cuối kì", [markHeaderClass]),
-                ].forEach(element => headersDiv.appendChild(element));
+                tableHeader = ["Điểm thường xuyên 1", "Điểm thường xuyên 2", "Điểm thường xuyên 3",
+                    "Điểm thường xuyên 4",
+                    "Giữa kì",
+                    "Cuối kì"
+                ];
 
-
-                [
-                    tag("p", subjectData.first_term.thuong_xuyen1 ? subjectData.first_term.thuong_xuyen1 : "Chưa có điểm", ["diem"]),
-                    tag("p", subjectData.first_term.thuong_xuyen2 ? subjectData.first_term.thuong_xuyen2 : "Chưa có điểm", ["diem"]),
-                    tag("p", subjectData.first_term.thuong_xuyen3 ? subjectData.first_term.thuong_xuyen3 : "Chưa có điểm", ["diem"]),
-                    tag("p", subjectData.first_term.thuong_xuyen4 ? subjectData.first_term.thuong_xuyen4 : "Chưa có điểm", ["diem"]),
-                    tag("p", subjectData.first_term.giua_ki ? subjectData.first_term.giua_ki : "Chưa có điểm", ["diem"]),
-                    tag("p", subjectData.first_term.cuoi_ki ? subjectData.first_term.cuoi_ki : "Chưa có điểm", ["diem"]),
-                ].forEach(element => firstTermDiv.appendChild(element));
-
-                [
-                    tag("p", subjectData.second_term.thuong_xuyen1 ? subjectData.second_term.thuong_xuyen1 : "Chưa có điểm", ["diem"]),
-                    tag("p", subjectData.second_term.thuong_xuyen2 ? subjectData.second_term.thuong_xuyen2 : "Chưa có điểm", ["diem"]),
-                    tag("p", subjectData.second_term.thuong_xuyen3 ? subjectData.second_term.thuong_xuyen3 : "Chưa có điểm", ["diem"]),
-                    tag("p", subjectData.second_term.thuong_xuyen4 ? subjectData.second_term.thuong_xuyen4 : "Chưa có điểm", ["diem"]),
-                    tag("p", subjectData.second_term.giua_ki ? subjectData.second_term.giua_ki : "Chưa có điểm", ["diem"]),
-                    tag("p", subjectData.second_term.cuoi_ki ? subjectData.second_term.cuoi_ki : "Chưa có điểm", ["diem"]),
-                ].forEach(element => secondTermDiv.appendChild(element));
-
-                marksDiv.classList.add("mainSubject");
-                marksDiv.classList.remove("secondSubject");
-                marksDiv.classList.remove("commentSubject");
-
+                tableBody = [
+                    [tag("td", "Kì I", 'termHeader', '', {colspan: 6})], //* '6' is the total number of all columns
+                    [
+                        tag("td", subjectData.first_term.thuong_xuyen1 ? subjectData.first_term.thuong_xuyen1 : "Chưa có điểm"),
+                        tag("td", subjectData.first_term.thuong_xuyen2 ? subjectData.first_term.thuong_xuyen2 : "Chưa có điểm"),
+                        tag("td", subjectData.first_term.thuong_xuyen3 ? subjectData.first_term.thuong_xuyen3 : "Chưa có điểm"),
+                        tag("td", subjectData.first_term.thuong_xuyen4 ? subjectData.first_term.thuong_xuyen4 : "Chưa có điểm"),
+                        tag("td", subjectData.first_term.giua_ki ? subjectData.first_term.giua_ki : "Chưa có điểm"),
+                        tag("td", subjectData.first_term.cuoi_ki ? subjectData.first_term.cuoi_ki : "Chưa có điểm"),
+                    ],
+                    [tag("td", "Kì II", 'termHeader', '', {colspan: 6})], //* For second term
+                    [
+                        tag("td", subjectData.second_term.thuong_xuyen1 ? subjectData.second_term.thuong_xuyen1 : "Chưa có điểm"),
+                        tag("td", subjectData.second_term.thuong_xuyen2 ? subjectData.second_term.thuong_xuyen2 : "Chưa có điểm"),
+                        tag("td", subjectData.second_term.thuong_xuyen3 ? subjectData.second_term.thuong_xuyen3 : "Chưa có điểm"),
+                        tag("td", subjectData.second_term.thuong_xuyen4 ? subjectData.second_term.thuong_xuyen4 : "Chưa có điểm"),
+                        tag("td", subjectData.second_term.giua_ki ? subjectData.second_term.giua_ki : "Chưa có điểm"),
+                        tag("td", subjectData.second_term.cuoi_ki ? subjectData.second_term.cuoi_ki : "Chưa có điểm"),
+                    ]
+                ];
             }
             else if (subjectData.first_term.thuong_xuyen2 !== undefined) //* If this is true, the subject is a second subject
             {
-                [
-                    tag("h3", "Điểm thường xuyên 1", [markHeaderClass]), //!Classes must be placed in an Array!!!
-                    tag("h3", "Điểm thường xuyên 2", [markHeaderClass]),
-                    tag("h3", "Giữa kì", [markHeaderClass]),
-                    tag("h3", "Cuối kì", [markHeaderClass]),
-                ].forEach(element => headersDiv.appendChild(element));
+                tableHeader = ["Điểm thường xuyên 1", "Điểm thường xuyên 2", "Giữa kì", "Cuối kì"
+                ];
 
-                [
-                    tag("p", subjectData.first_term.thuong_xuyen1 ? subjectData.first_term.thuong_xuyen1 : "Chưa có điểm", ["diem"]),
-                    tag("p", subjectData.first_term.thuong_xuyen2 ? subjectData.first_term.thuong_xuyen2 : "Chưa có điểm", ["diem"]),
-                    tag("p", subjectData.first_term.giua_ki ? subjectData.first_term.giua_ki : "Chưa có điểm", ["diem"]),
-                    tag("p", subjectData.first_term.cuoi_ki ? subjectData.first_term.cuoi_ki : "Chưa có điểm", ["diem"]),   
-                ].forEach(element => firstTermDiv.appendChild(element));
-
-                [
-                    tag("p", subjectData.second_term.thuong_xuyen1 ? subjectData.second_term.thuong_xuyen1 : "Chưa có điểm", ["diem"]),
-                    tag("p", subjectData.second_term.thuong_xuyen2 ? subjectData.second_term.thuong_xuyen2 : "Chưa có điểm", ["diem"]),
-                    tag("p", subjectData.second_term.giua_ki ? subjectData.second_term.giua_ki : "Chưa có điểm", ["diem"]),
-                    tag("p", subjectData.second_term.cuoi_ki ? subjectData.second_term.cuoi_ki : "Chưa có điểm", ["diem"]),   
-                ].forEach(element => secondTermDiv.appendChild(element));
-
-                marksDiv.classList.remove("mainSubject");
-                marksDiv.classList.remove("commentSubject");
-                marksDiv.classList.add("secondSubject");
+                tableBody = [
+                    [tag("td", "Kì I", '', '', {colspan: 6})], //* '6' is the total number of all columns
+                    [
+                        tag("td", subjectData.first_term.thuong_xuyen1 ? subjectData.first_term.thuong_xuyen1 : "Chưa có điểm"),
+                        tag("td", subjectData.first_term.thuong_xuyen2 ? subjectData.first_term.thuong_xuyen2 : "Chưa có điểm"),
+                        tag("td", subjectData.first_term.giua_ki ? subjectData.first_term.giua_ki : "Chưa có điểm"),
+                        tag("td", subjectData.first_term.cuoi_ki ? subjectData.first_term.cuoi_ki : "Chưa có điểm"),
+                    ],
+                    [tag("td", "Kì II", '', '', {colspan: 6})], //* For second term
+                    [
+                        tag("td", subjectData.second_term.thuong_xuyen1 ? subjectData.second_term.thuong_xuyen1 : "Chưa có điểm"),
+                        tag("td", subjectData.second_term.thuong_xuyen2 ? subjectData.second_term.thuong_xuyen2 : "Chưa có điểm"),
+                        tag("td", subjectData.second_term.giua_ki ? subjectData.second_term.giua_ki : "Chưa có điểm"),
+                        tag("td", subjectData.second_term.cuoi_ki ? subjectData.second_term.cuoi_ki : "Chưa có điểm"),
+                    ]
+                ];
             }
             else if (subjectData.first_term.is_passed !== undefined) //* If this is true, the subject is a comment subject
             {
-                headersDiv.appendChild(tag("h2", "Kết quả", [markHeaderClass])); //* dat/ko dat
+                tableHeader = ["Kết quả"] //* dat/ko dat
+                tableBody = [
+                    [tag("td", "Kì I", '', '', {colspan: 1})],
 
-                if(subjectData.first_term.is_passed === null)
-                {
-                    firstTermDiv.appendChild(tag("p", "Chưa có kết quả", ["diem"]));
-                }
-                else
-                {
-                    firstTermDiv.appendChild(tag("p", subjectData.first_term.is_passed ? "Đạt" : "Không đạt", ["diem"] ));
-                }
-                if(subjectData.second_term.is_passed === null)
-                {
-                    secondTermDiv.appendChild(tag("p", "Chưa có kết quả", ["diem"]));
-                }
-                else
-                {
-                    secondTermDiv.appendChild(tag("p", subjectData.second_term.is_passed ? "Đạt" : "Không đạt", ["diem"]));
-                }
+                    [
+                        tag("td", subjectData.first_term.is_passed === null ? "Chưa có điểm" : (subjectData.first_term.is_passed ? "Đạt": "Không đạt"))
+                    ],
 
-                marksDiv.classList.add("commentSubject");
-                marksDiv.classList.remove("mainSubject");
-                marksDiv.classList.remove("secondSubject");
+                    [tag("td", "Kì II", '', '', {colspan: 1})],
+
+                    [
+                        tag("td", subjectData.second_term.is_passed === null ? "Chưa có điểm" : (subjectData.second_term.is_passed? "Đạt": "Không đạt"))
+                    ]
+                ];
             }
-            else return;
+            else throw new Error("Lỗi khi lấy dữ liệu");
 
-            marksDiv.appendChild(firstTermDiv);
-            marksDiv.appendChild(secondTermHeader);
-            marksDiv.appendChild(secondTermDiv);
+            //* Display table
+            const markTable = createTable(tableHeader, tableBody);
 
             markDisplayDiv.appendChild(subjectName);
-            markDisplayDiv.appendChild(headersDiv);
-            markDisplayDiv.appendChild(marksDiv);
+            markDisplayDiv.appendChild(markTable);
 
         } catch (error) {
             displayMessage(displayMarkMessageDivId,

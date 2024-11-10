@@ -87,17 +87,23 @@ form > textarea
 {
     display: block;
 }
+
 .errorDisplay{
-    background-color: rgb(255, 0, 0, 0.616);
+    background-color: red;
     text-align: center;
     border: 5px solid;
     margin-bottom: 5px;
     margin-top: 5px;
     padding-top: 7px;
+    color: black;
+    margin-left: 5rem;
+    margin-right: 5rem;
 }
+
 .error_message{
     font-size: 25px;
     font-style: italic;
+    color: black;
 }
 
 .classes
@@ -106,6 +112,8 @@ form > textarea
     margin-left: 3rem;
     margin-right: 3rem;
 }
+
+
 .class
 {
     border: 3px solid;
@@ -115,6 +123,9 @@ form > textarea
     padding: 10px 20px;
     backdrop-filter: blur(3px);
 }
+
+
+
 .classeslist
 {
     border: 3px solid;
@@ -124,11 +135,13 @@ form > textarea
     padding: 10px 20px;
     backdrop-filter: blur(3px);
 }
+
 .class_student_count
 {
     font-weight: bold;
     font-size: 20px;
 }
+
 
 .class_name
 {

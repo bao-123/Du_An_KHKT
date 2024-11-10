@@ -212,7 +212,7 @@ def view_classes(request):
         return render(request, "Du_An/classes.html", {
             "classes": [ {"class": classroom, "profile": classroom.get_profile()} for classroom in classes ]
         })
-    
+
     #** API to add class's subject teacher
     elif request.method == "PUT":
         if not hasattr(request.user, "teacher"):
@@ -316,9 +316,8 @@ def view_student(request, id):
         mark_type: str = body.get("mark_type")
         #** semester: 1 or 2
         semester: int = body.get("semester")
-        year = body.get("year", this_year)
+        year = body.get("year") if body.get("year") else this_year
         
-
         if not body or not subject_id or \
            not new_mark or not mark_type or not year:
             print("missing information")
@@ -453,21 +452,28 @@ def search_student(request: HttpRequest):
         
          
 @login_required(login_url="login")
-def view_class(request, id):
-    if request.method != "GET":
-        return HttpResponseNotAllowed("method not allowed")
-    try:
-        request_class = Class.objects.get(pk=id)
-        class_profile = request_class.get_profile() #TODO: Update to get others year
+def view_class(request: HttpRequest, id):
+    if request.method == "GET":
+        try:
+            request_class = Class.objects.get(pk=id)
+            class_profile = request_class.get_profile() #TODO: Update to get others year
 
-        return render(request, "Du_An/class_profile.html", {
-            "classroom": request_class,
-            "class_profile": class_profile
-        })
-    except Class.DoesNotExist:
-        return render_error(request, error="Not found", error_message="Doesn't found any teacher with this id")
-    except ClassYearProfile.DoesNotExist:
-        return render_error(request, error="NVALID YEAR", error_message="Doesn't found any profile in this year")
+            return render(request, "Du_An/class_profile.html", {
+                "classroom": request_class,
+                "class_profile": class_profile
+            })
+        except Class.DoesNotExist:
+            return render_error(request, error="Not found", error_message="Doesn't found any teacher with this id")
+        except ClassYearProfile.DoesNotExist:
+            return render_error(request, error="NVALID YEAR", error_message="Doesn't found any profile in this year")
+    elif request.method == "POST":
+        file = request.FILES.get("file", None)
+        if not file: 
+            return render_error(request, "Lỗi", "Lỗi khi nhập điểm bằng file Excel, Vui lòng thử lại sau")
+        ViewUtils.read_excel_file(file)
+        return HttpResponseRedirect(reverse('index'))
+    else:
+        return HttpResponseNotAllowed(request.method)
 
 
 @login_required(login_url="login")

@@ -1,4 +1,4 @@
-import { displayMessage, getSubjectMarkColumn, removeAll, tag } from "./utils.js";
+import { displayMessage, getSubjectMarkColumn, updateMark, removeAll, tag } from "./utils.js";
 
 const displayMessageDivId = "displayMessage"; //the id of the div that we use to display messages
 //-i JS for 'teaching_classes.html' is the page that shows all of the user's teaching classes
@@ -35,7 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
                          "Xin hãy chọn một môn học trước khi nhập điểm", "alert alert-danger", "md");
                     return;
                 }
-                const subjectName = subjectSelect.value.split(",")[1];
+                const studentId = Number(btn.parentElement.dataset.id);
+                const subjectInfo = subjectSelect.value.split(",");
+                const subjectName = subjectInfo[1];
+                const subjectId = subjectInfo[0];
+
                 const form = tag("form", '', "updateMarkForm needs-validation", '', {novalidate: true});
                 const inputDiv = tag("div", '', "form-floating");
 
@@ -64,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                const semesterSelect = tag("select", '', "form-select w-auto", '', {size: 2});
+                const semesterSelect = tag("select", '', "form-select w-auto", 'semesterSelect', {size: 2});
 
                 //*Options
                 semesterSelect.appendChild(new Option("Kì 1", "1", true, true))
@@ -86,6 +90,32 @@ document.addEventListener("DOMContentLoaded", () => {
                 //* Remove all of the update mark forms on screen
                 removeAll("updateMarkForm");
 
+                //*Add event listeners for form
+                form.addEventListener("submit", async (event) => {
+                   event.preventDefault();
+                   
+                   const semester = Number(form.querySelector("#semesterSelect").value);
+                   const newMark = form.querySelector('#newMark').value;
+                   const markType = form.querySelector("#markType").value;
+
+                   if(!newMark || !markType) 
+                   {
+                        displayMessage(displayMessageDivId, "Lỗi", "Xin vui lòng chọn cột điểm muốn nhập", "alert alert-danger", "md");
+                        return;
+                   }
+
+                   const response = await updateMark(studentId, subjectId, semester, newMark, markType);
+
+                   if(response.status !== 200)
+                   {
+                        displayMessage(displayMessageDivId, "Lỗi", response.message, "alert alert-danger", "md");
+                        return;
+                   }
+
+                   displayMessage(displayMessageDivId, "Thành Công", "Đã Cập Nhật Điểm Thành Công", "alert alert-success", "md");
+                   //* Remove the form
+                   form.remove();
+                });
                 //* Append form to DOM
                 document.body.appendChild(form);
             });

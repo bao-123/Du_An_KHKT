@@ -1,7 +1,6 @@
 /*-i Class for error message*/
-body
-{
-    background-color: rgb(33, 37, 41);
+body {
+    background-color: rgb(33, 37, 41); /* Màu nền tối */
 }
 
 .invalid-feedback
@@ -203,7 +202,7 @@ body
 .teacherName
 {
     font-weight: bold;
-    font-size: 20px;
+    font-size: 32px;
     margin-left: 10px;
     color: rgb(154, 195, 235);
 }
@@ -234,12 +233,13 @@ body
 }
 .teacher
 {
-    border-radius: 15px;
-    border: solid;
+
     margin-bottom: 15px;
     margin-top: 15px;
     margin-right: 10px;
     color: rgb(154, 195, 235);
+    border: solid;
+    border-radius: 15px;
 }
 
 
@@ -302,6 +302,7 @@ body
     border: 2px solid goldenrod;
     margin-left: 1.5rem;
     margin-right: 1.5rem;
+    margin-bottom: 3rem;
 }
 
 .inputs
@@ -330,3 +331,177 @@ body
     flex-direction: column;
     row-gap: 1rem;
 }*/
+.studentName
+{
+    margin-left: 1rem;
+}
+
+.studentClass
+{
+    margin-left: 1rem;
+}
+
+.studentGender
+{
+    margin-left: 1rem;
+}
+
+.studentRole
+{
+    margin-left: 1rem;
+}
+
+.studentParent
+{
+    margin-left: 1rem;
+}
+
+
+.teacherContactInfo
+{
+    height: 15PX;
+    width: 5rem;
+    padding-left: 25rem;
+    margin-left: 10px;
+}
+
+.form-label
+{
+    font-size: 25px;
+    margin-left: 10px;
+}
+
+.btn-outline-info
+{
+    margin-left: 10px;
+}
+
+.teacherTeachingClass
+{
+    margin-left: 10px;
+}
+
+
+.markTableHeader
+{
+    font-size: max(35%, 15px);
+    font-weight: 700;
+    color: rgb(154, 195, 235);
+}
+
+
+.subjectName
+{
+    color: rgb(154, 195, 235);
+}
+
+
+.termHeader
+{
+    text-align: center;
+    font-size: max(3vh, 16px);
+    background-color: bisque;
+}   
+
+
+.score
+{
+    color: rgb(154, 195, 235);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

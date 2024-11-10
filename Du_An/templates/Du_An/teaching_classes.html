@@ -2,9 +2,8 @@
 {% load static %}
 {% load tags %}
 
-{% block title %} lớp đang dạy {% endblock %}
-{% block style %} <link href="{% static 'Du_An/css/list.css' 
-%}" rel="stylesheet"> {% endblock %}
+{% block title %} Lớp Đang Dạy {% endblock %}
+{% block style %} <link href="{% static 'Du_An/css/list.css' %}" rel="stylesheet"> {% endblock %}
 {% block script %} <script src="{% static 'Du_An/js/list.js' %}" type="module"></script> {% endblock %}
 
 {% block body %}
@@ -19,7 +18,7 @@
                 <option value="{{ subject.id }},{{ subject.name }}">{{ subject.name }}</option>
                 {% endfor %}
             </select>
-            <div class="form-text">Lưu ý: khi nhập điểm cho học sinh, điểm sẽ được nhập vào môn học đang được chọn ở đây</div>
+            <div class="form-text">Lưu ý: Khi Nhập Điểm Cho Học Sinh, Điểm Sẽ Được Nhập Vào Môn Học Đang Được Chọn Ở Đây</div>
         </div>
         <!---i classroom should be a dict with 'classroom' is the 'Class' and 'profile' is the 'ClassYearProfile'-->
         {% for classroom in classes %}
@@ -30,7 +29,7 @@
                         <p class="classroom_name">{{ classroom.classroom.name }}</p>
                         <p class="teaching_subjects">Đang dạy: {% get_teaching_subjects classroom.profile user.teacher %}</p>
                     </div>
-                    <a href="{% url 'view_class' classroom.classroom.id %}" class="btn btn-outline-primary">Thông tin chi tiết</a>
+                    <a href="{% url 'view_class' classroom.classroom.id %}" class="btn btn-outline-primary">Thông Tin Chi Tiết</a>
                 </div>
                 <div class="student_list">
                     <!--*student here is a 'StudentYearProfile' instance -->

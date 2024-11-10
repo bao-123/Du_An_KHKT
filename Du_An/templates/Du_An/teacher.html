@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block script %}
-    <script src="{% static 'Du_An/js/profile.js' %}"></script>
+    <script src="{% static 'Du_An/js/teacher.js' %}" type="module"></script>
 {% endblock %}
 
 {% block body %}
@@ -24,8 +24,9 @@
                     {% endfor %}
                 </div>
                 <!--* hien thi thong tin lien lac -->
-                <label for="contactInfo" class="form-label">Thông tin liên lạc</label>
-                <textarea class="teacherContactInfo" class="form-control" id="contactInfo" readonly> {{ teacher.contact_information }}</textarea>
+                <h2 for="contactInfo" class="form-label">Thông tin liên lạc</h2>
+                <textarea  class="form-control teacherContactInfo" id="contactInfo" readonly>{{ teacher.contact_information }}</textarea>
+                <br>
                 <!--* hien thi lop chu nhiem -->
                 {% if teacher.form_class %}
                     <!--* teacher.form_class is a 'ClassYearProfile' instance -->

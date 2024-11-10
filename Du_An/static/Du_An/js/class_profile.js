@@ -2,6 +2,10 @@ const displayMessageId = "addSubjectTeacherMessageDisplay";
 
 import {clear, displayMessage, teachClass} from "./utils.js"
 document.addEventListener("DOMContentLoaded", () => {
+    const updateMarkDiv = document.getElementById("updateMarkDiv");
+    const studentsDiv = document.getElementById("students");
+    const subjectTeacherDiv = document.getElementById("subjectTeachersDisplay");
+
     document.querySelectorAll(".nav-link").forEach(button => {
         button.onclick = () => {
             if(document.querySelector(".active"))
@@ -18,11 +22,15 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             if (button.id === "teacherTab") 
             {
-                document.getElementById("subjectTeachersDisplay").style.display = "block";
+                subjectTeacherDiv.style.display = "block";
             }
             else if(button.id === "studentTab")
             {
-                document.getElementById("students").style.display = "block";
+               studentsDiv.style.display = "block";
+            }
+            else if(button.id === "updateMark")
+            {
+                updateMarkDiv.style.display = "block";
             }
             else
             {
