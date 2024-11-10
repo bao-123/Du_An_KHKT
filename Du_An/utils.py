@@ -23,13 +23,60 @@ class ViewUtils():
             return None
         return class_profile
 
-    
-    def read_excel_file(file: File):
+
+    def read_excel_file(file: File, student_count: int = 0):
+        COL_NAME: list[str] = ["STT", "Họ và tên", "Mã học sinh", "TX1", "TX2", "TX3", "TX4", "ĐĐGgk", "ĐĐGck", """ĐTB 
+mhk""", "Nhận xét" ] #? ĐTBmhk có dấu cách ??? 
+
+        
         print(file.name)
         if not file.name.endswith('.xlsx') and not file.name.endswith('.xls'):
             raise Exception("Only read excel files")
         dataf = pd.read_excel(file)
+        #*Clean the dataf and only return useful data
 
+        #*Rename columns
+        for column in dataf.columns:
+            column_renamed = False
+            for row in dataf.index:
+                if dataf[column][row] == "Họ và tên":
+                    #*Rename the next column to "Tên":
+                    print("Found")
+                    next_column = dataf.columns.get_indexer([column])[0] + 1
+                    dataf.rename(columns={dataf.columns[next_column]: "Tên"}, inplace=True)
+                    #!: dataf.columns[next_column] = "Tên"
+                    column_renamed = True
+
+                for name in COL_NAME:
+                    if name.lower() == str(dataf[column][row]).lower():
+                        dataf.rename(columns={column: name}, inplace=True)
+                        column_renamed = True
+                        break
+                
+                if column_renamed:
+                    break
+
+            if not column_renamed:
+                dataf.pop(column)
+            
+        empty_rows = []
+        for row in dataf.index:
+            if not dataf.iloc[row].any():
+                empty_rows.append(row)
+
+        #*Drop empty lines and useless lines
+        dataf.drop(empty_rows, inplace=True)
+
+        dataf.reset_index(drop=True, inplace=True)
+
+        dataf.drop(range(0,5), inplace=True)
+
+        dataf.reset_index(drop=True, inplace=True)
+                
+        #-i Cac cot trong dataFrame ko bị ảnh hưởng bợi độ dài của nó trong excel (dài bao nhiêu cột thì vẫn tính là một cột)
+        #-i Chứ ý có những ô được nhóm lại kéo dài 2 hàng thì dữ liệu ở hàng gốc còn hàng dưới thì NaN
+        #TODO: Xác định và rename lại tên cột cho chính xác, bỏ qua các hàng ko có dữ liệu
+        print(dataf)
         return dataf
 
     #-i ChatGPT API
