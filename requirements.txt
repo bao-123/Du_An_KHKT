@@ -1,3 +1,5 @@
 django
 selenium
 webdriver_manager
+pandas
+openpyxl

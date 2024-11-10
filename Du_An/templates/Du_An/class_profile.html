@@ -44,7 +44,7 @@
         <!--TODO: hien thi danh sach hoc sinh cua lop, giao vien bo mon, thong tin thi dua(neu co) -->
         <div class="otherInfo">
             <!--TODO: hien thi cac giao vien bo mon -->
-            <ul class="nav-classes nav nav-tabs navbar-expand-lg bg-dark pt-3 mt-2">
+            <ul class="nav-classes nav nav-tabs navbar-expand-lg bg-dark pt-3 mt-2 mb-3">
                 <li class="nav-item">
                     <button class="nav-link active" id="studentTab">Học sinh</button>
                 </li>
@@ -53,6 +53,9 @@
                 </li>
                 <li class="nav-item">
                     <button class="nav-link link-secondary" id="details">Thông tin lớp</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link link-secondary" id="updateMark">Nhập điểm bằng file Excel</button>
                 </li>
             </ul>
             <div id="infoDisplay">
@@ -96,6 +99,16 @@
                 </div>
                 <!--TODO: Them thong tin thi dua(neu co)-->
                 <div id="classDetails" style="display: none;"></div>
+                <!--TODO: Them form nhap diem bang file excel-->
+                <div id="updateMarkDiv" style="display: none;">
+                    <form id="updateMarkForm" action="{% url 'view_class' classroom.id %}" enctype="multipart/form-data" method="post">
+                        {% csrf_token %}
+                        <label for="file" class="form-label">File Excel</label>
+                        <input type="file" name="file" id="file" class="form-control" placeholder="Nhập file Excel"></input>
+                        <div class="form-text mb-3">Lưu ý: File Excel cần tuân theo một số quy định về định dạng cụ thể</div>
+                        <button type="submit" class="btn btn-primary">Nhập điểm</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
