@@ -11,7 +11,8 @@ from .exceptions import *
 COL_NAME: list[str] = ["STT", "Họ và tên", "Mã học sinh", "TX1", "TX2", "TX3", "TX4", "ĐĐGgk", "ĐĐGck", """ĐTB 
 mhk""", "Nhận xét" ] #? ĐTBmhk có dấu cách ??? 
 #-i columns that have to store some data
-REQUIRED_COL: list[str] = ["STT", "Họ và tên", "tên"]
+REQUIRED_COL: list[str] = ["STT", "Họ và tên"]
+
 
 #Utils functions for views
 class ViewUtils():
@@ -30,25 +31,63 @@ class ViewUtils():
             return None
         return class_profile
 
-    def check_class_dataframe(df: pd.DataFrame) -> None:
-        #*Check columns
+    @classmethod
+    def check_class_dataframe(cls, df: pd.DataFrame, stundent_count) -> None:
+        """
+        Validates the structure and content of a DataFrame representing class data.
+
+        Parameters:
+        - df (pd.DataFrame): The DataFrame containing class data to be validated.
+        - stundent_count (int): The expected number of students (rows) in the DataFrame.
+
+        Raises:
+        - InvalidColumn: If any column in the DataFrame is not recognized.
+        - MissingIndex: If the number of rows in the DataFrame does not match the expected student count.
+        - DfNotClean: If any row in the DataFrame is completely empty.
+        - MissingInfo: If any required column contains missing information in any row.
+
+        Returns:
+        - None
+        """
+
         for column in df.columns:
             if column not in COL_NAME:
                 raise InvalidColumn(f"{column} is not valid!")
-        
-        #*Check rows
+        if df.index.size != stundent_count:
+            raise MissingIndex(f"The index is not correct")
+
         for index in df.index:
             row = df.iloc[index]
 
-            #*Check if there is any empty rows
             if not row.any():
                 raise DfNotClean(f"{index} is empty!")
-            
+
+            for col in REQUIRED_COL:
+                if pd.isna(row[col]):
+                    raise MissingInfo(f"Missing info in {col}")
 
             
-    def read_excel_file(file: File, student_count: int = 0) -> dict:
         
-        print(file.name)
+            
+            
+
+    @staticmethod
+    def read_excel_file(file: File, student_count: int = 0) -> dict:
+        """
+        This function reads an excel file and processes it to extract student information.
+
+        Parameters:
+        - file (File): The excel file to be read.
+        - student_count (int, optional): The expected number of students in the file. Default is 0.
+
+        Returns:
+        - dict: A dictionary containing student information. Each key is a student's full name, and the value is another dictionary containing the student's marks and other relevant information.
+
+        Raises:
+        - Exception: If the file is not an excel file.
+        - IndexError: If the student count, class, or the information in the file does not match.
+        """
+
         if not file.name.endswith('.xlsx') and not file.name.endswith('.xls'):
             raise Exception("Only read excel files")
         dataf = pd.read_excel(file)
@@ -73,13 +112,13 @@ class ViewUtils():
                         dataf.rename(columns={column: name}, inplace=True)
                         column_renamed = True
                         break
-                
+
                 if column_renamed:
                     break
 
             if not column_renamed:
                 dataf.pop(column)
-        
+
         #* Rename the column next to the "Họ và tên" column
         name_column = dataf.columns.get_indexer(["Họ và tên"])[0] + 1
         dataf.rename(columns={dataf.columns[name_column]: "tên"}, inplace=True)
@@ -102,12 +141,27 @@ class ViewUtils():
         #! This can raise IndexError if student count or class or the info in the file is not match with others.
         dataf.drop(range(student_count, dataf.index.size), inplace=True)
         dataf.reset_index(drop=True, inplace=True)
-                
-        #-i Cac cot trong dataFrame ko bị ảnh hưởng bợi độ dài của nó trong excel (dài bao nhiêu cột thì vẫn tính là một cột)
-        #-i Chứ ý có những ô được nhóm lại kéo dài 2 hàng thì dữ liệu ở hàng gốc còn hàng dưới thì NaN
-        #TODO: Xác định và rename lại tên cột cho chính xác, bỏ qua các hàng ko có dữ liệu
-        print(dataf.iloc[0])
-        return dataf
+
+        #* Merge the 'Họ và tên' column which contains only the surname and the middle name with the 'tên column
+        for row in dataf.index:
+            dataf.at[row, "Họ và tên"] = f"{dataf.at[row, "Họ và tên"]} {dataf.at[row, "tên"]}"
+
+        dataf.pop("tên")
+        #!Can raise some exceptions
+        ViewUtils.check_class_dataframe(dataf, student_count)
+
+        result_dict = {}
+        #*Convert dataframe to dict
+        for index in dataf.index:
+            result_dict[dataf["Họ và tên"][index]] = {}
+
+            for col in dataf.columns:
+                if col in ["Họ và tên", "Mã học sinh", "Nhận xét", "ĐTB \nmhk"]:
+                    continue
+                result_dict[dataf["Họ và tên"][index]][col] = dataf[col][index] if not pd.isna(dataf[col][index]) else None
+
+        return result_dict
+
 
     #-i ChatGPT API
     def get_advice(student: Student):
@@ -219,12 +273,3 @@ class TestUtils():
             print(e)
             return None
         
-        
-"""
-#TODO: Complete reading Excel file function
-df = ViewUtils.read_excel_data(r"E:\BaoBao\vscodeProject\Du_An_KHKT\Du_An\Schedule.xlsx")
-
-print(df.head(len(df.columns)))
-for i in df.index:
-    print(df.at[i, df.columns[2]]) """
-

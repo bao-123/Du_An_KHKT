@@ -453,24 +453,26 @@ def search_student(request: HttpRequest):
          
 @login_required(login_url="login")
 def view_class(request: HttpRequest, id):
-    if request.method == "GET":
-        try:
-            request_class = Class.objects.get(pk=id)
-            class_profile = request_class.get_profile() #TODO: Update to get others year
+    try:
+        request_class = Class.objects.get(pk=id)
+        class_profile = request_class.get_profile() #TODO: Update to get others year
+    except Class.DoesNotExist:
+            return render_error(request, error="Not found", error_message="Doesn't found any teacher with this id")
+    except ClassYearProfile.DoesNotExist:
+        return render_error(request, error="NVALID YEAR", error_message="Doesn't found any profile in this year")
 
+    if request.method == "GET":
             return render(request, "Du_An/class_profile.html", {
                 "classroom": request_class,
                 "class_profile": class_profile
             })
-        except Class.DoesNotExist:
-            return render_error(request, error="Not found", error_message="Doesn't found any teacher with this id")
-        except ClassYearProfile.DoesNotExist:
-            return render_error(request, error="NVALID YEAR", error_message="Doesn't found any profile in this year")
     elif request.method == "POST":
         file = request.FILES.get("file", None)
         if not file: 
             return render_error(request, "Lỗi", "Lỗi khi nhập điểm bằng file Excel, Vui lòng thử lại sau")
-        ViewUtils.read_excel_file(file, 43) #! tam thoi
+        
+        #TODO:
+        data = ViewUtils.read_excel_file(file, class_profile.students.count()) #! tam thoi
         return HttpResponseRedirect(reverse('index'))
     else:
         return HttpResponseNotAllowed(request.method)
