@@ -4,11 +4,18 @@ from django.core.files import File
 from typing import Iterable
 import pandas as pd
 import os
+from .exceptions import *
 #import pandas as pd
+
+#*Contants
+COL_NAME: list[str] = ["STT", "Họ và tên", "Mã học sinh", "TX1", "TX2", "TX3", "TX4", "ĐĐGgk", "ĐĐGck", """ĐTB 
+mhk""", "Nhận xét" ] #? ĐTBmhk có dấu cách ??? 
+#-i columns that have to store some data
+REQUIRED_COL: list[str] = ["STT", "Họ và tên", "tên"]
 
 #Utils functions for views
 class ViewUtils():
-
+    
     @staticmethod
     def get_form_class(teacher: Teacher):
         try:
@@ -23,11 +30,23 @@ class ViewUtils():
             return None
         return class_profile
 
+    def check_class_dataframe(df: pd.DataFrame) -> None:
+        #*Check columns
+        for column in df.columns:
+            if column not in COL_NAME:
+                raise InvalidColumn(f"{column} is not valid!")
+        
+        #*Check rows
+        for index in df.index:
+            row = df.iloc[index]
 
-    def read_excel_file(file: File, student_count: int = 0):
-        COL_NAME: list[str] = ["STT", "Họ và tên", "Mã học sinh", "TX1", "TX2", "TX3", "TX4", "ĐĐGgk", "ĐĐGck", """ĐTB 
-mhk""", "Nhận xét" ] #? ĐTBmhk có dấu cách ??? 
+            #*Check if there is any empty rows
+            if not row.any():
+                raise DfNotClean(f"{index} is empty!")
+            
 
+            
+    def read_excel_file(file: File, student_count: int = 0) -> dict:
         
         print(file.name)
         if not file.name.endswith('.xlsx') and not file.name.endswith('.xls'):
@@ -38,14 +57,16 @@ mhk""", "Nhận xét" ] #? ĐTBmhk có dấu cách ???
         #*Rename columns
         for column in dataf.columns:
             column_renamed = False
-            for row in dataf.index:
-                if dataf[column][row] == "Họ và tên":
-                    #*Rename the next column to "Tên":
-                    print("Found")
-                    next_column = dataf.columns.get_indexer([column])[0] + 1
-                    dataf.rename(columns={dataf.columns[next_column]: "Tên"}, inplace=True)
-                    #!: dataf.columns[next_column] = "Tên"
+
+            #* Don't remove the column if it is next to the "Họ và tên" column
+            previous_column = dataf.columns.get_indexer([column])[0] - 1 
+            try:
+                if dataf.columns[previous_column] == "Họ và tên":
                     column_renamed = True
+            except IndexError:
+                continue
+
+            for row in dataf.index:
 
                 for name in COL_NAME:
                     if name.lower() == str(dataf[column][row]).lower():
@@ -58,7 +79,11 @@ mhk""", "Nhận xét" ] #? ĐTBmhk có dấu cách ???
 
             if not column_renamed:
                 dataf.pop(column)
-            
+        
+        #* Rename the column next to the "Họ và tên" column
+        name_column = dataf.columns.get_indexer(["Họ và tên"])[0] + 1
+        dataf.rename(columns={dataf.columns[name_column]: "tên"}, inplace=True)
+
         empty_rows = []
         for row in dataf.index:
             if not dataf.iloc[row].any():
@@ -70,13 +95,18 @@ mhk""", "Nhận xét" ] #? ĐTBmhk có dấu cách ???
         dataf.reset_index(drop=True, inplace=True)
 
         dataf.drop(range(0,5), inplace=True)
+        #*Remove some useless lines at the end of the dataframe
 
+        dataf.reset_index(drop=True, inplace=True)
+
+        #! This can raise IndexError if student count or class or the info in the file is not match with others.
+        dataf.drop(range(student_count, dataf.index.size), inplace=True)
         dataf.reset_index(drop=True, inplace=True)
                 
         #-i Cac cot trong dataFrame ko bị ảnh hưởng bợi độ dài của nó trong excel (dài bao nhiêu cột thì vẫn tính là một cột)
         #-i Chứ ý có những ô được nhóm lại kéo dài 2 hàng thì dữ liệu ở hàng gốc còn hàng dưới thì NaN
         #TODO: Xác định và rename lại tên cột cho chính xác, bỏ qua các hàng ko có dữ liệu
-        print(dataf)
+        print(dataf.iloc[0])
         return dataf
 
     #-i ChatGPT API

@@ -470,7 +470,7 @@ def view_class(request: HttpRequest, id):
         file = request.FILES.get("file", None)
         if not file: 
             return render_error(request, "Lỗi", "Lỗi khi nhập điểm bằng file Excel, Vui lòng thử lại sau")
-        ViewUtils.read_excel_file(file)
+        ViewUtils.read_excel_file(file, 43) #! tam thoi
         return HttpResponseRedirect(reverse('index'))
     else:
         return HttpResponseNotAllowed(request.method)
