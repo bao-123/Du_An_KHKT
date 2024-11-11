@@ -1,6 +1,6 @@
 /*-i Class for error message*/
 body {
-    background-color: rgb(33, 37, 41); /* Màu nền tối */
+    background-color: rgb(33, 37, 41); /*-i Màu nền tối */
 }
 
 .invalid-feedback
@@ -408,6 +408,7 @@ body {
 {
     color: rgb(154, 195, 235);
 }
+
 
 
 

@@ -1,6 +1,6 @@
 body
 {
-    font-family: "Oxanium", sans-serif;
+    font-family: "Charm", sans-serif;
     background-color: rgb(33, 37, 41);
     margin: 0;
     padding: 0;
@@ -29,7 +29,7 @@ body
 
 #welcome-content
 {
-    font-family: "Oxanium", sans-serif;
+    font-family: "Charm", sans-serif;
     color: white;
     flex: 1;
     margin-bottom: max(25%, 1.5rem);
@@ -52,6 +52,7 @@ body
     border-radius: 20px;
     text-wrap: wrap;
     padding: 2rem;
+
 }
 
 
@@ -85,6 +86,7 @@ body
     display: flex;
     height: fit-content;
     column-gap: 1rem;
+    font-family: "Roboto Condensed", sans-serif;
 }
 
 
