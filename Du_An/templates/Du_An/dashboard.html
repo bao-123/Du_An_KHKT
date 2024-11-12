@@ -29,14 +29,13 @@
             {% if user.teacher.form_class %}
             <div class="formClass">
                 <p class="className"> {{ user.teacher.form_class.classroom.name }}</p>
-                <p class="classStudentCount">Si so: {{ user.teacher.form_class.students.count }}</p> <!---i user.teacher.form_class is a 'ClassYearTeacher' instance-->
+                <p class="classStudentCount">Sĩ số: {{ user.teacher.form_class.students.count }}</p> <!---i user.teacher.form_class is a 'ClassYearTeacher' instance-->
                 <div class="classStaffs">
                     <h2>Ban Cán Sự Lớp</h2>
                     {% for staff in user.teacher.form_class.get_class_staff_committee %}
                         {% if staff %}
                         <!--** staff here is a 'StudentYearProfile' object -->
-                        <p class="classStaffName">Tên: <a href="{% url 'view_student' staff.student.id %}" class="link-info link-offset-2 link-opacity-75-hover"> {{ staff.student.full_name }} </a> </p>
-                        <p class="classStaffRole">{% get_role_name staff.role %}</p>
+                        <p class="classStaffName">Tên: <a href="{% url 'view_student' staff.student.id %}" class="link-info link-offset-2 link-opacity-75-hover">{{ staff.student.full_name }}</a> | {% get_role_name staff.role %}</p>
                         {% endif %}
                     {% empty %}
                     Lớp  Chưa Có Ban Cán Sự

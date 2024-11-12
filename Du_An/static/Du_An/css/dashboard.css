@@ -6,6 +6,7 @@ body
     --bs-body-bg: rgb(33, 37, 41);
     --bs-body-color: rgb(154, 195, 235);
     --bs-body-color-rgb: 154, 195, 235;
+    font-family: "Roboto Condensed", sans-serif;
 }
 
 
