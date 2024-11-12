@@ -282,6 +282,7 @@ body {
     overflow: hidden;
     border-bottom: 4px solid cyan;
     transition: 0.5s ease-in-out;
+    font-family: "Roboto Condensed", sans-serif;
 }
 
 #createProfileForm.show
@@ -290,7 +291,35 @@ body {
     max-height: 100%;
     max-width: 100%;
     padding: 1rem;
+    font-family: "Roboto Condensed", sans-serif;
 }
+.welcome-footer
+{
+    position: absolute;
+    padding: 1rem;
+    height: max(14%, 5rem);
+    width: 100%;
+    color: #fff;
+    top: 100%;
+    margin: 0;
+    background-color: black;
+    transform: translate(0, -100%); 
+    margin-bottom: 15px;
+}
+
+.cre
+{
+    display: inline;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.iconbb
+{
+    max-height: 100%;
+    max-width: max(45%, 5rem);
+}
+
 
 
 #updateMarkForm
