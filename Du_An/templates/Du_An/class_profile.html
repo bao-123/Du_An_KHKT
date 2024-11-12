@@ -10,7 +10,7 @@
         <!--* Display class's basic info-->
         <div class="basicInfo">
             <h1 class="className">{{ classroom.name }}</h1>
-            <p class="classSiSo">Si so: {{ class_profile.students.count }}</p>       <!--TODO: Replace the href -->
+            <p class="classSiSo">Sĩ số: {{ class_profile.students.count }}</p>       <!--TODO: Replace the href -->
 
             <!--* display class's staff committee -->
             <div class="classStaffs">
@@ -101,8 +101,23 @@
                 <div id="classDetails" style="display: none;"></div>
                 <!--TODO: Them form nhap diem bang file excel-->
                 <div id="updateMarkDiv" style="display: none;">
-                    <form id="updateMarkForm" action="{% url 'view_class' classroom.id %}" enctype="multipart/form-data" method="post">
+                    <form id="updateMarkForm" action="{% url 'view_class' classroom.id %}" enctype="multipart/form-data" method="post" novalidate>
                         {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="subjectSelect" class="form-label">Chọn môn muốn nhập điểm</label>
+                            <select id="subjectSelect" class="form-select" required>
+                                {% get_teacher_subject_options class_profile user.teacher %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="semester" class="form-label">Chọn học kì muốn nhập điểm</label>
+                            <select id="semester" class="form-select">
+                                <option value="1">Kì I</option>
+                                <option value="2">Kì II</option>
+                            </select>
+                        </div>
+
                         <label for="file" class="form-label">File Excel</label>
                         <input type="file" name="file" id="file" class="form-control" placeholder="Nhập file Excel"></input>
                         <div class="form-text mb-3">Lưu ý: File Excel cần tuân theo một số quy định về định dạng cụ thể</div>

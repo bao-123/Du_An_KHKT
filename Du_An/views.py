@@ -459,7 +459,7 @@ def view_class(request: HttpRequest, id):
     except Class.DoesNotExist:
             return render_error(request, error="Not found", error_message="Doesn't found any teacher with this id")
     except ClassYearProfile.DoesNotExist:
-        return render_error(request, error="NVALID YEAR", error_message="Doesn't found any profile in this year")
+        return render_error(request, error="INVALID YEAR", error_message="Doesn't found any profile in this year")
 
     if request.method == "GET":
             return render(request, "Du_An/class_profile.html", {
@@ -468,11 +468,46 @@ def view_class(request: HttpRequest, id):
             })
     elif request.method == "POST":
         file = request.FILES.get("file", None)
+        is_accepted = request.POST.get("is_accepted", False)
+        subject_id = request.POST.get("subject_id", None)
+
+        if not subject_id:
+            return JsonResponse({"message": "Xin vui lòng chọn một môn học"}, status=400)
         if not file: 
-            return render_error(request, "Lỗi", "Lỗi khi nhập điểm bằng file Excel, Vui lòng thử lại sau")
+            return JsonResponse({"message": "Lỗi, xin chọn một file Excel để nhập điểm"}, status=400)
+        try:
+            subject = Subject.objects.get(pk=subject_id)
+
+            if subject.name not in MAIN_SUBJECTS and subject.name not in SECOND_SUBJECTS and subject.name not in COMMENT_SUBJECTS:
+                return JsonResponse({"message": "Invalid subject"}, status=400)
+        except Subject.DoesNotExist:
+            return JsonResponse({"message": "Invalid subject"}, status=400)
         
-        #TODO:
-        data = ViewUtils.read_excel_file(file, class_profile.students.count()) #! tam thoi
+        
+        data = ViewUtils.read_excel_file(file, class_profile.students.count())
+        student_list = [student_profile.student for student_profile in class_profile.students.all()]
+        invalid_student = []
+   
+        for student_name in list(data.keys()):
+            if student_name not in [student.name for student in student_list]:
+                invalid_student.append(student_name)
+                continue
+            
+            #* Update student marks
+            if is_accepted:
+                student_profile = [ student.get_profile() for student in student_list if student.name == student_name ][0]
+
+
+                for mark_type in data[student_name].keys():
+                    if not data[student_name][mark_type]:
+                        continue
+                    
+                    match(mark_type):
+                        case "TX1": #!UPPERCASE
+                            #TODO
+                            pass
+                        case _:
+                            return JsonResponse({"message": f"Invalid mark type ({mark_type})"}, status=400)
         return HttpResponseRedirect(reverse('index'))
     else:
         return HttpResponseNotAllowed(request.method)
