@@ -72,7 +72,6 @@ body {
     padding: 3px;
 }
 
-
 .md
 {
     height: fit-content;
@@ -372,7 +371,10 @@ margin-left: 1.5rem;
 {
     color: rgb(154, 195, 235);
 }
-
+.medium
+{
+    border: solid  red;
+}
 
 
 
