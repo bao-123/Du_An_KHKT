@@ -22,7 +22,7 @@ def index(request):
     else:
         return HttpResponseNotAllowed("method not allowed.")
 
-
+@login_required(login_url="login")
 def dashboard(request):
     if request.method == "GET":
         return render(request, "Du_An/dashboard.html")
