@@ -22,7 +22,7 @@ def index(request):
     else:
         return HttpResponseNotAllowed("method not allowed.")
 
-
+@login_required(login_url="login")
 def dashboard(request):
     if request.method == "GET":
         return render(request, "Du_An/dashboard.html")
@@ -317,9 +317,11 @@ def view_student(request, id):
         #** semester: 1 or 2
         semester: int = body.get("semester")
         year = body.get("year") if body.get("year") else this_year
+
+        print(subject_id, new_mark, mark_type, semester, year)
         
-        if not body or not subject_id or \
-           not new_mark is None or not mark_type or not year:
+        if not subject_id or \
+        new_mark is None or not mark_type or not year:
             print("missing information")
             return JsonResponse({"message": "Missing information"},
                                 status=400)
@@ -462,11 +464,15 @@ def view_class(request: HttpRequest, id):
         return render_error(request, error="INVALID YEAR", error_message="Doesn't found any profile in this year")
 
     if request.method == "GET":
+
             return render(request, "Du_An/class_profile.html", {
                 "classroom": request_class,
                 "class_profile": class_profile
             })
     elif request.method == "POST":
+        if not hasattr(request.user, "teacher"):
+            return render_error(request, error="Không có quyền truy cập", error_message="Chỉ có giáo viên mới có thể truy cập trang này")
+        
         file = request.FILES.get("file", None)
         is_accepted = request.POST.get("is_accepted", False)
         subject_id = request.POST.get("subject_id", None)
