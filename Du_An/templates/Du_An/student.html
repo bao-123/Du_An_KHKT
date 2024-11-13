@@ -11,23 +11,33 @@
 {% block body %}
     <div id="studentProfile" data-student-id="{{ student.id }}">
         <!--* Display the basic information -->
-        <div class="basicInfo">          
+        <div class="basicInfo">
+
             <!---I student is a 'Student' instance -->
             <!---I student_profile is a 'studentYearProfile' instance -->
             <!---I student_profile.classroom is a 'ClassYearProfile' instance -->
-            <h2 class="studentName"> {{ student.full_name }} </h2>
-            <p class="studentClass">Lớp: <a href="{% url 'view_class' student_profile.classroom.classroom.id %}" class="link-info link-offset-2 link-opacity-75-hover">{{ student_profile.classroom.classroom.name }}</a></p>
-            <p class="studentGender">Giới tính: {% if student.is_boy %} Nam {% else %} Nữ {% endif %}</p>
-            <p class="studentRole">Chức vụ: {% get_role_name student_profile.role %}</p>
-            <p class="studentParent">
-                Phụ huynh: 
-                {% for parent in student.parent.all %}
-                <!--TODO: replace the href (to the parent's page)-->
-                    <a href="{% url 'view_parent' parent.id %}" class="link-info link-offset-2 link-underline-dark link-opacity-75-hover"> {{ parent.full_name }}</a>,
-                {% empty %}
-                    Học sinh này chưa có phụ huynh nào nhận
-                {% endfor %}
-            </p>
+            <div class="studentBaseInfo">
+                <img src="{% static 'Du_An/images/Avatar.jpg' %}" class="studentAvatar" alt="student avatar">
+                <div class="textInfo">
+                    <h2 class="studentName"> Họ và tên: {{ student.full_name }} </h2>
+                    <p>Lớp: <a href="{% url 'view_class' student_profile.classroom.classroom.id %}" class="link-info link-offset-2 link-opacity-75-hover">{{ student_profile.classroom.classroom.name }}</a></p>
+                    <p>Giới tính: {% if student.is_boy %} Nam {% else %} Nữ {% endif %}</p>
+                </div>
+            </div>
+
+            <div class="studentCurrentInfo">
+                <p class="studentRole">Chức vụ: {% get_role_name student_profile.role %}</p>
+                <p class="studentParent">
+                    Phụ huynh: 
+                    {% for parent in student.parent.all %}
+                    <!--TODO: replace the href (to the parent's page)-->
+                        <a href="{% url 'view_parent' parent.id %}" class="link-info link-offset-2 link-underline-dark link-opacity-75-hover"> {{ parent.full_name }}</a>,
+                    {% empty %}
+                        Học sinh này chưa có phụ huynh nào nhận
+                    {% endfor %}
+                </p>
+            </div>
+
         </div>
         <!--* show student's marks -->
         <div class="studentMark">

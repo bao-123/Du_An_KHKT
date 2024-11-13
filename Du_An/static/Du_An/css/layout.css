@@ -3,3 +3,8 @@
 {
     font-family: "Oxanium", sans-serif;
 }
+#addSubjectTeacherMessageDisplay
+{
+    border: solid;
+    border-radius: 15px;
+}
