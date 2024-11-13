@@ -4,10 +4,17 @@ from django.http import JsonResponse, HttpResponseNotAllowed
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from dotenv import load_dotenv
+from openai import OpenAI
 import os
 #TODO:
-load_dotenv("../.env")
+load_dotenv()
+API_KEY = os.getenv("API_KEY")
+API_BASE_URL = "https://api.aimlapi.com/v1"
 
+if not API_KEY:
+    raise Exception("API KEY not found")
+
+api = OpenAI(api_key=API_KEY, base_url=API_BASE_URL)
 
 #-i APIs
 def get_class_marks(request, id):
@@ -22,6 +29,9 @@ def get_class_marks(request, id):
 #TODO: Debug this function and research read excel file function.
 
 
+
+def get_advice(prompt):
+    completions = api.chat.completions.create()
 
 #-i For create student profile
 @login_required(login_url='login')
