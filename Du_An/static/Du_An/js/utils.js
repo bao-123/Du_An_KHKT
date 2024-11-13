@@ -103,7 +103,8 @@ export async function updateMark(id, subjectId, semester, new_mark, mark_type, y
                 year: year
             })
         });
-        return {message: response.message, status: response.status};
+        console.log(response);
+        return {message: (await response.json()).message, status: response.status};
     }
     catch(error)
     {

@@ -161,11 +161,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         //* Call API
         const response = await updateMark(studentId, subjectId, semester, newMark, markType, year);
-
+        console.log(response);
         displayMessage(displayMessageDivId,
             response.status !== 200 ? "Failed to update mark" : "Update mark successfully",
             response.message,
-            response.status === 200 ? "success" : "error",
+            response.status === 200 ? "alert alert-success" : "alert alert-danger",
             "medium"
         ); 
     });

@@ -239,4 +239,12 @@ class ProjectTest(TestCase):
         print("Test view teachers finished.✔")
 
         self.client.logout()
+    
+    def test_teaching_classes_page(self):
+        self.client.force_login(self.teacher1)
 
+        response = self.client.get(reverse("teaching_classes"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["classes"]), len(self.teacher1.get_teaching_classes()))
+        self.assertEqual(response.context["subjects"].count(), self.teacher1.subject.count())
