@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const showFormBtn = document.getElementById("showFormBtn");
     const createStudentYearProfileForm = document.getElementById("createProfileForm");
     const yearSelect = document.getElementById("yearSelect");
+    const getAIAdvice = document.getElementById("getAdviceBtn");
     
     const studentId = Number(studentProfile.dataset.studentId);
 
@@ -138,6 +139,32 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
     
+    if(getAIAdvice)
+    {
+        getAIAdvice.addEventListener("click", async () => {
+
+            const response = await fetch('https://api.aimlapi.com/chat/completions', {
+                method: 'POST',
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  "model": "text",
+                  "messages": [
+                    "say Hi!"
+                  ],
+                  "max_tokens": 100,
+                  "temperature": 0.2,
+                  "stream": false,
+                  "frequency_penalty": 1,
+                  "top_p": 1
+                }),
+            });
+
+            const data = await response.json(); 
+        });
+        console.log(data)
+    }
 
     //*Don't code bellow this line!
     if(!updateMarkForm) return;

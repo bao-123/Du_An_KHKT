@@ -4,6 +4,7 @@ from django.http import JsonResponse, HttpResponseNotAllowed
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 
+
 #-i APIs
 def get_class_marks(request, id):
     if request.method != "GET":

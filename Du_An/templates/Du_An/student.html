@@ -80,6 +80,13 @@
                 {% endif %}
 
             </div>
+            {% if user.parent %}
+            
+                {% if user.parent in student.parent.all %}
+                    <button id="getAdviceBtn" class="btn btn-outline-success">Xin lời khuyên từ AI</button>
+                {% endif %}
+
+            {% endif %}
             <select id="subjects_select" class="form-select me-auto w-auto">
                 <!--** Default subject is Toán -->
                 <option selected disabled>Môn học</option>
