@@ -218,7 +218,7 @@ class Student(models.Model):
             ]
         }
     
-
+    
     def serialize(self):
         return {
             "id": self.id,

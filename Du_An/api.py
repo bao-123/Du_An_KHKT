@@ -8,6 +8,7 @@ from openai import OpenAI
 import os
 #TODO:
 load_dotenv()
+#-i API
 API_KEY = os.getenv("API_KEY")
 API_BASE_URL = "https://api.aimlapi.com/v1"
 
@@ -15,6 +16,7 @@ if not API_KEY:
     raise Exception("API KEY not found")
 
 api = OpenAI(api_key=API_KEY, base_url=API_BASE_URL)
+system_prompt = "Answer in Vietnamese"
 
 #-i APIs
 def get_class_marks(request, id):
@@ -26,12 +28,33 @@ def get_class_marks(request, id):
     return [ student_profile.get_subject_marks(serialize=True) for student_profile in profile.students.all()]
 
 
+@login_required(login_url="login")
+def get_student_advice(request=None, id=None):
+    if request.method != "GET":
+        return JsonResponse({"message": "Invalid method"}, status=402)
+    
+    AI_advice = get_advice("Give some advice about studying, learning")
+
+    return JsonResponse({"advice": AI_advice}, status=400)
+    
+
+
 #TODO: Debug this function and research read excel file function.
 
 
-
 def get_advice(prompt):
-    completions = api.chat.completions.create()
+    completions = api.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt},
+            {"role": "system", "content": system_prompt}
+        ],
+        temperature=1,
+        max_tokens=200
+    )
+
+    return completions.choices[0].message.content
+
 
 #-i For create student profile
 @login_required(login_url='login')
@@ -69,6 +92,3 @@ def create_profile(request, student_id: int):
         return JsonResponse({"message": "invalid data"}, status=400)
 
 
-
-
-   

@@ -28,5 +28,6 @@ urlpatterns = [
     path("marks/<int:id>", api.get_class_marks, name="class_marks"),
     #-i API for update user data
     path("change_info", views.change_info, name="change_user_info"),
-    path("change_password", views.change_password, name="change_password")
+    path("change_password", views.change_password, name="change_password"),
+    path("advice", api.get_student_advice, name="get_advice")
 ]
